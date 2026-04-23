@@ -19,8 +19,6 @@ import LegalDrawer from './components/LegalDrawer';
 import CookieGate from './components/CookieGate';
 import Footer from './components/Footer';
 
-import AISkinConcierge from './components/AISkinConcierge';
-
 export default function App() {
   return (
     <BrowserRouter>
@@ -43,7 +41,6 @@ export default function App() {
             <Footer />
             <CartDrawer />
             <LegalDrawer />
-            <AISkinConcierge />
           </div>
         </CookieGate>
       </CartProvider>

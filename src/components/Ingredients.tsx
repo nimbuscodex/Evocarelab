@@ -13,7 +13,7 @@ const mainIngredients = [
     name: "Hialuronato de sodio",
     highlight: "Hidratar",
     description: "Hidrata rápidamente el estrato córneo y alivia la sequedad y la tirantez de forma instantánea.",
-    image: "/molecula-quimica.png",
+    image: "/molécula quimica.png",
     level: "Superficie"
   },
   {

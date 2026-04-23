@@ -3,37 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Evocarelab | Biotecnología Facial de Lujo</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <title>My Google AI Studio App</title>
   </head>
   <body>
-    <div id="root">
-      <div style="height: 100vh; display: flex; align-items: center; justify-content: center; background: #111; color: #fdfdfd; font-family: serif; font-style: italic;">
-        Cargando Arquitectura Celular...
-      </div>
-    </div>
-    <script>
-      function showError(msg, detail) {
-        var div = document.createElement('div');
-        div.style.cssText = 'position:fixed;top:0;left:0;width:100%;background:#111;color:#fdfdfd;padding:20px;z-index:9999;font-family:sans-serif;font-size:12px;border-bottom:2px solid #C5A059;';
-        div.innerHTML = '<strong style="color:#C5A059;text-transform:uppercase;letter-spacing:1px;">Error Detectado:</strong> ' + msg + ' <br><span style="opacity:0.5;">' + (detail || '') + '</span>';
-        document.body.appendChild(div);
-      }
-      window.onerror = function(msg, url, line) {
-        showError(msg, 'En: ' + url + ' (Línea ' + line + ')');
-      };
-      window.onunhandledrejection = function(event) {
-        showError('Promesa no capturada', event.reason);
-      };
-    </script>
-    <noscript>
-      <div style="padding: 2rem; text-align: center; font-family: serif;">
-        <h1>Evocarelab</h1>
-        <p>Por favor, activa JavaScript para disfrutar de la experiencia biotecnológica completa.</p>
-      </div>
-    </noscript>
+    <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

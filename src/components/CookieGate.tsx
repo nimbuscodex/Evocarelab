@@ -12,13 +12,9 @@ export default function CookieGate({ children }: { children: React.ReactNode }) 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    try {
-      const savedConsent = localStorage.getItem('evocare-consent');
-      if (savedConsent) {
-        setConsent(savedConsent as any);
-      }
-    } catch (e) {
-      console.warn('LocalStorage unavailable:', e);
+    const savedConsent = localStorage.getItem('evocare-consent');
+    if (savedConsent) {
+      setConsent(savedConsent as any);
     }
     setLoading(false);
   }, []);
