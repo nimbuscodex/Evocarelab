@@ -22,6 +22,8 @@ export default function Home() {
 
   useEffect(() => {
     async function loadProducts() {
+      if (!supabase) return;
+      
       const { data, error } = await supabase
         .from("products")
         .select("*")
