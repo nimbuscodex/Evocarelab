@@ -22,26 +22,20 @@ export default function CartDrawer() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsCartOpen(false)}
-            className="fixed inset-0 bg-ink/90 backdrop-blur-3xl z-[100]"
+            className="fixed inset-0 bg-ink/95 backdrop-blur-2xl z-[100]"
           />
           
           {/* Circular Stage */}
           <motion.div 
-            initial={{ opacity: 0, scale: 0.9, rotate: -10 }}
-            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            exit={{ opacity: 0, scale: 0.9, rotate: 10 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
             className="fixed inset-0 z-[101] flex items-center justify-center pointer-events-none"
           >
-            <div className="relative w-full h-full flex items-center justify-center pointer-events-auto">
-              {/* Header Info */}
-              <div className="absolute top-10 left-10 text-white z-50">
-                <p className="text-[10px] uppercase tracking-[0.5em] text-gold font-bold mb-2">Protocolo de Adquisición</p>
-                <h2 className="text-3xl font-serif tracking-tight">Sistema de Pureza Molecular</h2>
-              </div>
-
+            <div className="relative w-full max-w-4xl aspect-square flex items-center justify-center pointer-events-auto">
               <button 
                 onClick={() => setIsCartOpen(false)}
-                className="absolute top-10 right-10 p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full transition-all z-50 text-white"
+                className="absolute top-10 right-10 p-4 hover:bg-white/10 rounded-full transition-all z-50 text-white"
               >
                 <X size={24} />
               </button>
@@ -53,17 +47,17 @@ export default function CartDrawer() {
                     scale: [1, 1.05, 1],
                     boxShadow: [
                       '0 0 40px rgba(197,160,89,0.1)',
-                      '0 0 80px rgba(197,160,89,0.3)',
+                      '0 0 80px rgba(197,160,89,0.4)',
                       '0 0 40px rgba(197,160,89,0.1)'
                     ]
                   }}
                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                  className="w-32 h-32 md:w-48 md:h-48 bg-white border border-gold/20 rounded-full flex flex-col items-center justify-center shadow-2xl relative overflow-hidden"
+                  className="w-32 h-32 md:w-48 md:h-48 bg-ink/40 backdrop-blur-xl border border-gold/30 rounded-full flex flex-col items-center justify-center shadow-2xl relative overflow-hidden"
                 >
-                  <div className="absolute inset-0 bg-radial-[circle_at_30%_30%] from-white via-pearl to-gold/5" />
+                  <div className="absolute inset-0 bg-radial-[circle_at_30%_30%] from-gold/10 via-transparent to-transparent" />
                   <div className="relative z-10 text-center space-y-1">
                     <p className="text-[10px] uppercase tracking-[0.4em] font-bold text-gold">Núcleo</p>
-                    <p className="text-2xl md:text-3xl font-serif text-ink">{totalSubtotal}€</p>
+                    <p className="text-2xl md:text-3xl font-serif text-white">{totalSubtotal}€</p>
                   </div>
                 </motion.div>
                 
@@ -103,8 +97,8 @@ export default function CartDrawer() {
                   animate={{ opacity: 1, y: 0 }}
                   className="absolute inset-0 flex flex-col items-center justify-center text-center space-y-4"
                 >
-                  <ShoppingBag size={48} className="text-gray-200" />
-                  <p className="text-gray-400 font-light italic">Su sistema de pureza está vacío.</p>
+                  <ShoppingBag size={48} className="text-white/20" />
+                  <p className="text-white/40 font-light italic">Su sistema de pureza está vacío.</p>
                 </motion.div>
               ) : (
                 <motion.div 
@@ -137,24 +131,24 @@ export default function CartDrawer() {
                           className="relative group"
                         >
                           {/* Item Card */}
-                          <div className="relative bg-white rounded-2xl p-2 shadow-xl border border-gold/10 group-hover:border-gold/30 transition-all hover:scale-105">
-                             <div className="aspect-[3/4] rounded-xl overflow-hidden mb-3 bg-shimmer">
+                          <div className="relative bg-ink/60 backdrop-blur-md rounded-2xl p-2 shadow-2xl border border-white/10 group-hover:border-gold/50 transition-all hover:scale-105">
+                             <div className="aspect-[3/4] rounded-xl overflow-hidden mb-3 bg-white/5 opacity-80 group-hover:opacity-100 transition-opacity">
                                <img src={item.image} alt={item.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                              </div>
                              
                              <div className="space-y-2">
                                <div className="flex justify-between items-start gap-1">
-                                 <h4 className="text-[9px] font-bold uppercase tracking-wider leading-tight text-ink">{item.name}</h4>
-                                 <button onClick={() => removeItem(item.id)} className="text-gray-300 hover:text-red-400 transition-colors">
+                                 <h4 className="text-[9px] font-bold uppercase tracking-wider leading-tight text-white">{item.name}</h4>
+                                 <button onClick={() => removeItem(item.id)} className="text-white/30 hover:text-red-400 transition-colors">
                                    <X size={10} />
                                  </button>
                                </div>
                                
                                <div className="flex items-center justify-between">
-                                 <div className="flex items-center gap-2 bg-pearl px-1.5 py-0.5 rounded-md">
-                                   <button onClick={() => updateQuantity(item.id, -1)} className="text-gray-400 hover:text-ink"><Minus size={10} /></button>
+                                 <div className="flex items-center gap-2 bg-white/10 px-1.5 py-0.5 rounded-md text-white">
+                                   <button onClick={() => updateQuantity(item.id, -1)} className="text-white/40 hover:text-white transition-colors"><Minus size={10} /></button>
                                    <span className="text-[9px] font-bold w-3 text-center">{item.quantity}</span>
-                                   <button onClick={() => updateQuantity(item.id, 1)} className="text-gray-400 hover:text-ink"><Plus size={10} /></button>
+                                   <button onClick={() => updateQuantity(item.id, 1)} className="text-white/40 hover:text-white transition-colors"><Plus size={10} /></button>
                                  </div>
                                  <span className="text-[9px] font-bold text-gold">{item.price * item.quantity}€</span>
                                </div>
@@ -175,15 +169,15 @@ export default function CartDrawer() {
                 animate={{ y: 0, opacity: 1 }}
                 className="fixed bottom-10 left-1/2 -translate-x-1/2 w-full max-w-sm px-6 pointer-events-auto"
               >
-                <div className="bg-ink text-white p-2 rounded-full flex items-center justify-between shadow-2xl">
+                <div className="bg-white/5 backdrop-blur-xl border border-white/10 text-white p-2 rounded-full flex items-center justify-between shadow-2xl">
                   <div className="px-6">
-                    <p className="text-[8px] uppercase tracking-[0.3em] text-white/50 mb-0.5">Total Selección</p>
+                    <p className="text-[8px] uppercase tracking-[0.3em] text-white/40 mb-0.5">Total Selección</p>
                     <p className="text-lg font-serif">{totalSubtotal}€</p>
                   </div>
                   <Link 
                     to="/checkout"
                     onClick={() => setIsCartOpen(false)}
-                    className="h-12 px-8 bg-gold text-ink rounded-full text-[10px] uppercase tracking-[0.3em] font-bold flex items-center gap-2 hover:scale-105 transition-all"
+                    className="h-12 px-8 bg-gold text-ink rounded-full text-[10px] uppercase tracking-[0.3em] font-bold flex items-center gap-2 hover:bg-white transition-all"
                   >
                     Verificado <ArrowRight size={14} />
                   </Link>
