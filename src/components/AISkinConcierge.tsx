@@ -8,8 +8,17 @@ import { motion, AnimatePresence } from 'motion/react';
 import { MessageSquare, X, Send, Loader2, Sparkles, User, Bot, AlertCircle } from 'lucide-react';
 import { GoogleGenAI } from "@google/genai";
 
-// Initialize AI
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+// Lazy initialization of AI to prevent crashes on load if key is missing
+let aiInstance: GoogleGenAI | null = null;
+const getAI = () => {
+  if (!aiInstance) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (apiKey) {
+      aiInstance = new GoogleGenAI({ apiKey });
+    }
+  }
+  return aiInstance;
+};
 
 interface Message {
   id: string;
@@ -64,13 +73,18 @@ export default function AISkinConcierge() {
     setError(null);
 
     try {
+      const chatAI = getAI();
+      if (!chatAI) {
+        throw new Error('La clave de API de Gemini no está configurada.');
+      }
+
       // Create chat session with history
       const history = messages.map(m => ({
         role: m.role === 'user' ? 'user' : 'model',
         parts: [{ text: m.content }]
       }));
 
-      const response = await ai.models.generateContent({
+      const response = await chatAI.models.generateContent({
         model: "gemini-3-flash-preview",
         contents: [
           ...history.slice(-6), // Keep context of last 3 exchanges
