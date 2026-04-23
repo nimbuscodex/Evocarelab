@@ -12,9 +12,16 @@ import { GoogleGenAI } from "@google/genai";
 let aiInstance: GoogleGenAI | null = null;
 const getAI = () => {
   if (!aiInstance) {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (apiKey) {
-      aiInstance = new GoogleGenAI({ apiKey });
+    try {
+      // Defer to import.meta.env if available, fallback to defines
+      const apiKey = (import.meta as any).env?.VITE_GEMINI_API_KEY || 
+                     (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY : "");
+      
+      if (apiKey) {
+        aiInstance = new GoogleGenAI({ apiKey });
+      }
+    } catch (e) {
+      console.warn("AI initialization failed:", e);
     }
   }
   return aiInstance;

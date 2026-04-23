@@ -10,10 +10,25 @@ const __dirname = path.dirname(__filename);
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
   return {
-    // base: './', // Reverting to default / for Vercel
+    base: './',
     plugins: [react(), tailwindcss()],
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY || ""),
+      'process.env.NODE_ENV': JSON.stringify(mode),
+    },
+    build: {
+      chunkSizeWarningLimit: 1000,
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              if (id.includes('motion')) return 'vendor-motion';
+              if (id.includes('lucide')) return 'vendor-icons';
+              return 'vendor';
+            }
+          }
+        }
+      }
     },
     resolve: {
       alias: {
