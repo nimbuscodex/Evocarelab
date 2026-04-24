@@ -73,7 +73,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }));
   };
 
-  const clearCart = () => setItems([]);
+  const clearCart = React.useCallback(() => setItems([]), []);
 
   const totalSubtotal = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);

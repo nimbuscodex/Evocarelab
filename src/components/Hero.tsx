@@ -83,7 +83,7 @@ export default function Hero() {
               className="mask-visual w-80 h-[520px] md:w-[480px] md:h-[640px] flex items-center justify-center relative z-10 overflow-visible"
             >
               <motion.img 
-                src={product.image_url}
+                src="/modelo 1.png"
                 className="w-[75%] h-[75%] object-cover relative z-10 drop-shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/40 bg-white/5 p-1"
                 alt="3D Isolated Sheet Mask"
                 loading="eager"

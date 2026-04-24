@@ -3,15 +3,30 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
-import { motion, useMotionValue, useTransform, useSpring } from 'motion/react';
+import React, { useState, useEffect } from 'react';
+import { motion, useMotionValue, useTransform, useSpring, AnimatePresence } from 'motion/react';
 import { useCart } from '../context/CartContext';
 import { useProduct } from '../hooks/useProduct';
 
 export default function Product() {
   const { addItem } = useCart();
   const { product, loading } = useProduct();
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
+  const images = [
+    '/sobre.png',
+    '/caja.png',
+    '/fondo blanco.png'
+  ];
+
+  // Auto-rotate images
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % images.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [images.length]);
+
   // Parallax / Rotation logic
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -37,7 +52,7 @@ export default function Product() {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.image_url
+      image: images[currentImageIndex]
     });
   };
 
@@ -58,16 +73,34 @@ export default function Product() {
               style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
               className="aspect-[4/5] bg-neutral-200 rounded-[40px] overflow-hidden relative shadow-2xl group border-2 border-ink/5"
             >
-               <motion.img 
-                 src="https://th.bing.com/th/id/R.311a84bb7398659c45d7548094b77c9e?rik=7XqFw3PWIm8F%2fQ&riu=http%3a%2f%2fcdn.shopify.com%2fs%2ffiles%2f1%2f0014%2f3232%2f2131%2farticles%2f1020_GT_BlogImages_28_1.jpg%3fv%3d1619664561&ehk=cdoSOWPPopzMIcgGVNba9r3Mor9j%2bauwHUCFo%2bEYKzU%3d&risl=&pid=ImgRaw&r=0" 
-                 alt="Lifestyle Mask Ritual"
-                 className="w-full h-full object-cover transition-all duration-1000"
-                 style={{ translateZ: 80 }}
-                 loading="eager"
-               />
+               <AnimatePresence mode="wait">
+                 <motion.img 
+                   key={images[currentImageIndex]}
+                   src={images[currentImageIndex]} 
+                   initial={{ opacity: 0, scale: 1.1 }}
+                   animate={{ opacity: 1, scale: 1 }}
+                   exit={{ opacity: 0, scale: 0.95 }}
+                   transition={{ duration: 0.8, ease: "easeInOut" }}
+                   alt="Product Gallery"
+                   className="w-full h-full object-cover transition-all"
+                   style={{ translateZ: 80 }}
+                   loading="eager"
+                 />
+               </AnimatePresence>
                
                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/10"></div>
                
+               {/* Progress indicators */}
+               <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-40">
+                 {images.map((_, idx) => (
+                   <button
+                    key={idx}
+                    onClick={() => setCurrentImageIndex(idx)}
+                    className={`h-1 transition-all duration-500 rounded-full ${idx === currentImageIndex ? 'w-8 bg-white' : 'w-2 bg-white/40'}`}
+                   />
+                 ))}
+               </div>
+
                {/* Lighting highlight that follows mouse */}
                <motion.div 
                  className="absolute inset-0 z-30 pointer-events-none transition-opacity duration-500 opacity-0 group-hover:opacity-100"

@@ -47,6 +47,22 @@ export default function BeforeAfter() {
                 <span className="text-[10px] uppercase tracking-widest text-gray-400 mt-2 block">Líneas de expresión</span>
               </div>
             </div>
+
+            {/* Quick Proof Card */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="p-4 bg-[#fdfaf6] rounded-[32px] border border-neutral-100 flex items-center gap-4 group"
+            >
+              <div className="w-20 h-20 rounded-2xl overflow-hidden shrink-0 border border-neutral-200">
+                <img src="/efectos.png" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Clinical Effects" />
+              </div>
+              <div>
+                <h4 className="text-[10px] uppercase tracking-widest font-bold text-ink mb-1">Efecto Regenerativo</h4>
+                <p className="text-[11px] text-gray-500 font-light leading-relaxed">Visualización clínica de la redensificación celular tras 4 aplicaciones.</p>
+              </div>
+            </motion.div>
           </div>
 
           {/* Interactive Slider */}

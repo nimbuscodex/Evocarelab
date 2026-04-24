@@ -12,6 +12,10 @@ import { CreditCard, Truck, Check, Loader2, ArrowLeft, ShieldCheck, Lock, Shoppi
 import { useCart } from '../context/CartContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { cn } from '../lib/utils';
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePubKey = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
+const stripePromise = stripePubKey ? loadStripe(stripePubKey) : Promise.resolve(null);
 
 const checkoutSchema = z.object({
   email: z.string().email("Email inválido"),
@@ -21,9 +25,6 @@ const checkoutSchema = z.object({
   address: z.string().optional(),
   city: z.string().optional(),
   zipCode: z.string().optional(),
-  cardNumber: z.string().regex(/^\d{16}$/, "Deben ser 16 dígitos"),
-  expiry: z.string().regex(/^(0[1-9]|1[0-2])\/\d{2}$/, "MM/YY"),
-  cvv: z.string().regex(/^\d{3}$/, "3 dígitos")
 }).refine((data) => {
   if (data.shippingMethod === 'delivery') {
     return !!data.address && data.address.length >= 10 && 
@@ -39,25 +40,24 @@ const checkoutSchema = z.object({
 type CheckoutData = z.infer<typeof checkoutSchema>;
 
 export default function CheckoutPage() {
-  const { totalSubtotal, items, clearCart } = useCart();
+  const { totalSubtotal, items } = useCart();
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
-  const [successOrder, setSuccessOrder] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    // If cart is empty and no success, go back
-    if (items.length === 0 && !successOrder) {
+    // If cart is empty, go back
+    if (items.length === 0) {
       navigate('/');
     }
-  }, [items, successOrder, navigate]);
+  }, [items, navigate]);
 
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<CheckoutData>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
-      shippingMethod: 'delivery',
-      cardNumber: "4242424242424242"
+      shippingMethod: 'delivery'
     }
   });
 
@@ -67,7 +67,7 @@ export default function CheckoutPage() {
     setIsProcessing(true);
     setError(null);
     try {
-      const response = await fetch('/api/checkout', {
+      const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -84,52 +84,27 @@ export default function CheckoutPage() {
         })
       });
 
-      const result = await response.json();
-      if (result.success) {
-        setSuccessOrder(result.orderId);
-        clearCart();
+      let result;
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.indexOf("application/json") !== -1) {
+        result = await response.json();
       } else {
-        setError(result.message);
+        const textError = await response.text();
+        throw new Error(`Server returned non-JSON: ${response.status} ${textError.substring(0, 50)}`);
       }
-    } catch (err) {
-      setError("Error en la conexión con el servidor de pago");
+
+      if (result.url) {
+        setCheckoutUrl(result.url);
+      } else {
+        setError(result.message || "Error al crear la sesión de pago.");
+      }
+    } catch (err: any) {
+      setError(err instanceof Error ? err.message : "Error en la conexión con el servidor de pago");
+      console.error(err);
     } finally {
       setIsProcessing(false);
     }
   };
-
-  if (successOrder) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center p-6">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md w-full text-center space-y-8 bg-pearl p-12 rounded-[60px] border border-neutral-100 shadow-2xl"
-        >
-          <div className="flex justify-center">
-            <div className="w-24 h-24 bg-ink text-white rounded-full flex items-center justify-center animate-bounce-slow">
-              <Check size={48} />
-            </div>
-          </div>
-          <div className="space-y-4">
-            <h2 className="text-4xl font-serif text-ink">¡Gratitud Biológica!</h2>
-            <p className="text-gray-500 font-light leading-relaxed">
-              Tu pedido <span className="font-bold text-ink">#{successOrder}</span> ha sido recibido con éxito. Nuestra arquitectura de envío ya está preparando tu ritual de belleza.
-            </p>
-          </div>
-          <div className="pt-6 space-y-4">
-             <p className="text-[10px] uppercase tracking-widest text-gray-300">Un correo de confirmación ha sido enviado a tu bandeja de entrada.</p>
-             <Link 
-               to="/" 
-               className="inline-block bg-ink text-white px-10 py-5 text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-neutral-800 transition-all rounded-full"
-             >
-               Regresar al Inicio
-             </Link>
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-neutral-50/50 pt-32 pb-24 px-6 md:px-12">
@@ -147,6 +122,28 @@ export default function CheckoutPage() {
               <p className="text-gray-400 font-light text-lg">Introduce tus datos para procesar el envío de tu ritual de ciencia regenerativa.</p>
             </div>
 
+            {checkoutUrl ? (
+              <div className="bg-white p-10 md:p-14 rounded-[40px] shadow-sm border border-neutral-100/50 space-y-8 text-center">
+                <div className="w-20 h-20 bg-gold/10 text-gold rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Lock size={32} />
+                </div>
+                <h2 className="text-3xl font-serif text-ink tracking-tight">Casi Listo</h2>
+                <p className="text-gray-500 font-light leading-relaxed">
+                  Por razones de seguridad de tu navegador y del editor, no podemos redirigirte automáticamente a Stripe en esta previsualización.
+                  <br className="hidden md:block" />Por favor, haz clic abajo para abrir la pasarela segura en una nueva pestaña.
+                </p>
+                <div className="pt-8">
+                  <a 
+                    href={checkoutUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="inline-flex items-center gap-3 bg-ink text-white py-5 px-10 rounded-full text-[10px] uppercase tracking-[0.2em] font-bold hover:bg-neutral-800 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1"
+                  >
+                    Proceder al Pago Seguro <ArrowRight size={16} />
+                  </a>
+                </div>
+              </div>
+            ) : (
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
               {/* Shipping Section */}
               <div className="bg-white p-10 md:p-14 rounded-[40px] shadow-sm border border-neutral-100/50 space-y-10">
@@ -284,65 +281,22 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Payment Section */}
+              {/* Payment Section - Replaced with Stripe Checkout */}
               <div className="bg-white p-10 md:p-14 rounded-[40px] shadow-sm border border-neutral-100/50 space-y-10">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-full bg-gold/10 text-gold flex items-center justify-center">
                       <CreditCard size={20} />
                     </div>
-                    <h2 className="text-lg font-serif">Método de Pago</h2>
+                    <h2 className="text-lg font-serif">Pago Seguro</h2>
                   </div>
-                  <div className="flex gap-2 opacity-40 grayscale">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" className="h-4" alt="Visa" />
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" className="h-4" alt="Mastercard" />
+                  <div className="flex gap-2">
+                    {/* Simplified logos icon block from Stripe */}
                   </div>
                 </div>
 
-                <div className="space-y-8">
-                  <div className="space-y-2">
-                    <label className="text-[10px] uppercase tracking-widest text-gray-400 font-bold ml-1">
-                      Número de Tarjeta <span className="text-red-500">*</span>
-                    </label>
-                    <div className="relative">
-                      <input 
-                        {...register("cardNumber")}
-                        placeholder="0000 0000 0000 0000"
-                        maxLength={16}
-                        className="w-full bg-neutral-50/50 border border-neutral-100 rounded-2xl px-6 py-4 text-sm focus:border-gold focus:ring-1 focus:ring-gold outline-none transition-all font-mono"
-                      />
-                      <Lock size={16} className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-300" />
-                    </div>
-                    {errors.cardNumber && <p className="text-[10px] text-red-500 italic mt-1">{errors.cardNumber.message}</p>}
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-8">
-                    <div className="space-y-2">
-                      <label className="text-[10px] uppercase tracking-widest text-gray-400 font-bold ml-1">
-                        Fecha de Expiración <span className="text-red-500">*</span>
-                      </label>
-                      <input 
-                        {...register("expiry")}
-                        placeholder="MM/YY"
-                        maxLength={5}
-                        className="w-full bg-neutral-50/50 border border-neutral-100 rounded-2xl px-6 py-4 text-sm focus:border-gold focus:ring-1 focus:ring-gold outline-none transition-all font-mono"
-                      />
-                      {errors.expiry && <p className="text-[10px] text-red-500 italic mt-1">{errors.expiry.message}</p>}
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-[10px] uppercase tracking-widest text-gray-400 font-bold ml-1">
-                        CVC <span className="text-red-500">*</span>
-                      </label>
-                      <input 
-                        {...register("cvv")}
-                        placeholder="123"
-                        maxLength={3}
-                        className="w-full bg-neutral-50/50 border border-neutral-100 rounded-2xl px-6 py-4 text-sm focus:border-gold focus:ring-1 focus:ring-gold outline-none transition-all font-mono"
-                      />
-                      {errors.cvv && <p className="text-[10px] text-red-500 italic mt-1">{errors.cvv.message}</p>}
-                    </div>
-                  </div>
+                <div className="text-sm font-light text-gray-500">
+                  <p>Serás redirigido a Stripe para completar tu compra de forma 100% segura. Aceptamos tarjetas de crédito, débito, Apple Pay y Google Pay.</p>
                 </div>
               </div>
 
@@ -360,10 +314,11 @@ export default function CheckoutPage() {
                 {isProcessing ? (
                   <>Procesando Pago <Loader2 size={24} className="animate-spin" /></>
                 ) : (
-                  <>Realizar Pago • {totalSubtotal}€ <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" /></>
+                  <>Ir a Pagar con Stripe • {totalSubtotal}€ <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" /></>
                 )}
               </button>
             </form>
+            )}
           </div>
 
           {/* Sidebar / Order Summary */}

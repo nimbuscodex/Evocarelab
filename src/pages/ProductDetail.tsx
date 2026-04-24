@@ -1,212 +1,343 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'motion/react';
-import { ArrowLeft, Check, Droplets, Sparkles, Wand2, ShieldCheck } from 'lucide-react';
+import React, { useRef, useState, useEffect } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
+import { ArrowLeft, Check, Droplets, Sparkles, Wand2, ShieldCheck, Microscope, Thermometer, FlaskConical } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useProduct } from '../hooks/useProduct';
 
 export default function ProductDetail() {
-  const { addItem } = useCart();
   const { product, loading } = useProduct();
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
+        <motion.div 
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="w-12 h-12 border-2 border-ink border-t-transparent rounded-full"
+        />
+      </div>
+    );
+  }
+
+  if (!product) return null;
+
+  return <ProductDetailContent product={product} />;
+}
+
+function ProductDetailContent({ product }: { product: any }) {
+  const { addItem } = useCart();
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const scienceRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: scienceRef,
     offset: ["start end", "end start"]
   });
 
-  const parallaxY = useTransform(scrollYProgress, [0, 1], [0, -50]);
+  const images = [
+    '/sobre.png',
+    '/caja.png',
+    '/fondo blanco.png',
+    '/modelo 1.png'
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % images.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [images.length]);
+
+  const parallaxY = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const opacityScroll = useTransform(scrollYProgress, [0, 0.5, 1], [0.3, 1, 0.3]);
 
   const handleAddToCart = () => {
     addItem({
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.image_url
+      image: images[currentImageIndex]
     });
   };
 
   return (
-    <div className="min-h-screen bg-white pt-24 pb-20">
-      {/* Back Button */}
-      <div className="container mx-auto px-6 py-4">
-        <Link 
-          to="/" 
-          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest text-gray-400 hover:text-ink transition-colors"
-        >
-          <ArrowLeft size={14} />
-          Volver al inicio
-        </Link>
+    <div className="min-h-screen bg-white">
+      {/* Immersive Hero Header */}
+      <div className="pt-24 pb-12 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-[#fdfaf6] to-white -z-10 opacity-60"></div>
+        
+        {/* Back Button */}
+        <div className="container mx-auto px-6 py-4">
+          <Link 
+            to="/" 
+            className="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest text-gray-400 hover:text-ink transition-colors group"
+          >
+            <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+            Volver al inicio
+          </Link>
+        </div>
+
+        {/* Essential Info Grid */}
+        <section className="container mx-auto px-6 grid lg:grid-cols-12 gap-12 lg:gap-24 items-start py-8">
+          
+          {/* Left: Dynamic Gallery */}
+          <div className="lg:col-span-7 sticky top-32">
+            <div className="relative aspect-[4/5] rounded-[48px] overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.15)] group">
+              <AnimatePresence mode="wait">
+                <motion.img 
+                  key={images[currentImageIndex]}
+                  src={images[currentImageIndex]} 
+                  initial={{ opacity: 0, scale: 1.05 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.8, ease: "easeInOut" }}
+                  className="w-full h-full object-cover"
+                  alt={product.name}
+                />
+              </AnimatePresence>
+              
+              {/* Gallery Nav Overlay */}
+              <div className="absolute bottom-10 left-10 flex gap-2 z-20">
+                {images.map((_, idx) => (
+                  <button 
+                    key={idx}
+                    onClick={() => setCurrentImageIndex(idx)}
+                    className={`h-1 transition-all duration-500 rounded-full ${idx === currentImageIndex ? 'w-10 bg-ink' : 'w-2 bg-black/10'}`}
+                  />
+                ))}
+              </div>
+
+              {/* Floating Badge */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1 }}
+                className="absolute top-10 right-10 bg-white/80 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/50 shadow-sm pointer-events-none"
+              >
+                <p className="text-[10px] uppercase tracking-widest font-bold text-ink mb-1">Authentic Lab Seal</p>
+                <Sparkles size={16} className="text-gold" />
+              </motion.div>
+            </div>
+            
+            {/* Gallery Thumbnails */}
+            <div className="flex gap-4 mt-8">
+              {images.map((img, i) => (
+                <button 
+                  key={i}
+                  onClick={() => setCurrentImageIndex(i)}
+                  className={`w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all ${i === currentImageIndex ? 'border-ink scale-105 shadow-lg' : 'border-transparent opacity-50 hover:opacity-100'}`}
+                >
+                  <img src={img} className="w-full h-full object-cover" alt={`Thumb ${i}`} />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Right: Technical Specs */}
+          <div className="lg:col-span-5 space-y-12">
+            <div className="space-y-6">
+              <span className="text-[10px] uppercase tracking-[0.5em] text-gray-400 font-bold block mb-2">Biorremodelación Dérmica</span>
+              <h1 className="text-5xl md:text-7xl font-serif text-ink leading-[1.1]">
+                {product.name}
+              </h1>
+              <div className="flex items-center gap-4 py-4 border-y border-neutral-100">
+                <div className="text-2xl font-serif text-ink">{product.price.toFixed(2)}€</div>
+                <div className="h-4 w-px bg-neutral-200"></div>
+                <div className="flex text-gold">
+                  {[...Array(5)].map((_, i) => <Sparkles key={i} size={14} fill="currentColor" />)}
+                </div>
+                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">(4.9/5 Reviews)</span>
+              </div>
+              <p className="text-gray-500 text-lg font-light leading-relaxed">
+                {product.description}
+              </p>
+            </div>
+
+            <div className="space-y-8">
+              <h3 className="text-[10px] uppercase tracking-widest font-bold text-ink">Ingredientes Clave</h3>
+              <div className="grid grid-cols-1 gap-6">
+                {[
+                  { icon: <Droplets size={18} />, title: "Bio-Colágeno Marino", desc: "Absorción profunda 200Da para hidratación celular." },
+                  { icon: <FlaskConical size={18} />, title: "Ácido Hialurónico Triple", desc: "Malla 3D que retiene 1000 veces su peso en agua." },
+                  { icon: <ShieldCheck size={18} />, title: "Ectoína Celular", desc: "Protección frente al estrés ambiental y luz azul." },
+                ].map((item, i) => (
+                  <div key={i} className="flex gap-4 p-6 bg-[#fdfaf6] rounded-3xl border border-neutral-100">
+                    <div className="text-ink">{item.icon}</div>
+                    <div>
+                      <h4 className="text-sm font-bold text-ink mb-1">{item.title}</h4>
+                      <p className="text-xs text-gray-500 font-light leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="pt-8">
+              <motion.button 
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleAddToCart}
+                className="w-full bg-ink text-white py-6 text-[11px] uppercase tracking-[0.4em] font-bold rounded-2xl shadow-2xl hover:shadow-gray-200 transition-shadow"
+              >
+                Añadir al ritual — {product.price.toFixed(2)}€
+              </motion.button>
+              <p className="text-center text-[10px] text-gray-400 mt-4 uppercase tracking-[0.2em]">Envío Express gratuito en 24h</p>
+            </div>
+          </div>
+        </section>
       </div>
 
-      {/* Hero Section */}
-      <section className="container mx-auto px-6 grid md:grid-cols-2 gap-16 items-center py-12">
-        <motion.div 
-          initial={{ opacity: 0, x: -30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          className="relative"
-        >
-          <div className="aspect-[4/5] rounded-[40px] overflow-hidden bg-neutral-100 shadow-2xl">
-            <img 
-              src={product.image_url} 
-              className="w-full h-full object-cover"
-              alt={product.name}
-            />
-          </div>
-          <div className="absolute -bottom-6 -right-6 w-48 h-48 bg-[#fdfaf6] rounded-full flex items-center justify-center p-8 shadow-xl border border-neutral-100 italic font-serif text-ink text-center">
-            Resultados visibles desde la 1ª sesión
-          </div>
-        </motion.div>
-
-        <div className="space-y-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <span className="text-[10px] uppercase tracking-[0.4em] text-gray-400 mb-4 block">{product.category}</span>
-            <h1 className="text-5xl md:text-6xl font-serif text-ink leading-tight mb-6">
-              {product.name}
-            </h1>
-            <p className="text-gray-500 text-lg font-light leading-relaxed max-w-xl">
-              {product.description}
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-2 gap-6">
-            {[
-              { icon: <Droplets size={20} />, title: "Ultra Hidratante", desc: "+85% retención de agua" },
-              { icon: <Sparkles size={20} />, title: "Luminosidad", desc: "Efecto glass-skin" },
-              { icon: <ShieldCheck size={20} />, title: "Barrera Dérmica", desc: "Fortalece y protege" },
-              { icon: <Wand2 size={20} />, title: "Efecto Lift", desc: "Tensión natural" },
-            ].map((feature, i) => (
-              <motion.div 
-                key={i}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="flex flex-col gap-3"
-              >
-                <div className="text-ink bg-neutral-50 w-10 h-10 rounded-full flex items-center justify-center">
-                  {feature.icon}
-                </div>
-                <div>
-                  <h3 className="text-sm font-medium text-ink">{feature.title}</h3>
-                  <p className="text-xs text-gray-400">{feature.desc}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+      {/* Advanced Science Section */}
+      <section ref={scienceRef} className="py-40 bg-ink text-white relative overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img src="/fondo-rosa.png" className="w-full h-full object-cover opacity-5 mix-blend-overlay" alt="" />
         </div>
-      </section>
-
-      {/* Science Section with Clover Layout */}
-      <section ref={scienceRef} className="bg-neutral-50 py-32 mt-20 overflow-hidden">
-        <div className="container mx-auto px-6">
-          <div className="max-w-3xl mx-auto text-center mb-20">
-            <span className="text-[10px] uppercase tracking-[0.5em] text-gold font-bold mb-4 block">Molecular Blueprint</span>
-            <h2 className="text-4xl md:text-5xl font-serif text-ink mb-6">La Ciencia Detrás</h2>
-            <p className="text-gray-500 font-light italic text-lg">
-              "No solo hidratamos la superficie, reestructuramos la arquitectura dérmica desde el interior."
-            </p>
-          </div>
-
-          <div className="relative h-[500px] md:h-[650px] flex items-center justify-center scale-75 md:scale-100">
-            {/* Wobbly Motion Wrapper */}
-            <motion.div 
-              animate={{ x: [-15, 15, -15], y: [-10, 10, -10] }}
-              transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-              className="relative w-full h-full flex items-center justify-center transform-gpu"
-            >
-              <motion.div 
-                style={{ y: parallaxY }}
-                className="relative flex items-center justify-center"
+        
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-20 items-center">
+            <div className="space-y-8">
+              <motion.span 
+                style={{ opacity: opacityScroll }}
+                className="inline-block px-4 py-2 bg-white/5 rounded-full text-[10px] uppercase tracking-[0.4em]"
               >
-                {/* Petal 01 - Absorción Molecular */}
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.8, rotate: -35 }}
-                  whileInView={{ opacity: 1, scale: 1, rotate: -15 }}
-                  viewport={{ once: true }}
-                  className="absolute -translate-y-28 -translate-x-24 md:-translate-y-40 md:-translate-x-32 w-56 h-56 md:w-72 md:h-72 p-6 md:p-10 bg-white rounded-[100%_100%_100%_10%] border border-neutral-100 flex flex-col justify-center text-center shadow-2xl hover:scale-105 transition-transform duration-700 cursor-default group z-20 origin-bottom-right"
-                >
-                  <span className="text-gold font-mono text-[10px] mb-2 md:mb-4 font-bold">01</span>
-                  <h4 className="text-xs md:text-sm font-bold uppercase tracking-widest text-ink mb-2 md:mb-4 group-hover:text-gold transition-colors">Absorción Molecular</h4>
-                  <p className="text-[10px] md:text-[11px] text-gray-400 font-light leading-relaxed">El colágeno de 200Da penetra profundamente, a diferencia de las mascarillas convencionales.</p>
-                </motion.div>
+                La ciencia de la piel
+              </motion.span>
+              <h2 className="text-5xl md:text-6xl font-serif leading-tight italic">
+                Estructura Molecular Avanzada
+              </h2>
+              <p className="text-gray-400 text-lg font-light leading-relaxed max-w-xl">
+                Nuestra mascarilla no es una simple aplicación superficial. Es un sistema de entrega de activos patentado que interactúa con la temperatura de tu piel para una permeabilización óptima.
+              </p>
+              
+              <div className="space-y-8 pt-8">
+                {[
+                  { icon: <Microscope size={24} />, title: "Tecnología Polimérica", text: "Hidrogel que se vuelve transparente a medida que los activos son absorbidos por la dermis." },
+                  { icon: <Thermometer size={24} />, title: "Termo-Sensibilidad", text: "Reacciona al calor corporal para una liberación controlada y constante de nutrientes." }
+                ].map((item, i) => (
+                  <div key={i} className="flex gap-6 max-w-lg">
+                    <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center shrink-0">
+                      {item.icon}
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-serif mb-2">{item.title}</h4>
+                      <p className="text-gray-500 font-light text-sm">{item.text}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-                {/* Petal 02 - Infusión Activa */}
+            <motion.div 
+               style={{ y: parallaxY }}
+               className="relative"
+            >
+              <div className="aspect-square relative flex items-center justify-center">
                 <motion.div 
-                  initial={{ opacity: 0, scale: 0.8, rotate: 35 }}
-                  whileInView={{ opacity: 1, scale: 1, rotate: 15 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2 }}
-                  className="absolute -translate-y-28 translate-x-24 md:-translate-y-40 md:translate-x-32 w-56 h-56 md:w-72 md:h-72 p-6 md:p-10 bg-white rounded-[100%_100%_10%_100%] border border-neutral-100 flex flex-col justify-center text-center shadow-2xl hover:scale-105 transition-transform duration-700 cursor-default group z-20 origin-bottom-left"
-                >
-                  <span className="text-gold font-mono text-[10px] mb-2 md:mb-4 font-bold">02</span>
-                  <h4 className="text-xs md:text-sm font-bold uppercase tracking-widest text-ink mb-2 md:mb-4 group-hover:text-gold transition-colors">Infusión Activa</h4>
-                  <p className="text-[10px] md:text-[11px] text-gray-400 font-light leading-relaxed">El polímero de hidrogel libera los nutrientes gradualmente durante 3 horas de contacto continuo.</p>
-                </motion.div>
-
-                {/* Petal 03 - Sellado de Nutrientes */}
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+                  className="absolute inset-0 border border-white/5 rounded-full"
+                ></motion.div>
+                <img 
+                  src="/molécula quimica.png" 
+                  className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_50px_rgba(255,255,255,0.1)]" 
+                  alt="Molecular Structure" 
+                />
                 <motion.div 
-                  initial={{ opacity: 0, scale: 0.8, y: 100 }}
-                  whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.4 }}
-                  className="absolute translate-y-24 md:translate-y-32 w-56 h-56 md:w-72 md:h-72 p-6 md:p-10 bg-white rounded-[10%_100%_100%_100%] border border-neutral-100 flex flex-col justify-center text-center shadow-2xl hover:scale-105 transition-transform duration-700 cursor-default group z-20 origin-top"
-                >
-                  <span className="text-gold font-mono text-[10px] mb-2 md:mb-4 font-bold">03</span>
-                  <h4 className="text-xs md:text-sm font-bold uppercase tracking-widest text-ink mb-2 md:mb-4 group-hover:text-gold transition-colors">Sellado de Nutrientes</h4>
-                  <p className="text-[10px] md:text-[11px] text-gray-400 font-light leading-relaxed">Crea una barrera semi-permeable que evita la evaporación transdérmica del agua.</p>
-                </motion.div>
-
-                {/* Energy Rings Accent */}
-                <div className="absolute w-[300px] h-[300px] md:w-[450px] md:h-[450px] border border-gold/10 rounded-full -z-10 animate-spin-slow"></div>
-                <div className="absolute w-1 h-1 bg-gold rounded-full blur-[1px]"></div>
-              </motion.div>
+                   animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
+                   transition={{ duration: 4, repeat: Infinity }}
+                   className="absolute inset-0 bg-white/20 rounded-full blur-[100px] -z-10"
+                ></motion.div>
+              </div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Clinical Results */}
-      <section className="container mx-auto px-6 py-24">
-        <div className="flex flex-col md:flex-row gap-16 items-center">
-          <div className="flex-1 space-y-8">
-            <h2 className="text-4xl font-serif text-ink">Resultados Clínicos</h2>
-            <div className="space-y-6">
-              {[
-                "Reducción del 24% en líneas de expresión finas.",
-                "Incremento del 134% en la elasticidad cutánea.",
-                "98% de las usuarias reportan piel más tersa.",
-                "0% irritación en pieles sensibles (testado dermatológicamente)."
-              ].map((point, i) => (
-                <div key={i} className="flex items-center gap-4 text-gray-500 font-light">
-                  <div className="bg-ink rounded-full p-1">
-                    <Check size={12} className="text-white" />
-                  </div>
-                  {point}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="flex-1">
-            <div className="bg-ink p-16 rounded-[40px] text-white text-center relative overflow-hidden">
-              <div className="relative z-10">
-                <p className="text-[10px] uppercase tracking-[0.4em] opacity-60 mb-6">EMPIEZA AHORA</p>
-                <div className="text-6xl font-serif mb-8">{product.price.toFixed(2)}€</div>
-                <button 
-                  onClick={handleAddToCart}
-                  className="bg-white text-ink px-12 py-5 text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-neutral-100 transition-colors"
+      {/* Clinical Visuals Section */}
+      <section className="py-32 bg-[#fdfaf6] -mt-1 relative overflow-hidden">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-col lg:flex-row gap-20 items-center">
+            <div className="flex-1 relative order-2 lg:order-1">
+              <div className="grid grid-cols-2 gap-4">
+                <motion.div 
+                  whileHover={{ scale: 1.05 }}
+                  className="rounded-[32px] overflow-hidden shadow-xl aspect-[3/4]"
                 >
-                  Añadir a la bolsa
-                </button>
+                  <img src="/efectos.png" className="w-full h-full object-cover" alt="Clinical Effect" />
+                </motion.div>
+                <motion.div 
+                  initial={{ y: 50 }}
+                  whileInView={{ y: 0 }}
+                  whileHover={{ scale: 1.05 }}
+                  className="rounded-[32px] overflow-hidden shadow-xl aspect-[3/4]"
+                >
+                  <img src="/collage.png" className="w-full h-full object-cover" alt="Collage Ritual" />
+                </motion.div>
               </div>
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full -ml-32 -mb-32 blur-3xl"></div>
+              <div className="absolute -top-10 -left-10 w-40 h-40 bg-white rounded-full flex flex-col items-center justify-center border border-neutral-100 shadow-2xl p-6 text-center italic font-serif text-ink z-20">
+                <span className="text-3xl font-bold not-italic font-sans mb-1">98%</span>
+                <span className="text-[9px] uppercase tracking-widest leading-tight">Efectividad Probada</span>
+              </div>
+            </div>
+
+            <div className="flex-1 space-y-12 order-1 lg:order-2">
+              <span className="text-[10px] uppercase tracking-[0.5em] text-gray-400 font-bold block">Estudios Clínicos</span>
+              <h2 className="text-5xl font-serif text-ink leading-tight">Resultados que puedes ver y sentir.</h2>
+              
+              <div className="space-y-8">
+                {[
+                  { label: "Hidratación Profunda", val: "94%", color: "bg-ink" },
+                  { label: "Reducción de Líneas", val: "82%", color: "bg-gold" },
+                  { label: "Elasticidad Cutánea", val: "88%", color: "bg-neutral-300" }
+                ].map((stat, i) => (
+                  <div key={i} className="space-y-2">
+                    <div className="flex justify-between items-end">
+                      <span className="text-sm font-serif italic text-ink">{stat.label}</span>
+                      <span className="text-lg font-bold text-ink">{stat.val}</span>
+                    </div>
+                    <div className="h-1 bg-neutral-200 rounded-full overflow-hidden">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        whileInView={{ width: stat.val }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1.5, ease: "easeOut" }}
+                        className={`h-full ${stat.color}`}
+                      ></motion.div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <p className="text-gray-400 text-sm font-light leading-relaxed max-w-lg">
+                *Resultados basados en pruebas clínicas realizadas a 50 mujeres durante 4 semanas de uso continuado (2 sesiones semanales).
+              </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Final Action */}
+      <section className="py-32 container mx-auto px-6">
+        <div className="bg-ink p-12 md:p-24 rounded-[64px] text-white text-center relative overflow-hidden flex flex-col items-center">
+          <img src="/fondo-rosa.png" className="absolute inset-0 w-full h-full object-cover opacity-10 mix-blend-screen" alt="" />
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="relative z-10 max-w-2xl"
+          >
+            <p className="text-[11px] uppercase tracking-[0.5em] opacity-60 mb-10 font-bold">Tu piel merece Evocare</p>
+            <h2 className="text-5xl md:text-7xl font-serif mb-12 leading-tight">Transformación desde la primera aplicación.</h2>
+            <div className="flex flex-col md:flex-row items-center justify-center gap-8">
+               <button 
+                onClick={handleAddToCart}
+                className="bg-white text-ink px-16 py-7 text-[11px] uppercase tracking-[0.4em] font-bold hover:bg-neutral-50 transition-all hover:scale-105 active:scale-95 shadow-2xl"
+               >
+                 Obtener mi tratamiento
+               </button>
+               <span className="text-xl font-serif italic opacity-80">{product.price.toFixed(2)}€ / Unidad pack</span>
+            </div>
+          </motion.div>
         </div>
       </section>
     </div>

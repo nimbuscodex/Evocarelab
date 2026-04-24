@@ -4,13 +4,13 @@
  */
 
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Minus, Plus, ShoppingBag, ArrowRight } from 'lucide-react';
+import { X, Minus, Plus, ShoppingBag, ArrowRight, Trash2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { cn } from '../lib/utils';
 import { Link } from 'react-router-dom';
 
 export default function CartDrawer() {
-  const { items, isCartOpen, setIsCartOpen, removeItem, updateQuantity, totalSubtotal } = useCart();
+  const { items, isCartOpen, setIsCartOpen, removeItem, updateQuantity, totalSubtotal, clearCart } = useCart();
 
   return (
     <AnimatePresence>
@@ -25,6 +25,36 @@ export default function CartDrawer() {
             className="fixed inset-0 bg-ink/95 backdrop-blur-2xl z-[100]"
           />
           
+          {/* Global Actions (Close / Clear) */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="fixed top-6 right-6 lg:top-10 lg:right-10 flex gap-2 z-[150]"
+          >
+            {items.length > 0 && (
+              <button 
+                onClick={clearCart}
+                className="w-12 h-12 bg-white/5 hover:bg-white/20 backdrop-blur-md border border-white/10 rounded-full transition-all text-white/70 hover:text-white flex items-center justify-center group relative pointer-events-auto"
+                title="Vaciar bolsa"
+              >
+                <Trash2 size={20} />
+                <span className="absolute right-full mr-4 text-[10px] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-ink/80 px-3 py-1.5 rounded-md border border-white/10 text-white pointer-events-none">
+                  Vaciar
+                </span>
+              </button>
+            )}
+            <button 
+              onClick={() => setIsCartOpen(false)}
+              className="w-12 h-12 bg-white/5 hover:bg-white/20 backdrop-blur-md border border-white/10 rounded-full transition-all text-white/70 hover:text-white flex items-center justify-center group relative pointer-events-auto"
+              title="Cerrar bolsa"
+            >
+              <X size={24} />
+              <span className="absolute right-full mr-4 text-[10px] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-ink/80 px-3 py-1.5 rounded-md border border-white/10 text-white pointer-events-none">
+                Cerrar
+              </span>
+            </button>
+          </motion.div>
+
           {/* Circular Stage */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
@@ -33,13 +63,6 @@ export default function CartDrawer() {
             className="fixed inset-0 z-[101] flex items-center justify-center pointer-events-none"
           >
             <div className="relative w-full max-w-4xl aspect-square flex items-center justify-center pointer-events-auto">
-              <button 
-                onClick={() => setIsCartOpen(false)}
-                className="absolute top-10 right-10 p-4 hover:bg-white/10 rounded-full transition-all z-50 text-white"
-              >
-                <X size={24} />
-              </button>
-
               {/* Molecular Core */}
               <div className="relative z-20 group">
                 <motion.div
