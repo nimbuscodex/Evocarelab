@@ -13,6 +13,7 @@ import ProductDetail from './pages/ProductDetail';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import CookiesPolicy from './pages/CookiesPolicy';
 import CheckoutPage from './pages/CheckoutPage';
+import Store from './pages/Store';
 import { CartProvider } from './context/CartContext';
 import CartDrawer from './components/CartDrawer';
 import LegalDrawer from './components/LegalDrawer';
@@ -29,6 +30,7 @@ export default function App() {
             <main className="flex-grow">
               <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/tienda" element={<Store />} />
                 <Route path="/ingredientes" element={<IngredientsPage />} />
                 <Route path="/ritual" element={<Ritual />} />
                 <Route path="/contacto" element={<Contact />} />
