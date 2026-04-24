@@ -7,18 +7,20 @@ import { motion, useScroll, useTransform } from 'motion/react';
 import { ShoppingBag, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useProduct } from '../hooks/useProduct';
 
 export default function Hero() {
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 500], [0, -50]);
   const { addItem } = useCart();
+  const { product, loading } = useProduct();
 
   const handleBuy = () => {
     addItem({
-      id: 'triple-h-mask-1',
-      name: 'Triple Hyaluronic Acid Mask',
-      price: 29.95,
-      image: 'https://www.kiyobeauty.com/cdn/shop/files/biodance-bio-collagen-real-deep-mask-1pc-PURESEOUL-UK-KBeauty-shop-2_1800x1800_0d187b16-fead-4418-b39a-2debfafbc0c3.webp?v=1756371372&width=1500'
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image_url
     });
   };
 
@@ -81,7 +83,7 @@ export default function Hero() {
               className="mask-visual w-80 h-[520px] md:w-[480px] md:h-[640px] flex items-center justify-center relative z-10 overflow-visible"
             >
               <motion.img 
-                src="https://www.kiyobeauty.com/cdn/shop/files/biodance-bio-collagen-real-deep-mask-1pc-PURESEOUL-UK-KBeauty-shop-2_1800x1800_0d187b16-fead-4418-b39a-2debfafbc0c3.webp?v=1756371372&width=1500"
+                src={product.image_url}
                 className="w-[75%] h-[75%] object-cover relative z-10 drop-shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/40 bg-white/5 p-1"
                 alt="3D Isolated Sheet Mask"
                 loading="eager"

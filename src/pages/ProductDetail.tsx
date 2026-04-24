@@ -3,9 +3,11 @@ import { motion, useScroll, useTransform } from 'motion/react';
 import { ArrowLeft, Check, Droplets, Sparkles, Wand2, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useProduct } from '../hooks/useProduct';
 
 export default function ProductDetail() {
   const { addItem } = useCart();
+  const { product, loading } = useProduct();
   const scienceRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: scienceRef,
@@ -16,10 +18,10 @@ export default function ProductDetail() {
 
   const handleAddToCart = () => {
     addItem({
-      id: "triple-h-mask-1",
-      name: "Triple Hyaluronic Acid Mask",
-      price: 29.95,
-      image: "https://www.kiyobeauty.com/cdn/shop/files/biodance-bio-collagen-real-deep-mask-1pc-PURESEOUL-UK-KBeauty-shop-2_1800x1800_0d187b16-fead-4418-b39a-2debfafbc0c3.webp?v=1756371372&width=1500"
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image_url
     });
   };
 
@@ -46,9 +48,9 @@ export default function ProductDetail() {
         >
           <div className="aspect-[4/5] rounded-[40px] overflow-hidden bg-neutral-100 shadow-2xl">
             <img 
-              src="https://www.kiyobeauty.com/cdn/shop/files/biodance-bio-collagen-real-deep-mask-1pc-PURESEOUL-UK-KBeauty-shop-2_1800x1800_0d187b16-fead-4418-b39a-2debfafbc0c3.webp?v=1756371372&width=1500" 
+              src={product.image_url} 
               className="w-full h-full object-cover"
-              alt="Bio-Collagen Mask"
+              alt={product.name}
             />
           </div>
           <div className="absolute -bottom-6 -right-6 w-48 h-48 bg-[#fdfaf6] rounded-full flex items-center justify-center p-8 shadow-xl border border-neutral-100 italic font-serif text-ink text-center">
@@ -62,13 +64,12 @@ export default function ProductDetail() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <span className="text-[10px] uppercase tracking-[0.4em] text-gray-400 mb-4 block">Biotecnología Facial</span>
+            <span className="text-[10px] uppercase tracking-[0.4em] text-gray-400 mb-4 block">{product.category}</span>
             <h1 className="text-5xl md:text-6xl font-serif text-ink leading-tight mb-6">
-              Bio-Collagen <br /> 
-              <span className="italic">Deep Hydration</span>
+              {product.name}
             </h1>
             <p className="text-gray-500 text-lg font-light leading-relaxed max-w-xl">
-              Nuestra fórmula magistral combina colágeno biomimético de bajo peso molecular con un complejo de triple ácido hialurónico para atravesar las barreras dérmicas y restaurar la elasticidad perdida.
+              {product.description}
             </p>
           </motion.div>
 
@@ -194,7 +195,7 @@ export default function ProductDetail() {
             <div className="bg-ink p-16 rounded-[40px] text-white text-center relative overflow-hidden">
               <div className="relative z-10">
                 <p className="text-[10px] uppercase tracking-[0.4em] opacity-60 mb-6">EMPIEZA AHORA</p>
-                <div className="text-6xl font-serif mb-8">29,95€</div>
+                <div className="text-6xl font-serif mb-8">{product.price.toFixed(2)}€</div>
                 <button 
                   onClick={handleAddToCart}
                   className="bg-white text-ink px-12 py-5 text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-neutral-100 transition-colors"

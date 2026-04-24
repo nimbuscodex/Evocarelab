@@ -7,17 +7,19 @@ import { motion } from 'motion/react';
 import { Mail } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useProduct } from '../hooks/useProduct';
 
 export default function FinalCTA() {
   const { addItem } = useCart();
   const navigate = useNavigate();
+  const { product, loading } = useProduct();
 
   const handleBuy = () => {
     addItem({
-      id: "triple-h-mask-1",
-      name: "Triple Hyaluronic Acid Mask",
-      price: 29.95,
-      image: "https://www.kiyobeauty.com/cdn/shop/files/biodance-bio-collagen-real-deep-mask-1pc-PURESEOUL-UK-KBeauty-shop-2_1800x1800_0d187b16-fead-4418-b39a-2debfafbc0c3.webp?v=1756371372&width=1500"
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image_url
     });
   };
 
@@ -41,7 +43,7 @@ export default function FinalCTA() {
             onClick={handleBuy}
             className="cta-btn px-12 py-6 bg-ink text-white text-[10px] uppercase tracking-[0.3em] font-bold shadow-2xl transition-all duration-300"
           >
-            Comprar Triple Hyaluronic Mask — 29.95€
+            Comprar {product.name} — {product.price.toFixed(2)}€
           </motion.button>
           
           <div className="mt-24 flex gap-12 text-gray-400">

@@ -6,9 +6,11 @@
 import React from 'react';
 import { motion, useMotionValue, useTransform, useSpring } from 'motion/react';
 import { useCart } from '../context/CartContext';
+import { useProduct } from '../hooks/useProduct';
 
 export default function Product() {
   const { addItem } = useCart();
+  const { product, loading } = useProduct();
   
   // Parallax / Rotation logic
   const x = useMotionValue(0);
@@ -32,10 +34,10 @@ export default function Product() {
 
   const handleAdd = () => {
     addItem({
-      id: 'triple-h-mask-1',
-      name: 'Triple Hyaluronic Acid Mask',
-      price: 29.95,
-      image: 'https://www.kiyobeauty.com/cdn/shop/files/biodance-bio-collagen-real-deep-mask-1pc-PURESEOUL-UK-KBeauty-shop-2_1800x1800_0d187b16-fead-4418-b39a-2debfafbc0c3.webp?v=1756371372&width=1500'
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image_url
     });
   };
 
@@ -102,10 +104,9 @@ export default function Product() {
             className="flex-1"
           >
             <span className="text-[10px] text-gray-400 uppercase tracking-[0.4em] mb-6 block font-medium">Fórmula Avanzada</span>
-            <h2 className="text-5xl lg:text-6xl font-serif mb-8 leading-tight text-ink text-balance">Triple Hyaluronic Mask</h2>
+            <h2 className="text-5xl lg:text-6xl font-serif mb-8 leading-tight text-ink text-balance">{product.name}</h2>
             <p className="text-lg text-gray-500 font-light leading-relaxed mb-10">
-              Hidratación profunda, retención prolongada y refuerzo de la barrera cutánea. 
-              Esta mascarilla construye una estructura tridimensional que revitaliza la piel seca y apagada al instante.
+              {product.description}
             </p>
             
             <div className="grid grid-cols-2 gap-8 mb-12">
@@ -125,7 +126,7 @@ export default function Product() {
               whileTap={{ scale: 0.97 }}
               className="cta-btn px-10 py-5 bg-ink text-white text-[10px] uppercase tracking-[0.2em] font-bold shadow-2xl transition-shadow hover:shadow-gray-200"
             >
-              Añadir al carrito — 29.95€
+              Añadir al carrito — {product.price.toFixed(2)}€
             </motion.button>
           </motion.div>
         </div>
