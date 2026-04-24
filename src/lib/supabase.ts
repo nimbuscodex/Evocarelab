@@ -11,7 +11,15 @@ if (!supabaseUrl || !supabaseAnonKey) {
 // Ensure the URL doesn't have the /rest/v1/ suffix for the client SDK if unnecessary
 const cleanUrl = supabaseUrl?.replace(/\/rest\/v1\/?$/, '')
 
+let finalUrl = cleanUrl || 'https://placeholder.supabase.co';
+try {
+  new URL(finalUrl);
+} catch (error) {
+  console.warn('Invalid Supabase URL provided. Falling back to placeholder.');
+  finalUrl = 'https://placeholder.supabase.co';
+}
+
 export const supabase = createClient(
-  cleanUrl || 'https://placeholder.supabase.co',
+  finalUrl,
   supabaseAnonKey || 'placeholder-anon-key'
 )
