@@ -8,7 +8,7 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import IngredientsPage from './pages/IngredientsPage';
 import Ritual from './pages/Ritual';
-import Contact from './pages/Contact';
+import Contact from './context/Contact';
 import ProductDetail from './pages/ProductDetail';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import CookiesPolicy from './pages/CookiesPolicy';
