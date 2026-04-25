@@ -13,7 +13,7 @@ serve(async (req) => {
     return new Response("No signature provided", { status: 400 });
   }
 
-  const body = await req.text() // Deno reads the raw body easily
+  const body = await req.text()
 
   try {
     const event = stripe.webhooks.constructEvent(
@@ -23,23 +23,57 @@ serve(async (req) => {
     )
 
     if (event.type === 'checkout.session.completed') {
-      const session = event.data.object as any;
+      const basicSession = event.data.object as any;
+      console.log(`Payment successful for session ID: ${basicSession.id}`);
+
+      // We retrieve the session from Stripe to get the line items (the products)
+      const session = await stripe.checkout.sessions.retrieve(basicSession.id, {
+        expand: ['line_items', 'line_items.data.price.product']
+      });
       
-      // Connect to DB using the Service Role to bypass RLS for server-side updates
       const supabase = createClient(
         Deno.env.get('SUPABASE_URL')!,
         Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')! 
       )
 
-      console.log(`Payment successful for session ID: ${session.id}`);
+      // 1. Save or Update the order in Supabase
+      const { data: orderData, error: dbError } = await supabase.from('orders').upsert([
+        {
+          stripe_session_id: session.id,
+          customer_email: session.metadata?.customerEmail || session.customer_details?.email || "unknown@email.com",
+          customer_name: session.metadata?.customerName || session.customer_details?.name || "Unknown",
+          customer_phone: session.metadata?.customerPhone || null,
+          shipping_address: session.metadata?.shippingAddress ? JSON.parse(session.metadata.shippingAddress) : {},
+          total_amount: session.amount_total ? session.amount_total / 100 : 0,
+          status: 'paid', // Mark as paid!
+        }
+      ], { onConflict: 'stripe_session_id' }).select('id').single();
 
-      // We update the existing order status
-      // You may need to adapt this query structure to your specific Supabase table
-      // (in server.ts we use 'orders' and 'stripe_session_id')
-      await supabase
-        .from('orders')
-        .update({ status: 'completed' })
-        .eq('stripe_session_id', session.id)
+      if (dbError) {
+        console.error("Warning: Could not save order to DB. Error:", dbError.message);
+      } else if (orderData && session.line_items?.data) {
+        const orderId = orderData.id;
+        
+        // 2. Save the order items
+        const orderItemsToInsert = session.line_items.data.map((stripeItem: any) => {
+          const product = stripeItem.price?.product as any;
+          const productId = product?.metadata?.product_id || null;
+          
+          return {
+            order_id: orderId,
+            product_id: productId,
+            quantity: stripeItem.quantity || 1,
+            price_at_purchase: stripeItem.amount_total ? stripeItem.amount_total / 100 / (stripeItem.quantity || 1) : 0
+          };
+        });
+
+        if (orderItemsToInsert.length > 0) {
+           const { error: itemsError } = await supabase.from('order_items').upsert(orderItemsToInsert, { onConflict: 'order_id,product_id' });
+           if (itemsError) {
+             console.error("Warning: Could not save order items. Error:", itemsError.message);
+           }
+        }
+      }
     }
 
     return new Response(JSON.stringify({ ok: true }), { status: 200, headers: { "Content-Type": "application/json" } })
