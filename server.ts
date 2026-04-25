@@ -401,12 +401,37 @@ async function startServer() {
         replyTo: email,
         subject: `Nuevo mensaje de Contacto: ${subject}`,
         html: `
-          <h1>Nuevo mensaje desde la web:</h1>
-          <p><strong>Nombre:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Asunto:</strong> ${subject}</p>
-          <p><strong>Mensaje:</strong></p>
-          <p>${message.replace(/\n/g, '<br>')}</p>
+          <!DOCTYPE html>
+          <html lang="es">
+          <head><meta charset="UTF-8"></head>
+          <body style="margin: 0; padding: 20px; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f4f5;">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: left;">
+              <tr>
+                <td style="background-color: #0B0F0E; padding: 30px 20px; text-align: center;">
+                  <h1 style="color: #ffffff; margin: 0; font-size: 22px; font-weight: 400; letter-spacing: 2px;">EVOCARE<span style="font-size:12px; vertical-align: top;">LAB</span></h1>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 40px 30px;">
+                  <h2 style="font-size: 20px; color: #0B0F0E; margin-top: 0; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;">Nuevo Mensaje de Contacto</h2>
+                  
+                  <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-top: 20px;">
+                    <p style="margin: 0 0 10px; color: #475569; font-size: 14px;"><strong>Remitente:</strong> <span style="color: #0f172a;">${name}</span></p>
+                    <p style="margin: 0 0 10px; color: #475569; font-size: 14px;"><strong>Email:</strong> <span style="color: #0f172a;"><a href="mailto:${email}" style="color: #0ea5e9;">${email}</a></span></p>
+                    <p style="margin: 0; color: #475569; font-size: 14px;"><strong>Asunto:</strong> <span style="color: #0f172a;">${subject}</span></p>
+                  </div>
+                  
+                  <div style="margin-top: 30px;">
+                    <h3 style="font-size: 14px; text-transform: uppercase; color: #94a3b8; letter-spacing: 1px; margin-bottom: 10px;">Mensaje</h3>
+                    <div style="background-color: #ffffff; border-left: 4px solid #10b981; padding: 15px 20px; color: #334155; font-size: 15px; line-height: 1.6; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                      ${message.replace(/\n/g, '<br>')}
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </body>
+          </html>
         `,
       });
       

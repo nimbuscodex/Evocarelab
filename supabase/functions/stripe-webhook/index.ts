@@ -86,16 +86,56 @@ serve(async (req) => {
             const totalFormatted = session.amount_total ? (session.amount_total / 100).toFixed(2) : "0.00";
             
             const emailHtml = `
-              <h2>¡Nueva Venta Realizada! 🎉</h2>
-              <p>Se ha completado un nuevo pedido por <strong>${totalFormatted} €</strong>.</p>
-              <h3>Detalles del Cliente:</h3>
-              <ul>
-                <li><strong>Nombre:</strong> ${customerName}</li>
-                <li><strong>Email:</strong> ${customerEmail}</li>
-                <li><strong>ID de Pedido (Supabase):</strong> ${orderId}</li>
-                <li><strong>ID de Sesión (Stripe):</strong> ${session.id}</li>
-              </ul>
-              <p>Revisa el panel de administración o Supabase para ver la dirección de envío exacta y gestionar el pedido.</p>
+              <!DOCTYPE html>
+              <html lang="es">
+              <head>
+                <meta charset="UTF-8">
+              </head>
+              <body style="margin: 0; padding: 20px; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f4f5; text-align: center;">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: left;">
+                  <tr>
+                    <td style="background-color: #09090b; padding: 40px 20px; text-align: center;">
+                      <img src="https://cdn-icons-png.flaticon.com/512/1162/1162499.png" width="80" alt="Exito" style="display: block; margin: 0 auto 15px; filter: brightness(0) invert(1);" />
+                      <h1 style="color: #ffffff; margin: 0; font-size: 26px; font-weight: 600;">¡Nueva Venta! 🎉</h1>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 40px 30px;">
+                      <p style="color: #64748b; font-size: 16px; margin: 0 0 10px; text-align: center;">Has recibido un nuevo pago en tu tienda EVOCARELAB.</p>
+                      <div style="font-size: 42px; font-weight: 700; color: #10b981; text-align: center; margin: 20px 0 30px;">
+                        + ${totalFormatted} €
+                      </div>
+                      
+                      <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px;">
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                          <tr>
+                            <td style="padding: 10px 0; border-bottom: 1px solid #e2e8f0; color: #475569; font-weight: 500;">Cliente</td>
+                            <td style="padding: 10px 0; border-bottom: 1px solid #e2e8f0; color: #0f172a; font-weight: 600; text-align: right;">${customerName}</td>
+                          </tr>
+                          <tr>
+                            <td style="padding: 10px 0; border-bottom: 1px solid #e2e8f0; color: #475569; font-weight: 500;">Email</td>
+                            <td style="padding: 10px 0; border-bottom: 1px solid #e2e8f0; color: #0f172a; font-weight: 600; text-align: right;">${customerEmail}</td>
+                          </tr>
+                          <tr>
+                            <td style="padding: 10px 0; color: #475569; font-weight: 500;">Ref. Pedido</td>
+                            <td style="padding: 10px 0; color: #0f172a; font-weight: 600; text-align: right;">${orderId.split('-')[0]}</td>
+                          </tr>
+                        </table>
+                      </div>
+
+                      <div style="text-align: center; margin-top: 35px;">
+                        <a href="https://supabase.com/dashboard" style="display: inline-block; background-color: #0ea5e9; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 6px; font-weight: 600; font-size: 16px;">Ver pedido en Supabase</a>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="background-color: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #f1f5f9; color: #64748b; font-size: 13px;">
+                      Mensaje generado automáticamente desde el Webhook de Stripe.
+                    </td>
+                  </tr>
+                </table>
+              </body>
+              </html>
             `;
 
             const transporter = nodemailer.createTransport({
