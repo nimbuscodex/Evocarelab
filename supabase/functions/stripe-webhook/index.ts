@@ -123,8 +123,26 @@ serve(async (req) => {
                         </table>
                       </div>
 
-                      <div style="text-align: center; margin-top: 35px;">
-                        <a href="https://supabase.com/dashboard" style="display: inline-block; background-color: #0ea5e9; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 6px; font-weight: 600; font-size: 16px;">Ver pedido en Supabase</a>
+                      <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-top: 20px;">
+                        <h3 style="margin-top: 0; color: #0f172a; font-size: 16px; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Datos de Envío</h3>
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                          <tr>
+                            <td style="padding: 6px 0; color: #475569; font-weight: 500;">Dirección</td>
+                            <td style="padding: 6px 0; color: #0f172a; font-weight: 600; text-align: right;">${session.metadata?.shippingAddress ? JSON.parse(session.metadata.shippingAddress).address : 'No especificada'}</td>
+                          </tr>
+                          <tr>
+                            <td style="padding: 6px 0; color: #475569; font-weight: 500;">Ciudad</td>
+                            <td style="padding: 6px 0; color: #0f172a; font-weight: 600; text-align: right;">${session.metadata?.shippingAddress ? JSON.parse(session.metadata.shippingAddress).city : ''}</td>
+                          </tr>
+                          <tr>
+                            <td style="padding: 6px 0; color: #475569; font-weight: 500;">Código Postal</td>
+                            <td style="padding: 6px 0; color: #0f172a; font-weight: 600; text-align: right;">${session.metadata?.shippingAddress ? JSON.parse(session.metadata.shippingAddress).zipCode : ''}</td>
+                          </tr>
+                          <tr>
+                            <td style="padding: 6px 0; color: #475569; font-weight: 500;">Teléfono</td>
+                            <td style="padding: 6px 0; color: #0f172a; font-weight: 600; text-align: right;">${session.metadata?.customerPhone || 'No especificado'}</td>
+                          </tr>
+                        </table>
                       </div>
                     </td>
                   </tr>
