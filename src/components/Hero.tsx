@@ -80,7 +80,7 @@ export default function Hero() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1.5, delay: 0.3, ease: "easeOut" }}
-              className="mask-visual w-80 h-[520px] md:w-[480px] md:h-[640px] flex items-center justify-center relative z-10 overflow-visible"
+              className="mask-visual w-64 h-[420px] sm:w-80 sm:h-[520px] md:w-[400px] md:h-[540px] lg:w-[480px] lg:h-[640px] flex items-center justify-center relative z-10 overflow-visible"
             >
               <motion.img 
                 src="/modelo 1.png"

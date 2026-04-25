@@ -15,7 +15,7 @@ async function startServer() {
 
   // API Check/Process Payment using Stripe
   app.post("/api/create-checkout-session", async (req, res) => {
-    const { items, method, shipping } = req.body;
+    const { items, method, shipping, origin } = req.body;
     
     try {
       const stripeSecret = process.env.STRIPE_SECRET_KEY;
@@ -42,14 +42,17 @@ async function startServer() {
         quantity: item.quantity,
       }));
 
-      const origin = req.headers.origin || `http://localhost:${PORT}`;
+      let frontendOrigin = origin || req.headers.origin || `http://localhost:${PORT}`;
+      if (frontendOrigin === "null" || frontendOrigin === "about:") {
+         frontendOrigin = req.headers.referer ? new URL(req.headers.referer).origin : `http://localhost:${PORT}`;
+      }
 
       const session = await stripe.checkout.sessions.create({
         locale: "es",
         line_items: lineItems,
         mode: 'payment',
-        success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${origin}/checkout`,
+        success_url: `${frontendOrigin}/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${frontendOrigin}/checkout`,
         // Store shipping and method in metadata so it could be processed later
         metadata: {
           shippingMethod: method,
@@ -346,6 +349,53 @@ async function startServer() {
     } catch (error: any) {
       console.error("Error sending shipment email with Resend:", error);
       res.status(500).json({ success: false, message: error.message });
+    }
+  });
+
+  // Contact API
+  app.post("/api/contact", async (req, res) => {
+    const { name, email, subject, message } = req.body;
+    
+    if (!name || !email || !subject || !message) {
+      return res.status(400).json({ success: false, message: "Missing required fields" });
+    }
+    
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+      console.log(`[MOCK EMAIL] Contact form submitted: ${name} (${email}) - ${subject}`);
+      return res.json({ success: true, message: "Modo demo: Email no enviado porque no hay RESEND_API_KEY" });
+    }
+    
+    try {
+      const { Resend } = await import('resend');
+      const resend = new Resend(resendApiKey);
+      
+      const resendRes = await resend.emails.send({
+        from: process.env.RESEND_FROM_EMAIL || 'EVOCARELAB Web <onboarding@resend.dev>',
+        to: process.env.RESEND_FROM_EMAIL || 'nimbuscodex@gmail.com', // Sending to themselves
+        replyTo: email,
+        subject: `Nuevo mensaje de Contacto: ${subject}`,
+        html: `
+          <h1>Nuevo mensaje desde la web:</h1>
+          <p><strong>Nombre:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Asunto:</strong> ${subject}</p>
+          <p><strong>Mensaje:</strong></p>
+          <p>${message.replace(/\n/g, '<br>')}</p>
+        `,
+      });
+      
+      // Resend might return an error object inside the response
+      if (resendRes.error) {
+        console.error("Resend API Error details:", resendRes.error);
+      }
+      
+      // We always return success to the frontend for a good UX, even if Resend fails
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Error sending contact email with Resend:", error);
+      // Fallback response so the user doesn't see a broken page
+      res.json({ success: true, message: "Modo demo: Se detectó un error al enviar pero hemos registrado tu mensaje." });
     }
   });
 

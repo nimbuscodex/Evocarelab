@@ -72,6 +72,7 @@ export default function CheckoutPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           items,
+          origin: window.location.origin !== "null" ? window.location.origin : window.location.protocol + '//' + window.location.host,
           method: data.shippingMethod,
           shipping: {
             fullName: data.fullName,

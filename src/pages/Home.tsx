@@ -24,11 +24,9 @@ export default function Home() {
       <Product />
       <Ingredients />
       <HowToUse />
-      <BeforeAfter />
       <Testimonials />
       <Philosophy />
       <Newsletter />
-      <FinalCTA />
     </>
   );
 }

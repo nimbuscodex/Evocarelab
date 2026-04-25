@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
-import { ArrowLeft, Check, Droplets, Sparkles, Wand2, ShieldCheck, Microscope, Thermometer, FlaskConical } from 'lucide-react';
+import { ArrowLeft, Check, Droplets, Sparkles, Wand2, ShieldCheck, Microscope, Thermometer, FlaskConical, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useProduct } from '../hooks/useProduct';
@@ -78,11 +78,11 @@ function ProductDetailContent({ product }: { product: any }) {
         </div>
 
         {/* Essential Info Grid */}
-        <section className="container mx-auto px-6 grid lg:grid-cols-12 gap-12 lg:gap-24 items-start py-8">
+        <section className="max-w-6xl mx-auto px-6 grid lg:grid-cols-12 gap-12 lg:gap-16 xl:gap-20 items-start py-8 lg:py-12">
           
           {/* Left: Dynamic Gallery */}
-          <div className="lg:col-span-7 sticky top-32">
-            <div className="relative aspect-[4/5] rounded-[48px] overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.15)] group">
+          <div className="lg:col-span-6 lg:sticky lg:top-24 w-full max-w-2xl mx-auto lg:ml-auto lg:mr-0">
+            <div className="relative aspect-[3/4] sm:aspect-[4/5] lg:max-h-[85vh] rounded-[32px] md:rounded-[48px] overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.15)] group">
               <AnimatePresence mode="wait">
                 <motion.img 
                   key={images[currentImageIndex]}
@@ -134,10 +134,10 @@ function ProductDetailContent({ product }: { product: any }) {
           </div>
 
           {/* Right: Technical Specs */}
-          <div className="lg:col-span-5 space-y-12">
+          <div className="lg:col-span-6 space-y-12 lg:max-w-xl lg:mr-auto lg:ml-0">
             <div className="space-y-6">
               <span className="text-[10px] uppercase tracking-[0.5em] text-gray-400 font-bold block mb-2">Biorremodelación Dérmica</span>
-              <h1 className="text-5xl md:text-7xl font-serif text-ink leading-[1.1]">
+              <h1 className="text-4xl lg:text-5xl xl:text-7xl font-serif text-ink leading-[1.1]">
                 {product.name}
               </h1>
               <div className="flex items-center gap-4 py-4 border-y border-neutral-100">
@@ -153,35 +153,55 @@ function ProductDetailContent({ product }: { product: any }) {
               </p>
             </div>
 
-            <div className="space-y-8">
-              <h3 className="text-[10px] uppercase tracking-widest font-bold text-ink">Ingredientes Clave</h3>
-              <div className="grid grid-cols-1 gap-6">
-                {[
-                  { icon: <Droplets size={18} />, title: "Bio-Colágeno Marino", desc: "Absorción profunda 200Da para hidratación celular." },
-                  { icon: <FlaskConical size={18} />, title: "Ácido Hialurónico Triple", desc: "Malla 3D que retiene 1000 veces su peso en agua." },
-                  { icon: <ShieldCheck size={18} />, title: "Ectoína Celular", desc: "Protección frente al estrés ambiental y luz azul." },
-                ].map((item, i) => (
-                  <div key={i} className="flex gap-4 p-6 bg-[#fdfaf6] rounded-3xl border border-neutral-100">
-                    <div className="text-ink">{item.icon}</div>
-                    <div>
-                      <h4 className="text-sm font-bold text-ink mb-1">{item.title}</h4>
-                      <p className="text-xs text-gray-500 font-light leading-relaxed">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
+            <div className="pt-2 pb-10 border-b border-neutral-100">
+              <motion.button 
+                whileTap={{ scale: 0.98 }}
+                onClick={handleAddToCart}
+                className="w-full relative overflow-hidden bg-ink text-white py-6 px-8 sm:px-10 flex items-center justify-between group rounded-none shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)]"
+              >
+                {/* Elegant overlay transition */}
+                <div className="absolute inset-0 bg-neutral-800 scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]"></div>
+                
+                <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.3em] sm:tracking-[0.4em] font-bold relative z-10 flex items-center gap-4 transition-transform duration-500 group-hover:translate-x-2">
+                  <span>Añadir al ritual</span>
+                  <span className="opacity-0 -translate-x-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-x-0 hidden sm:block">
+                    <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9 1L13 5M13 5L9 9M13 5H1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </span>
+                </span>
+                <span className="text-[11px] sm:text-[12px] uppercase tracking-widest font-light opacity-90 relative z-10 transition-transform duration-500 group-hover:-translate-x-2">
+                  {product.price.toFixed(2)}€
+                </span>
+              </motion.button>
+              <div className="flex justify-between items-center mt-6 px-2">
+                <span className="text-[8px] sm:text-[9px] text-gray-400 uppercase tracking-[0.2em] sm:tracking-[0.25em] flex items-center gap-2 pointer-events-none"><Sparkles size={11} strokeWidth={1.5} /> Envío Expedito</span>
+                <span className="text-[8px] sm:text-[9px] text-gray-400 uppercase tracking-[0.2em] sm:tracking-[0.25em] flex items-center gap-2 pointer-events-none"><ShieldCheck size={11} strokeWidth={1.5} /> Garantía Evocare</span>
               </div>
             </div>
 
             <div className="pt-8">
-              <motion.button 
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={handleAddToCart}
-                className="w-full bg-ink text-white py-6 text-[11px] uppercase tracking-[0.4em] font-bold rounded-2xl shadow-2xl hover:shadow-gray-200 transition-shadow"
-              >
-                Añadir al ritual — {product.price.toFixed(2)}€
-              </motion.button>
-              <p className="text-center text-[10px] text-gray-400 mt-4 uppercase tracking-[0.2em]">Envío Express gratuito en 24h</p>
+              <h3 className="text-[9px] uppercase tracking-[0.5em] font-bold text-gray-400 mb-8 flex items-center gap-4">
+                <span className="w-12 h-[1px] bg-gray-200"></span>
+                Ingredientes Activos
+              </h3>
+              <div className="grid grid-cols-1 gap-2">
+                {[
+                  { icon: <Droplets size={16} strokeWidth={1.5} />, title: "Bio-Colágeno", desc: "Hidratación profunda 200Da." },
+                  { icon: <FlaskConical size={16} strokeWidth={1.5} />, title: "Hialurónico", desc: "Retiene 1000x su peso en agua." },
+                  { icon: <ShieldCheck size={16} strokeWidth={1.5} />, title: "Ectoína", desc: "Escudo biológico contra luz azul y estrés ambiental." },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-5 p-4 rounded-2xl hover:bg-neutral-50/80 border border-transparent hover:border-neutral-100 transition-all group cursor-default">
+                    <div className="w-10 h-10 border border-neutral-200 rounded-full bg-white flex items-center justify-center text-ink shrink-0 group-hover:scale-110 transition-transform duration-500 shadow-sm">
+                      {item.icon}
+                    </div>
+                    <div className="pt-0.5">
+                      <h4 className="text-[11px] font-bold uppercase tracking-[0.2em] text-ink mb-1.5">{item.title}</h4>
+                      <p className="text-[13px] text-gray-500 font-light leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -229,19 +249,30 @@ function ProductDetailContent({ product }: { product: any }) {
 
             <motion.div 
                style={{ y: parallaxY }}
-               className="relative"
+               className="relative flex items-center justify-center p-4 lg:p-8"
             >
-              <div className="aspect-square relative flex items-center justify-center">
+              <div className="relative w-full max-w-lg lg:max-w-xl mx-auto">
                 <motion.div 
                   animate={{ rotate: 360 }}
                   transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-                  className="absolute inset-0 border border-white/5 rounded-full"
+                  className="absolute inset-[-10%] lg:inset-[-20%] border border-white/5 rounded-full"
                 ></motion.div>
-                <img 
-                  src="/molécula quimica.png" 
-                  className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_50px_rgba(255,255,255,0.1)]" 
-                  alt="Molecular Structure" 
-                />
+                <motion.div
+                  className="relative z-10 w-full rounded-[32px] md:rounded-[48px] p-4 lg:p-6 shadow-[0_40px_80px_rgba(0,0,0,0.6),inset_0_2px_15px_rgba(255,255,255,0.1),inset_0_-5px_15px_rgba(0,0,0,0.5)] border border-white/10 bg-neutral-900/40 backdrop-blur-md transform-gpu"
+                  style={{ transformStyle: "preserve-3d", transformPerspective: 1000 }}
+                  initial={{ rotateY: -5, rotateX: 5 }}
+                  animate={{ rotateY: [0, 5, 0, -5, 0], rotateX: [0, 3, 0, -3, 0], y: [0, -10, 0] }}
+                  transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <div className="relative w-full aspect-[4/5] rounded-[24px] md:rounded-[36px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.4),0_0_0_1px_rgba(255,255,255,0.05)] bg-neutral-800" style={{ transform: "translateZ(30px)" }}>
+                    <img 
+                      src="/efectos.png" 
+                      className="w-full h-full object-cover" 
+                      alt="Clinical Effects" 
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/20 pointer-events-none rounded-[24px] md:rounded-[36px]"></div>
+                  </div>
+                </motion.div>
                 <motion.div 
                    animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
                    transition={{ duration: 4, repeat: Infinity }}
@@ -316,30 +347,86 @@ function ProductDetailContent({ product }: { product: any }) {
         </div>
       </section>
 
-      {/* Final Action */}
-      <section className="py-32 container mx-auto px-6">
-        <div className="bg-ink p-12 md:p-24 rounded-[64px] text-white text-center relative overflow-hidden flex flex-col items-center">
-          <img src="/fondo-rosa.png" className="absolute inset-0 w-full h-full object-cover opacity-10 mix-blend-screen" alt="" />
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="relative z-10 max-w-2xl"
-          >
-            <p className="text-[11px] uppercase tracking-[0.5em] opacity-60 mb-10 font-bold">Tu piel merece Evocare</p>
-            <h2 className="text-5xl md:text-7xl font-serif mb-12 leading-tight">Transformación desde la primera aplicación.</h2>
-            <div className="flex flex-col md:flex-row items-center justify-center gap-8">
-               <button 
-                onClick={handleAddToCart}
-                className="bg-white text-ink px-16 py-7 text-[11px] uppercase tracking-[0.4em] font-bold hover:bg-neutral-50 transition-all hover:scale-105 active:scale-95 shadow-2xl"
-               >
-                 Obtener mi tratamiento
-               </button>
-               <span className="text-xl font-serif italic opacity-80">{product.price.toFixed(2)}€ / Unidad pack</span>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+      {/* FAQ Section */}
+      <FAQAccordion />
     </div>
+  );
+}
+
+const faqs = [
+  {
+    question: "¿Cómo y cuándo debo usar la mascarilla Hialuronic Acid Mask?",
+    answer: "Recomendamos usarla de 1 a 2 veces por semana, preferiblemente por la noche después de la limpieza facial. Aplícala sobre la piel seca, déjala actuar durante 15-20 minutos y retírala. Masajea el sérum restante hasta su completa absorción."
+  },
+  {
+    question: "¿Es adecuada para mi tipo de piel?",
+    answer: "Sí, su fórmula clínica avanzada y libre de irritantes ha sido diseñada para ser tolerada por todo tipo de pieles, incluyendo las más sensibles, reactivas o con tendencia acnéica."
+  },
+  {
+    question: "¿Cuáles son los beneficios a largo plazo?",
+    answer: "A corto plazo notarás una hidratación y luminosidad instantánea. A partir de las 4 semanas de uso continuo, el Bio-Colágeno y el Ácido Hialurónico Triple estimulan la producción natural de colágeno, reduciendo visiblemente las líneas de expresión y mejorando la elasticidad cutánea."
+  },
+  {
+    question: "¿Puedo usarla junto a mis otros productos de cuidado?",
+    answer: "¡Por supuesto! La mascarilla se integra perfectamente en cualquier rutina. Úsala después de tu tónico o esencia y antes de cremas hidratantes o aceites para sellar todos los activos."
+  }
+];
+
+function FAQAccordion() {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  const toggle = (index: number) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
+  return (
+    <section className="py-32 bg-white relative">
+      <div className="container mx-auto px-6 max-w-3xl">
+        <div className="text-center mb-16">
+          <span className="text-[10px] uppercase tracking-[0.5em] text-gray-400 font-bold block mb-4">Resolviendo Dudas</span>
+          <h2 className="text-4xl md:text-5xl font-serif text-ink mb-6">Preguntas Frecuentes</h2>
+          <p className="text-gray-500 font-light max-w-xl mx-auto">
+            Todo lo que necesitas saber sobre el uso, beneficios y ciencia detrás de tu nuevo ritual de belleza.
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          {faqs.map((faq, index) => (
+            <div 
+              key={index} 
+              className="border border-neutral-100 rounded-2xl overflow-hidden bg-[#fdfaf6]/50 transition-all hover:bg-[#fdfaf6] hover:shadow-sm"
+            >
+              <button 
+                onClick={() => toggle(index)}
+                className="w-full flex items-center justify-between p-6 md:px-8 md:py-6 text-left"
+              >
+                <span className="font-serif text-lg text-ink pr-8">{faq.question}</span>
+                <motion.div
+                  animate={{ rotate: openIndex === index ? 180 : 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="shrink-0 text-ink/40"
+                >
+                  <ChevronDown size={20} strokeWidth={1.5} />
+                </motion.div>
+              </button>
+              <AnimatePresence>
+                {openIndex === index && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                  >
+                    <div className="px-6 md:px-8 pb-6 pt-2 text-gray-500 font-light leading-relaxed">
+                      {faq.answer}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }

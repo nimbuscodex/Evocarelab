@@ -14,7 +14,6 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const menuLinks = [
-    { label: 'Tienda', to: '/tienda' },
     { label: 'Ingredientes', to: '/ingredientes' },
     { label: 'Ritual', to: '/ritual' },
     { label: 'Contacto', to: '/contacto' }

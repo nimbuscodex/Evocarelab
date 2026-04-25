@@ -8,14 +8,40 @@ import { motion } from 'motion/react';
 import { Mail, MapPin, Send, ChevronRight } from 'lucide-react';
 
 export default function Contact() {
-  const [formState, setFormState] = useState<'idle' | 'error'>('idle');
+  const [formState, setFormState] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const address = "Calle Lisboa 6, Nave 23, Polígono Industrial Albresa, Valdemoro, 28340, Madrid, España";
   const mapUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3052.0624!2d-3.682!3d40.19!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd421f57!2zQ2FsbGUgTGlzYm9hLCA2LCAyODM0MCBWYWxkZW1vcm8sIE1hZHJpZCwgRXNwYcOxYQ!5e0!3m2!1ses!2ses!4v1713830000000!5m2!1ses!2ses`;
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const form = e.currentTarget;
+
     if (!form.checkValidity()) {
-      e.preventDefault();
+      setFormState('error');
+      setTimeout(() => setFormState('idle'), 3000);
+      return;
+    }
+
+    setFormState('submitting');
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      
+      if (response.ok) {
+        setFormState('success');
+        form.reset();
+        setTimeout(() => setFormState('idle'), 5000);
+      } else {
+        throw new Error('Failed to send');
+      }
+    } catch (error) {
+      console.error(error);
       setFormState('error');
       setTimeout(() => setFormState('idle'), 3000);
     }
@@ -55,8 +81,8 @@ export default function Contact() {
                 <div className="space-y-6">
                   <div className="group">
                     <p className="text-[10px] text-gold uppercase tracking-widest mb-1">Email</p>
-                    <a href="mailto:evocarelab2024@gmail.com" className="text-xl font-serif italic text-ink hover:text-gold transition-colors">
-                      evocarelab2024@gmail.com
+                    <a href="mailto:nimbuscodex@gmail.com" className="text-xl font-serif italic text-ink hover:text-gold transition-colors">
+                      nimbuscodex@gmail.com
                     </a>
                   </div>
                 </div>
@@ -96,8 +122,6 @@ export default function Contact() {
             className="lg:col-span-8 bg-pearl/30 rounded-[40px] p-8 md:p-16 border border-gray-100"
           >
             <form 
-              action="https://formspree.io/f/evocarelab2024@gmail.com" 
-              method="POST" 
               onSubmit={handleSubmit}
               className="space-y-10"
             >
@@ -181,11 +205,12 @@ export default function Contact() {
               )}
 
               <button 
-                type="submit" 
+                type="submit"
+                disabled={formState === 'submitting' || formState === 'success'}
                 className={`w-full py-6 bg-ink text-white text-[10px] uppercase tracking-[0.5em] font-bold rounded-full transition-all hover:bg-gold hover:text-ink shadow-lg flex items-center justify-center gap-4 ${formState === 'error' ? 'animate-shake' : ''}`}
               >
-                Enviar Mensaje
-                <ChevronRight size={14} />
+                {formState === 'submitting' ? 'Enviando...' : formState === 'success' ? 'Mensaje Enviado ✓' : 'Enviar Mensaje'}
+                {formState === 'idle' && <ChevronRight size={14} />}
               </button>
             </form>
           </motion.div>

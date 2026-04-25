@@ -23,6 +23,8 @@ export default function Footer() {
           <div className="space-y-6">
             <h4 className="text-[10px] uppercase tracking-[0.3em] font-bold text-ink">Legal</h4>
             <ul className="space-y-4 text-sm font-light text-gray-400">
+              <li><Link to="/envios-devoluciones" className="hover:text-gold transition-colors">Envíos y Devoluciones</Link></li>
+              <li><Link to="/aviso-legal" className="hover:text-gold transition-colors">Aviso Legal</Link></li>
               <li><Link to="/privacidad" className="hover:text-gold transition-colors">Política de Privacidad</Link></li>
               <li><Link to="/cookies" className="hover:text-gold transition-colors">Política de Cookies</Link></li>
             </ul>

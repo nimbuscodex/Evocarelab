@@ -12,6 +12,10 @@ import Contact from './context/Contact';
 import ProductDetail from './pages/ProductDetail';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import CookiesPolicy from './pages/CookiesPolicy';
+import AvisoLegal from './pages/AvisoLegal';
+import PoliticaEnvios from './pages/PoliticaEnvios';
+import Filosofia from './pages/Filosofia';
+import ElSecreto from './pages/ElSecreto';
 import CheckoutPage from './pages/CheckoutPage';
 import Store from './pages/Store';
 import SuccessPage from './pages/SuccessPage';
@@ -21,10 +25,12 @@ import CartDrawer from './components/CartDrawer';
 import LegalDrawer from './components/LegalDrawer';
 import CookieGate from './components/CookieGate';
 import Footer from './components/Footer';
+import FinalCTA from './components/FinalCTA';
 
 function AppContent() {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith('/admin');
+  const isCheckout = location.pathname === '/checkout';
 
   return (
     <div className="flex flex-col min-h-screen selection:bg-ink selection:text-white relative">
@@ -39,11 +45,16 @@ function AppContent() {
           <Route path="/producto" element={<ProductDetail />} />
           <Route path="/privacidad" element={<PrivacyPolicy />} />
           <Route path="/cookies" element={<CookiesPolicy />} />
+          <Route path="/aviso-legal" element={<AvisoLegal />} />
+          <Route path="/envios-devoluciones" element={<PoliticaEnvios />} />
+          <Route path="/filosofia" element={<Filosofia />} />
+          <Route path="/el-secreto" element={<ElSecreto />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/success" element={<SuccessPage />} />
           <Route path="/admin" element={<AdminPage />} />
         </Routes>
       </main>
+      {!isAdmin && !isCheckout && <FinalCTA />}
       {!isAdmin && <Footer />}
       <CartDrawer />
       <LegalDrawer />
