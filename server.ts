@@ -11,6 +11,10 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
+  // NOTE: The Stripe Webhook logic has been moved to Supabase Edge Functions
+  // in /supabase/functions/stripe-webhook/index.ts. 
+  // You should deploy it and point Stripe Webhooks to your Supabase project instead.
+
   app.use(express.json());
 
   // API Check/Process Payment using Stripe
