@@ -73,6 +73,55 @@ serve(async (req) => {
              console.error("Warning: Could not save order items. Error:", itemsError.message);
            }
         }
+
+        // 3. Send email notification to Admin using Nodemailer
+        const smtpUser = Deno.env.get('SMTP_USER');
+        if (smtpUser) {
+          try {
+            // Import nodemailer dynamically or at top. In Deno, we can just dynamic import npm packages:
+            const nodemailer = await import("npm:nodemailer");
+
+            const customerName = session.metadata?.customerName || session.customer_details?.name || "Cliente Desconocido";
+            const customerEmail = session.metadata?.customerEmail || session.customer_details?.email || "Sin email";
+            const totalFormatted = session.amount_total ? (session.amount_total / 100).toFixed(2) : "0.00";
+            
+            const emailHtml = `
+              <h2>¡Nueva Venta Realizada! 🎉</h2>
+              <p>Se ha completado un nuevo pedido por <strong>${totalFormatted} €</strong>.</p>
+              <h3>Detalles del Cliente:</h3>
+              <ul>
+                <li><strong>Nombre:</strong> ${customerName}</li>
+                <li><strong>Email:</strong> ${customerEmail}</li>
+                <li><strong>ID de Pedido (Supabase):</strong> ${orderId}</li>
+                <li><strong>ID de Sesión (Stripe):</strong> ${session.id}</li>
+              </ul>
+              <p>Revisa el panel de administración o Supabase para ver la dirección de envío exacta y gestionar el pedido.</p>
+            `;
+
+            const transporter = nodemailer.createTransport({
+              host: Deno.env.get('SMTP_HOST') || 'smtp.gmail.com',
+              port: parseInt(Deno.env.get('SMTP_PORT') || '465'),
+              secure: true,
+              auth: {
+                user: Deno.env.get('SMTP_USER'),
+                pass: Deno.env.get('SMTP_PASS'),
+              },
+            });
+
+            await transporter.sendMail({
+              from: `"EVOCARELAB Ventas" <${Deno.env.get('SMTP_USER')}>`,
+              to: "nimbuscodex@gmail.com",
+              subject: `¡Nueva Venta! Pedido ${orderId.split('-')[0]} - ${totalFormatted}€`,
+              html: emailHtml
+            });
+
+            console.log("Admin notification email sent successfully with Nodemailer.");
+          } catch (emailErr: any) {
+            console.error("Error sending notification email via Nodemailer:", emailErr.message);
+          }
+        } else {
+          console.log("SMTP_USER is not set. Skipping email notification.");
+        }
       }
     }
 

@@ -3,6 +3,7 @@ import { createServer as createViteServer } from "vite";
 import path from "path";
 import { fileURLToPath } from "url";
 import Stripe from "stripe";
+import nodemailer from "nodemailer";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -152,13 +153,19 @@ async function startServer() {
             }
          }
          
-         // Send confirmation email via Resend
-         const resendApiKey = process.env.RESEND_API_KEY;
-         if (resendApiKey) {
+         // Send confirmation email via Nodemailer
+         const smtpUser = process.env.SMTP_USER;
+         if (smtpUser) {
            try {
-             // We cannot use static import mid-execution, dynamically import it
-             const { Resend } = await import('resend');
-             const resend = new Resend(resendApiKey);
+             const transporter = nodemailer.createTransport({
+               host: process.env.SMTP_HOST || 'smtp.gmail.com',
+               port: parseInt(process.env.SMTP_PORT || '465'),
+               secure: true,
+               auth: {
+                 user: process.env.SMTP_USER,
+                 pass: process.env.SMTP_PASS,
+               },
+             });
              
              const totalFormatted = session.amount_total ? (session.amount_total / 100).toFixed(2) : "0.00";
              const emailHTML = `
@@ -235,15 +242,15 @@ async function startServer() {
                </html>
              `;
              
-             await resend.emails.send({
-               from: process.env.RESEND_FROM_EMAIL || 'EVOCARELAB <onboarding@resend.dev>',
-               to: [session.metadata?.customerEmail || "unknown@email.com"],
+             await transporter.sendMail({
+               from: `"EVOCARELAB" <${process.env.SMTP_USER}>`,
+               to: session.metadata?.customerEmail || "unknown@email.com",
                subject: `Confirmación de pedido #${orderId.split('-')[0]} - EVOCARELAB`,
-               html: emailHTML
+               html: emailHTML,
              });
              console.log("Confirmation email sent to", session.metadata?.customerEmail);
            } catch (emailErr) {
-             console.error("Warning: Failed to send Resend email:", emailErr);
+             console.error("Warning: Failed to send confirmation email:", emailErr);
            }
          }
       }
@@ -263,14 +270,21 @@ async function startServer() {
       return res.status(400).json({ success: false, message: "Missing required fields" });
     }
     
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
-      return res.status(500).json({ success: false, message: "RESEND_API_KEY no configurada en el servidor." });
+    const smtpUser = process.env.SMTP_USER;
+    if (!smtpUser) {
+      return res.status(500).json({ success: false, message: "SMTP no configurado en el servidor." });
     }
     
     try {
-      const { Resend } = await import('resend');
-      const resend = new Resend(resendApiKey);
+      const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST || 'smtp.gmail.com',
+        port: parseInt(process.env.SMTP_PORT || '465'),
+        secure: true,
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+      });
       
       const emailHTML = `
         <!DOCTYPE html>
@@ -342,16 +356,16 @@ async function startServer() {
         </html>
       `;
       
-      await resend.emails.send({
-        from: process.env.RESEND_FROM_EMAIL || 'EVOCARELAB Envios <onboarding@resend.dev>',
-        to: [email],
+      await transporter.sendMail({
+        from: `"EVOCARELAB Envios" <${process.env.SMTP_USER}>`,
+        to: email,
         subject: `Tu pedido #${orderId.split('-')[0]} está en camino - EVOCARELAB`,
         html: emailHTML,
       });
       
       res.json({ success: true });
     } catch (error: any) {
-      console.error("Error sending shipment email with Resend:", error);
+      console.error("Error sending shipment email:", error);
       res.status(500).json({ success: false, message: error.message });
     }
   });
@@ -364,19 +378,26 @@ async function startServer() {
       return res.status(400).json({ success: false, message: "Missing required fields" });
     }
     
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
+    const smtpUser = process.env.SMTP_USER;
+    if (!smtpUser) {
       console.log(`[MOCK EMAIL] Contact form submitted: ${name} (${email}) - ${subject}`);
-      return res.json({ success: true, message: "Modo demo: Email no enviado porque no hay RESEND_API_KEY" });
+      return res.json({ success: true, message: "Modo demo: Email no enviado porque no hay SMTP_USER" });
     }
     
     try {
-      const { Resend } = await import('resend');
-      const resend = new Resend(resendApiKey);
+      const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST || 'smtp.gmail.com',
+        port: parseInt(process.env.SMTP_PORT || '465'),
+        secure: true,
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+      });
       
-      const resendRes = await resend.emails.send({
-        from: process.env.RESEND_FROM_EMAIL || 'EVOCARELAB Web <onboarding@resend.dev>',
-        to: process.env.RESEND_FROM_EMAIL || 'nimbuscodex@gmail.com', // Sending to themselves
+      await transporter.sendMail({
+        from: `"EVOCARELAB Web" <${process.env.SMTP_USER}>`,
+        to: process.env.SMTP_USER || 'nimbuscodex@gmail.com', // Sending to themselves
         replyTo: email,
         subject: `Nuevo mensaje de Contacto: ${subject}`,
         html: `
@@ -388,11 +409,6 @@ async function startServer() {
           <p>${message.replace(/\n/g, '<br>')}</p>
         `,
       });
-      
-      // Resend might return an error object inside the response
-      if (resendRes.error) {
-        console.error("Resend API Error details:", resendRes.error);
-      }
       
       // We always return success to the frontend for a good UX, even if Resend fails
       res.json({ success: true });
