@@ -249,6 +249,27 @@ async function startServer() {
                html: emailHTML,
              });
              console.log("Confirmation email sent to", session.metadata?.customerEmail);
+             
+             // ADICIONAL: Notificamos al dueño de la tienda (salumaz319@gmail.com)
+             try {
+                const adminEmailHTML = `
+                  <div style="font-family: sans-serif; text-align: center; padding: 20px;">
+                    <h2 style="color: #10b981;">¡Nueva Venta! 🎉</h2>
+                    <p>Has recibido un nuevo pago en tu tienda EVOCARELAB por <strong>+ ${totalFormatted} €</strong></p>
+                    <p><strong>Cliente:</strong> ${session.metadata?.customerName || "Desconocido"}<br/>
+                    <strong>Email:</strong> ${session.metadata?.customerEmail || "N/A"}</p>
+                  </div>
+                `;
+                await transporter.sendMail({
+                  from: `"EVOCARELAB Ventas" <${process.env.SMTP_USER}>`,
+                  to: "salumaz319@gmail.com",
+                  subject: `¡Nueva Venta! Pedido ${orderId.split('-')[0]} - ${totalFormatted}€`,
+                  html: adminEmailHTML,
+                });
+                console.log("Admin notification email sent to salumaz319@gmail.com from backend.");
+             } catch(adminErr) {
+                console.error("Failed to send admin email from backend:", adminErr);
+             }
            } catch (emailErr) {
              console.error("Warning: Failed to send confirmation email:", emailErr);
            }
