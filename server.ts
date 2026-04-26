@@ -54,6 +54,7 @@ async function startServer() {
 
       const session = await stripe.checkout.sessions.create({
         locale: "es",
+        allow_promotion_codes: true,
         line_items: lineItems,
         mode: 'payment',
         success_url: `${frontendOrigin}/success?session_id={CHECKOUT_SESSION_ID}`,

@@ -24,6 +24,7 @@ import { CartProvider } from './context/CartContext';
 import CartDrawer from './components/CartDrawer';
 import LegalDrawer from './components/LegalDrawer';
 import CookieGate from './components/CookieGate';
+import DiscountPopup from './components/DiscountPopup';
 import Footer from './components/Footer';
 import FinalCTA from './components/FinalCTA';
 
@@ -56,6 +57,7 @@ function AppContent() {
       </main>
       {!isAdmin && !isCheckout && <FinalCTA />}
       {!isAdmin && <Footer />}
+      {!isAdmin && !isCheckout && <DiscountPopup />}
       <CartDrawer />
       <LegalDrawer />
     </div>
