@@ -253,12 +253,74 @@ async function startServer() {
              // ADICIONAL: Notificamos al dueño de la tienda (salumaz319@gmail.com)
              try {
                 const adminEmailHTML = `
-                  <div style="font-family: sans-serif; text-align: center; padding: 20px;">
-                    <h2 style="color: #10b981;">¡Nueva Venta! 🎉</h2>
-                    <p>Has recibido un nuevo pago en tu tienda EVOCARELAB por <strong>+ ${totalFormatted} €</strong></p>
-                    <p><strong>Cliente:</strong> ${session.metadata?.customerName || "Desconocido"}<br/>
-                    <strong>Email:</strong> ${session.metadata?.customerEmail || "N/A"}</p>
-                  </div>
+                  <!DOCTYPE html>
+                  <html lang="es">
+                  <head>
+                    <meta charset="UTF-8">
+                  </head>
+                  <body style="margin: 0; padding: 20px; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f4f5; text-align: center;">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: left;">
+                      <tr>
+                        <td style="background-color: #09090b; padding: 40px 20px; text-align: center;">
+                          <img src="https://cdn-icons-png.flaticon.com/512/1162/1162499.png" width="80" alt="Exito" style="display: block; margin: 0 auto 15px; filter: brightness(0) invert(1);" />
+                          <h1 style="color: #ffffff; margin: 0; font-size: 26px; font-weight: 600;">¡Nueva Venta! 🎉</h1>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 40px 30px;">
+                          <p style="color: #64748b; font-size: 16px; margin: 0 0 10px; text-align: center;">Has recibido un nuevo pago en tu tienda EVOCARELAB.</p>
+                          <div style="font-size: 42px; font-weight: 700; color: #10b981; text-align: center; margin: 20px 0 30px;">
+                            + ${totalFormatted} €
+                          </div>
+                          
+                          <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px;">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                              <tr>
+                                <td style="padding: 10px 0; border-bottom: 1px solid #e2e8f0; color: #475569; font-weight: 500;">Cliente</td>
+                                <td style="padding: 10px 0; border-bottom: 1px solid #e2e8f0; color: #0f172a; font-weight: 600; text-align: right;">${session.metadata?.customerName || "Cliente Desconocido"}</td>
+                              </tr>
+                              <tr>
+                                <td style="padding: 10px 0; border-bottom: 1px solid #e2e8f0; color: #475569; font-weight: 500;">Email</td>
+                                <td style="padding: 10px 0; border-bottom: 1px solid #e2e8f0; color: #0f172a; font-weight: 600; text-align: right;">${session.metadata?.customerEmail || "Sin email"}</td>
+                              </tr>
+                              <tr>
+                                <td style="padding: 10px 0; color: #475569; font-weight: 500;">Ref. Pedido</td>
+                                <td style="padding: 10px 0; color: #0f172a; font-weight: 600; text-align: right;">${orderId.split('-')[0]}</td>
+                              </tr>
+                            </table>
+                          </div>
+                          
+                          <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-top: 20px;">
+                            <h3 style="margin-top: 0; color: #0f172a; font-size: 16px; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">Datos de Envío</h3>
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                              <tr>
+                                <td style="padding: 6px 0; color: #475569; font-weight: 500;">Dirección</td>
+                                <td style="padding: 6px 0; color: #0f172a; font-weight: 600; text-align: right;">${session.metadata?.shippingAddress ? JSON.parse(session.metadata.shippingAddress).address : 'No especificada'}</td>
+                              </tr>
+                              <tr>
+                                <td style="padding: 6px 0; color: #475569; font-weight: 500;">Ciudad</td>
+                                <td style="padding: 6px 0; color: #0f172a; font-weight: 600; text-align: right;">${session.metadata?.shippingAddress ? JSON.parse(session.metadata.shippingAddress).city : ''}</td>
+                              </tr>
+                              <tr>
+                                <td style="padding: 6px 0; color: #475569; font-weight: 500;">Código Postal</td>
+                                <td style="padding: 6px 0; color: #0f172a; font-weight: 600; text-align: right;">${session.metadata?.shippingAddress ? JSON.parse(session.metadata.shippingAddress).zipCode : ''}</td>
+                              </tr>
+                              <tr>
+                                <td style="padding: 6px 0; color: #475569; font-weight: 500;">Teléfono</td>
+                                <td style="padding: 6px 0; color: #0f172a; font-weight: 600; text-align: right;">${session.metadata?.customerPhone || 'No especificado'}</td>
+                              </tr>
+                            </table>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="background-color: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #f1f5f9; color: #64748b; font-size: 13px;">
+                          Mensaje generado automáticamente por el sistema de pagos de EVOCARELAB.
+                        </td>
+                      </tr>
+                    </table>
+                  </body>
+                  </html>
                 `;
                 await transporter.sendMail({
                   from: `"EVOCARELAB Ventas" <${process.env.SMTP_USER}>`,
