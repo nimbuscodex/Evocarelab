@@ -397,7 +397,7 @@ async function startServer() {
       
       await transporter.sendMail({
         from: `"EVOCARELAB Web" <${process.env.SMTP_USER}>`,
-        to: process.env.SMTP_USER || 'nimbuscodex@gmail.com', // Sending to themselves
+        to: process.env.SMTP_USER || 'salumaz319@gmail.com', // Sending to themselves
         replyTo: email,
         subject: `Nuevo mensaje de Contacto: ${subject}`,
         html: `

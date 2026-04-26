@@ -168,7 +168,7 @@ serve(async (req) => {
 
             await transporter.sendMail({
               from: `"EVOCARELAB Ventas" <${Deno.env.get('SMTP_USER')}>`,
-              to: "nimbuscodex@gmail.com",
+              to: "salumaz319@gmail.com",
               subject: `¡Nueva Venta! Pedido ${orderId.split('-')[0]} - ${totalFormatted}€`,
               html: emailHtml
             });
