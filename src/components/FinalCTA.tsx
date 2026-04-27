@@ -8,6 +8,7 @@ import { Mail } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useProduct } from '../hooks/useProduct';
+import { getImageUrl } from '../lib/supabase';
 
 export default function FinalCTA() {
   const { addItem } = useCart();
@@ -21,7 +22,7 @@ export default function FinalCTA() {
   return (
     <section className="py-32 shimmer-bg relative overflow-hidden">
       <div className="absolute inset-0 z-0">
-        <img src="/collage.png" className="w-full h-full object-cover opacity-80 mix-blend-multiply" alt="" />
+        <img src={getImageUrl("collage.png")} className="w-full h-full object-cover opacity-80 mix-blend-multiply" alt="" />
         <div className="absolute inset-0 bg-white/30"></div>
       </div>
       <div className="container mx-auto px-12 text-center max-w-6xl relative z-10">

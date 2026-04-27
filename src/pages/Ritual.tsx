@@ -6,31 +6,32 @@
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform, useSpring } from 'motion/react';
+import { getImageUrl } from '../lib/supabase';
 
 const ritualSteps = [
   {
     title: "Preparar",
     subtitle: "Paso 01",
     description: "Limpia profundamente tu piel para asegurar la absorción máxima de los micronutrientes. Un lienzo impecable es el primer requisito de la biotecnología Evocarelab.",
-    image: "/ritual 01.png"
+    image: getImageUrl("ritual 01.png")
   },
   {
     title: "Aplicar",
     subtitle: "Paso 02",
     description: "Extiende la mascarilla sobre el rostro limpio durante 15–20 minutos. Permite que la matriz de ácido hialurónico interactúe con tu temperatura corporal para una entrega precisa.",
-    image: "/ritual 02.png"
+    image: getImageUrl("ritual 02.png")
   },
   {
     title: "Frecuencia",
     subtitle: "Paso 03",
     description: "Usar 2–3 veces por semana o según las necesidades específicas de tu piel. La consistencia es la clave para reprogramar la respuesta celular a largo plazo.",
-    image: "/ritual 03.png"
+    image: getImageUrl("ritual 03.png")
   },
   {
     title: "Revelar",
     subtitle: "Paso 04",
     description: "Retira y masajea el exceso de esencia para un acabado suave, relleno y luminoso. El resultado final de la arquitectura celular hecho visible.",
-    image: "/ritual 04.png"
+    image: getImageUrl("ritual 04.png")
   }
 ];
 

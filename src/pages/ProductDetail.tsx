@@ -4,7 +4,7 @@ import { ArrowLeft, Check, Droplets, Sparkles, Wand2, ShieldCheck, Microscope, T
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useProduct } from '../hooks/useProduct';
-import { supabase } from '../lib/supabase';
+import { supabase, getImageUrl } from '../lib/supabase';
 
 export default function ProductDetail() {
   const { product, loading } = useProduct();
@@ -49,12 +49,6 @@ function ProductDetailContent({ product }: { product: any }) {
       : product.price * 0.9;
   
   const totalPrice = currentPrice * selectedPack;
-
-  const getImageUrl = (path: string) => {
-    // Ensure spaces in file names are encoded properly
-    const encodedPath = encodeURI(path);
-    return supabase.storage.from('product-images').getPublicUrl(encodedPath).data.publicUrl;
-  };
 
   const images = [
     getImageUrl('sobre.png'),
@@ -276,7 +270,7 @@ function ProductDetailContent({ product }: { product: any }) {
       {/* Advanced Science Section */}
       <section ref={scienceRef} className="py-40 bg-ink text-white relative overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img src="/fondo-rosa.png" className="w-full h-full object-cover opacity-5 mix-blend-overlay" alt="" />
+          <img src={getImageUrl("fondo-rosa.png")} className="w-full h-full object-cover opacity-5 mix-blend-overlay" alt="" />
         </div>
         
         <div className="container mx-auto px-6 relative z-10">
@@ -332,7 +326,7 @@ function ProductDetailContent({ product }: { product: any }) {
                 >
                   <div className="relative w-full aspect-[4/5] rounded-[24px] md:rounded-[36px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.4),0_0_0_1px_rgba(255,255,255,0.05)] bg-neutral-800" style={{ transform: "translateZ(30px)" }}>
                     <img 
-                      src="/efectos.png" 
+                      src={getImageUrl("efectos.png")} 
                       className="w-full h-full object-cover" 
                       alt="Clinical Effects" 
                     />
@@ -360,7 +354,7 @@ function ProductDetailContent({ product }: { product: any }) {
                   whileHover={{ scale: 1.05 }}
                   className="rounded-[32px] overflow-hidden shadow-xl aspect-[3/4]"
                 >
-                  <img src="/efectos.png" className="w-full h-full object-cover" alt="Clinical Effect" />
+                  <img src={getImageUrl("efectos.png")} className="w-full h-full object-cover" alt="Clinical Effect" />
                 </motion.div>
                 <motion.div 
                   initial={{ y: 50 }}
@@ -368,7 +362,7 @@ function ProductDetailContent({ product }: { product: any }) {
                   whileHover={{ scale: 1.05 }}
                   className="rounded-[32px] overflow-hidden shadow-xl aspect-[3/4]"
                 >
-                  <img src="/collage.png" className="w-full h-full object-cover" alt="Collage Ritual" />
+                  <img src={getImageUrl("collage.png")} className="w-full h-full object-cover" alt="Collage Ritual" />
                 </motion.div>
               </div>
               <div className="absolute -top-10 -left-10 w-40 h-40 bg-white rounded-full flex flex-col items-center justify-center border border-neutral-100 shadow-2xl p-6 text-center italic font-serif text-ink z-20">

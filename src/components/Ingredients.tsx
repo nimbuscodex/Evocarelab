@@ -6,6 +6,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
+import { getImageUrl } from '../lib/supabase';
 
 const mainIngredients = [
   {
@@ -13,7 +14,7 @@ const mainIngredients = [
     name: "Hialuronato de sodio",
     highlight: "Hidratar",
     description: "Hidrata rápidamente el estrato córneo y alivia la sequedad y la tirantez de forma instantánea.",
-    image: "/molécula quimica.png",
+    image: getImageUrl("molécula quimica.png"),
     level: "Superficie"
   },
   {
@@ -21,7 +22,7 @@ const mainIngredients = [
     name: "Ácido hialurónico hidrolizado",
     highlight: "Penetrar",
     description: "Moléculas ultra-pequeñas que penetran profundamente y aumentan el nivel de hidratación estructural.",
-    image: "/acido-hialuronico.png",
+    image: getImageUrl("acido-hialuronico.png"),
     level: "Profundo"
   },
   {

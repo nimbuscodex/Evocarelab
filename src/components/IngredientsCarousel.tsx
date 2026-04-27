@@ -6,13 +6,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { getImageUrl } from '../lib/supabase';
 
 const mainIngredients = [
   {
     name: "Hialuronato de sodio",
     highlight: "Hidratar",
     description: "Su estructura de alto peso molecular forma una película viscoelástica no oclusiva en la superficie epidérmica, regulando de forma inteligente la evaporación del agua transepidérmica y proporcionando un alivio higroscópico inmediato.",
-    image: "/molécula quimica.png",
+    image: getImageUrl("molécula quimica.png"),
     level: "Superficie",
     benefit: "Barrera hídrica"
   },
@@ -20,7 +21,7 @@ const mainIngredients = [
     name: "Ácido hialurónico hidrolizado",
     highlight: "Penetrar",
     description: "Nano-moléculas de bajo peso molecular que atraviesan la barrera lipídica para interactuar con los queratinocitos profundos, estimulando la síntesis biológica de colágeno y elastina.",
-    image: "/acido-hialuronico.png",
+    image: getImageUrl("acido-hialuronico.png"),
     level: "Profundo",
     benefit: "Renovación endógena"
   },
