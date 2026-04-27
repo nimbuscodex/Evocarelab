@@ -7,6 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, useMotionValue, useTransform, useSpring, AnimatePresence } from 'motion/react';
 import { useCart } from '../context/CartContext';
 import { useProduct } from '../hooks/useProduct';
+import { supabase } from '../lib/supabase';
 
 export default function Product() {
   const { addItem } = useCart();
@@ -23,10 +24,14 @@ export default function Product() {
   const currentUnitPrice = selectedPack === 1 ? (product?.price || 0) : selectedPack === 2 ? (product?.price || 0) * 0.95 : (product?.price || 0) * 0.9;
   const totalPrice = currentUnitPrice * selectedPack;
 
+  const getImageUrl = (path: string) => {
+    return supabase.storage.from('product-images').getPublicUrl(path).data.publicUrl;
+  };
+
   const images = [
-    '/sobre.png',
-    '/caja.png',
-    '/fondo blanco.png'
+    getImageUrl('sobre.png'),
+    getImageUrl('caja.png'),
+    getImageUrl('fondo blanco.png')
   ];
 
   // Auto-rotate images

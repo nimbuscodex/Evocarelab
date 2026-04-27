@@ -4,6 +4,7 @@ import { ArrowLeft, Check, Droplets, Sparkles, Wand2, ShieldCheck, Microscope, T
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useProduct } from '../hooks/useProduct';
+import { supabase } from '../lib/supabase';
 
 export default function ProductDetail() {
   const { product, loading } = useProduct();
@@ -49,11 +50,15 @@ function ProductDetailContent({ product }: { product: any }) {
   
   const totalPrice = currentPrice * selectedPack;
 
+  const getImageUrl = (path: string) => {
+    return supabase.storage.from('product-images').getPublicUrl(path).data.publicUrl;
+  };
+
   const images = [
-    '/sobre.png',
-    '/caja.png',
-    '/fondo blanco.png',
-    '/modelo 1.png'
+    getImageUrl('sobre.png'),
+    getImageUrl('caja.png'),
+    getImageUrl('fondo blanco.png'),
+    getImageUrl('modelo 1.png')
   ];
 
   useEffect(() => {
