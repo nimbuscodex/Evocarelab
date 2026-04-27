@@ -32,30 +32,80 @@ async function startServer() {
         maxNetworkRetries: 3,
       });
 
-      const lineItems = items.map((item: any) => ({
-        price_data: {
-          currency: 'eur',
-          product_data: {
-            name: item.name,
-            images: [item.image],
-            metadata: {
-              product_id: item.id
-            }
+      let subtotal = 0;
+      const lineItems = items.map((item: any) => {
+        subtotal += item.price * item.quantity;
+        return {
+          price_data: {
+            currency: 'eur',
+            product_data: {
+              name: item.name,
+              images: [item.image],
+              metadata: {
+                product_id: item.id
+              }
+            },
+            unit_amount: Math.round(item.price * 100), // Stripe accepts amount in cents
           },
-          unit_amount: Math.round(item.price * 100), // Stripe accepts amount in cents
-        },
-        quantity: item.quantity,
-      }));
+          quantity: item.quantity,
+        };
+      });
 
       let frontendOrigin = origin || req.headers.origin || `http://localhost:${PORT}`;
       if (frontendOrigin === "null" || frontendOrigin === "about:") {
          frontendOrigin = req.headers.referer ? new URL(req.headers.referer).origin : `http://localhost:${PORT}`;
       }
 
+      // Configurar opciones de envío dinámicamente según el método elegido y el subtotal
+      const shippingOptions = [];
+      
+      if (method === 'delivery') {
+        if (subtotal >= 50) {
+          // Envío gratis si supera los 50 euros
+          shippingOptions.push({
+            shipping_rate_data: {
+              type: 'fixed_amount',
+              fixed_amount: { amount: 0, currency: 'eur' },
+              display_name: 'Envío Gratuito (Pedidos > 50€)',
+              delivery_estimate: {
+                minimum: { unit: 'business_day', value: 2 },
+                maximum: { unit: 'business_day', value: 4 },
+              },
+            },
+          });
+        } else {
+          // Envío estándar si es menor a 50 euros (5€)
+          shippingOptions.push({
+            shipping_rate_data: {
+              type: 'fixed_amount',
+              fixed_amount: { amount: 500, currency: 'eur' }, // 5.00 €
+              display_name: 'Envío Estándar',
+              delivery_estimate: {
+                minimum: { unit: 'business_day', value: 2 },
+                maximum: { unit: 'business_day', value: 4 },
+              },
+            },
+          });
+        }
+      } else if (method === 'pickup') {
+        shippingOptions.push({
+          shipping_rate_data: {
+            type: 'fixed_amount',
+            fixed_amount: { amount: 0, currency: 'eur' },
+            display_name: 'Recogida en Tienda',
+            delivery_estimate: {
+              minimum: { unit: 'business_day', value: 1 },
+              maximum: { unit: 'business_day', value: 1 },
+            },
+          },
+        });
+      }
+
       const session = await stripe.checkout.sessions.create({
         locale: "es",
         allow_promotion_codes: true,
         line_items: lineItems,
+        shipping_options: shippingOptions.length > 0 ? shippingOptions : undefined,
         mode: 'payment',
         success_url: `${frontendOrigin}/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${frontendOrigin}/checkout`,
