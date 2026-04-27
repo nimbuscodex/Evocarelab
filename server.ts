@@ -56,37 +56,21 @@ async function startServer() {
          frontendOrigin = req.headers.referer ? new URL(req.headers.referer).origin : `http://localhost:${PORT}`;
       }
 
-      // Configurar opciones de envío dinámicamente según el método elegido y el subtotal
+      // Configurar opciones de envío dinámicamente según el método elegido
       const shippingOptions = [];
       
       if (method === 'delivery') {
-        if (subtotal >= 50) {
-          // Envío gratis si supera los 50 euros
-          shippingOptions.push({
-            shipping_rate_data: {
-              type: 'fixed_amount',
-              fixed_amount: { amount: 0, currency: 'eur' },
-              display_name: 'Envío Gratuito (Pedidos > 50€)',
-              delivery_estimate: {
-                minimum: { unit: 'business_day', value: 2 },
-                maximum: { unit: 'business_day', value: 4 },
-              },
+        shippingOptions.push({
+          shipping_rate_data: {
+            type: 'fixed_amount',
+            fixed_amount: { amount: 0, currency: 'eur' },
+            display_name: 'Envío Gratuito',
+            delivery_estimate: {
+              minimum: { unit: 'business_day', value: 2 },
+              maximum: { unit: 'business_day', value: 4 },
             },
-          });
-        } else {
-          // Envío estándar si es menor a 50 euros (5€)
-          shippingOptions.push({
-            shipping_rate_data: {
-              type: 'fixed_amount',
-              fixed_amount: { amount: 500, currency: 'eur' }, // 5.00 €
-              display_name: 'Envío Estándar',
-              delivery_estimate: {
-                minimum: { unit: 'business_day', value: 2 },
-                maximum: { unit: 'business_day', value: 4 },
-              },
-            },
-          });
-        }
+          },
+        });
       } else if (method === 'pickup') {
         shippingOptions.push({
           shipping_rate_data: {

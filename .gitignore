@@ -6,12 +6,3 @@ coverage/
 *.log
 .env*
 !.env.example
-
-# Ignorar imágenes en la carpeta public para gestionarlas manualmente desde GitHub
-/public/*.png
-/public/*.jpg
-/public/*.jpeg
-/public/*.gif
-/public/*.webp
-/public/*.ico
-/public/*.svg

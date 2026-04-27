@@ -44,7 +44,7 @@ export default function PoliticaEnvios() {
               </p>
               <h3>Gastos de envío</h3>
               <p>
-                Los gastos de envío se calcularán automáticamente durante el proceso de pago ("Checkout") antes de finalizar el pedido. Generalmente, ofrecemos envío gratuito para pedidos superiores a un importe determinado que será anunciado en la web.
+                Todos nuestros envíos son <strong>gratuitos</strong>. Los gastos de envío ya están incluidos en el precio final de los rituales que adquieres en nuestra web.
               </p>
             </section>
 

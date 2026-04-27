@@ -175,7 +175,7 @@ function ProductDetailContent({ product }: { product: any }) {
                 </span>
               </motion.button>
               <div className="flex justify-between items-center mt-6 px-2">
-                <span className="text-[8px] sm:text-[9px] text-gray-400 uppercase tracking-[0.2em] sm:tracking-[0.25em] flex items-center gap-2 pointer-events-none"><Sparkles size={11} strokeWidth={1.5} /> Envío Expedito</span>
+                <span className="text-[8px] sm:text-[9px] text-gray-400 uppercase tracking-[0.2em] sm:tracking-[0.25em] flex items-center gap-2 pointer-events-none"><Sparkles size={11} strokeWidth={1.5} /> Envío Gratis</span>
                 <span className="text-[8px] sm:text-[9px] text-gray-400 uppercase tracking-[0.2em] sm:tracking-[0.25em] flex items-center gap-2 pointer-events-none"><ShieldCheck size={11} strokeWidth={1.5} /> Garantía Evocare</span>
               </div>
             </div>
