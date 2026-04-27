@@ -6,7 +6,6 @@
 import { useEffect } from 'react';
 import { motion } from 'motion/react';
 import IngredientsCarousel from '../components/IngredientsCarousel';
-import FinalCTA from '../components/FinalCTA';
 
 export default function IngredientsPage() {
   useEffect(() => {
@@ -52,7 +51,6 @@ export default function IngredientsPage() {
       </section>
 
       <IngredientsCarousel />
-      <FinalCTA />
     </div>
   );
 }
