@@ -25,7 +25,9 @@ export default function Product() {
   const totalPrice = currentUnitPrice * selectedPack;
 
   const getImageUrl = (path: string) => {
-    return supabase.storage.from('product-images').getPublicUrl(path).data.publicUrl;
+    // Ensure spaces in file names are encoded properly
+    const encodedPath = encodeURI(path);
+    return supabase.storage.from('product-images').getPublicUrl(encodedPath).data.publicUrl;
   };
 
   const images = [
