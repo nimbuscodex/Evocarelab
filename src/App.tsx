@@ -4,6 +4,7 @@
  */
 
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import IngredientsPage from './pages/IngredientsPage';
@@ -72,6 +73,7 @@ export default function App() {
           <AppContent />
         </CookieGate>
       </CartProvider>
+      <Analytics />
     </BrowserRouter>
   );
 }
