@@ -34,69 +34,6 @@ const ritualSteps = [
   }
 ];
 
-function Footprints({ progress }: { progress: any }) {
-  return (
-    <div className="absolute inset-x-0 top-0 bottom-0 pointer-events-none z-[1]">
-      <div className="relative w-full h-full min-h-[500vh]">
-        {[...Array(110)].map((_, i) => {
-          const totalPoints = 110;
-          const stepProgress = i / totalPoints;
-          const isLeft = i % 2 === 0;
-          
-          // Responsive amplitude: less winding on small screens
-          const horizontalAmplitude = typeof window !== 'undefined' && window.innerWidth < 768 ? 40 : 100;
-          const frequency = 0.25; 
-          const sinX = Math.sin(i * frequency) * horizontalAmplitude;
-          
-          const footOffset = isLeft ? -15 : 15;
-          const finalX = sinX + footOffset;
-
-          const footColor = useTransform(
-            progress,
-            [stepProgress - 0.03, stepProgress, stepProgress + 0.03],
-            ["rgba(184,134,11,0.08)", "rgba(184,134,11,1)", "rgba(184,134,11,0.5)"]
-          );
-          
-          const footOpacity = useTransform(
-            progress,
-            [stepProgress - 0.05, stepProgress, stepProgress + 0.3],
-            [0, 1, 0.7]
-          );
-
-          return (
-            <motion.div
-              key={i}
-              style={{ 
-                opacity: footOpacity,
-                top: `${(i * 100) / totalPoints}%`,
-                left: `calc(50% + ${finalX}px)`,
-                rotate: (Math.cos(i * frequency) * 40) + (isLeft ? -10 : 10),
-                x: '-50%'
-              }}
-              className="absolute"
-            >
-              <motion.svg
-                width="40"
-                height="80"
-                className="md:w-[60px] md:h-[120px] drop-shadow-[0_0_20px_rgba(184,134,11,0.4)]"
-                viewBox="0 0 36 72"
-                style={{ fill: footColor }}
-              >
-                <path d="M18,72 C26,72 33,64 33,52 C33,40 28,36 24,32 C20,28 22,18 19,14 C16,10 11,12 9,18 C7,24 5,35 5,50 C5,65 10,72 18,72 Z" />
-                <circle cx="11" cy="7" r="5" />
-                <circle cx="20" cy="5" r="3.5" />
-                <circle cx="27" cy="9" r="3" />
-                <circle cx="32" cy="16" r="2.5" />
-                <circle cx="33" cy="24" r="2" />
-              </motion.svg>
-            </motion.div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
 export default function Ritual() {
   const navigate = useNavigate();
   const containerRef = useRef(null);
@@ -150,8 +87,6 @@ export default function Ritual() {
 
       {/* Steps Section */}
       <section ref={containerRef} className="relative py-24 md:py-48 bg-white overflow-hidden">
-        {/* Footprint Path Background */}
-        <Footprints progress={smoothProgress} />
 
         <div className="container mx-auto px-6 relative z-10">
           <div className="space-y-[60vh] md:space-y-[120vh]">
