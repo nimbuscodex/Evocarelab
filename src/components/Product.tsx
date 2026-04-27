@@ -157,7 +157,7 @@ export default function Product() {
               onClick={handleAdd}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="cta-btn px-10 py-5 bg-ink text-white text-[10px] uppercase tracking-[0.2em] font-bold shadow-2xl transition-shadow hover:shadow-gray-200"
+              className="cta-btn px-10 py-5 bg-black text-white text-[10px] uppercase tracking-[0.2em] font-bold shadow-2xl transition-shadow hover:shadow-gray-200"
             >
               Añadir al carrito — {product.price.toFixed(2)}€
             </motion.button>

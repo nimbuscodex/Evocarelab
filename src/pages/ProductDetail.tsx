@@ -157,7 +157,7 @@ function ProductDetailContent({ product }: { product: any }) {
               <motion.button 
                 whileTap={{ scale: 0.98 }}
                 onClick={handleAddToCart}
-                className="w-full relative overflow-hidden bg-ink text-white py-6 px-8 sm:px-10 flex items-center justify-between group rounded-none shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)]"
+                className="w-full relative overflow-hidden bg-black text-white py-6 px-8 sm:px-10 flex items-center justify-between group rounded-none shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)]"
               >
                 {/* Elegant overlay transition */}
                 <div className="absolute inset-0 bg-neutral-800 scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]"></div>
