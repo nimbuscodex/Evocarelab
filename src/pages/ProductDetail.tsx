@@ -53,8 +53,8 @@ function ProductDetailContent({ product }: { product: any }) {
   const images = [
     getImageUrl('sobre.png'),
     getImageUrl('caja.png'),
-    getImageUrl('fondo blanco.png'),
-    getImageUrl('modelo 1.png')
+    getImageUrl('fondoblanco.png'),
+    getImageUrl('modelo1.png')
   ];
 
   useEffect(() => {

@@ -27,7 +27,7 @@ export default function Product() {
   const images = [
     getImageUrl('sobre.png'),
     getImageUrl('caja.png'),
-    getImageUrl('fondo blanco.png')
+    getImageUrl('fondoblanco.png')
   ];
 
   // Auto-rotate images

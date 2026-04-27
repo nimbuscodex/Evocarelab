@@ -13,7 +13,7 @@ const mainIngredients = [
     name: "Hialuronato de sodio",
     highlight: "Hidratar",
     description: "Su estructura de alto peso molecular forma una película viscoelástica no oclusiva en la superficie epidérmica, regulando de forma inteligente la evaporación del agua transepidérmica y proporcionando un alivio higroscópico inmediato.",
-    image: getImageUrl("molécula quimica.png"),
+    image: getImageUrl("moleculaquimica.png"),
     level: "Superficie",
     benefit: "Barrera hídrica"
   },
