@@ -28,11 +28,26 @@ export default function ProductDetail() {
 function ProductDetailContent({ product }: { product: any }) {
   const { addItem } = useCart();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [selectedPack, setSelectedPack] = useState(1);
   const scienceRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: scienceRef,
     offset: ["start end", "end start"]
   });
+
+  const packs = [
+    { id: 1, name: '1 Paquete', description: 'Tratamiento esencial', discount: 0, count: 1 },
+    { id: 2, name: '2 Paquetes', description: 'Ritual intensivo', discount: 5, count: 2 },
+    { id: 3, name: '3 Paquetes', description: 'Tratamiento completo', discount: 10, count: 3 },
+  ];
+
+  const currentPrice = selectedPack === 1 
+    ? product.price 
+    : selectedPack === 2 
+      ? product.price * 0.95 
+      : product.price * 0.9;
+  
+  const totalPrice = currentPrice * selectedPack;
 
   const images = [
     '/sobre.png',
@@ -55,9 +70,9 @@ function ProductDetailContent({ product }: { product: any }) {
     addItem({
       id: product.id,
       name: product.name,
-      price: product.price,
+      price: product.price, // Base price, context handles discount
       image: images[currentImageIndex]
-    });
+    }, selectedPack);
   };
 
   return (
@@ -152,6 +167,50 @@ function ProductDetailContent({ product }: { product: any }) {
                 {product.description}
               </p>
             </div>
+            
+            {/* Pack Selection */}
+            <div className="space-y-4">
+              <span className="text-[9px] uppercase tracking-[0.4em] text-gray-400 font-bold block mb-4">Selecciona tu ritual</span>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {packs.map((pack) => {
+                  const packUnitPrice = pack.id === 1 ? product.price : pack.id === 2 ? product.price * 0.95 : product.price * 0.9;
+                  const isSelected = selectedPack === pack.id;
+                  
+                  return (
+                    <button
+                      key={pack.id}
+                      onClick={() => setSelectedPack(pack.id)}
+                      className={`relative p-5 rounded-2xl border-2 text-left transition-all duration-300 ${
+                        isSelected 
+                        ? 'border-ink bg-neutral-50 shadow-md ring-4 ring-neutral-50' 
+                        : 'border-neutral-100 bg-white hover:border-neutral-200 hover:bg-neutral-50/50'
+                      }`}
+                    >
+                      {pack.discount > 0 && (
+                        <div className="absolute -top-3 -right-3 bg-gold text-ink text-[8px] font-bold uppercase tracking-widest px-2 py-1 rounded-full shadow-sm z-10">
+                          -{pack.discount}%
+                        </div>
+                      )}
+                      
+                      <div className="space-y-1">
+                        <p className={`text-[10px] uppercase tracking-widest font-bold ${isSelected ? 'text-ink' : 'text-gray-400'}`}>
+                          {pack.name}
+                        </p>
+                        <p className="text-[13px] font-serif text-ink">
+                          {packUnitPrice.toFixed(2)}€ <span className="text-[10px] text-gray-400 font-sans not-italic">/u</span>
+                        </p>
+                      </div>
+                      
+                      <div className={`mt-3 w-4 h-4 rounded-full border flex items-center justify-center transition-colors ${
+                        isSelected ? 'bg-ink border-ink' : 'bg-white border-neutral-200'
+                      }`}>
+                        {isSelected && <Check size={10} className="text-white" />}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
 
             <div className="pt-2 pb-10 border-b border-neutral-100">
               <motion.button 
@@ -171,7 +230,7 @@ function ProductDetailContent({ product }: { product: any }) {
                   </span>
                 </span>
                 <span className="text-[11px] sm:text-[12px] uppercase tracking-widest font-light opacity-90 relative z-10 transition-transform duration-500 group-hover:-translate-x-2">
-                  {product.price.toFixed(2)}€
+                  {totalPrice.toFixed(2)}€
                 </span>
               </motion.button>
               <div className="flex justify-between items-center mt-6 px-2">
@@ -349,6 +408,22 @@ function ProductDetailContent({ product }: { product: any }) {
 
       {/* FAQ Section */}
       <FAQAccordion />
+
+      {/* Security Check Section */}
+      <section className="py-24 bg-neutral-50 border-t border-neutral-100">
+        <div className="container mx-auto px-6 text-center">
+          <div className="max-w-2xl mx-auto space-y-6">
+            <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-ink text-white rounded-full text-[9px] uppercase tracking-[0.3em] font-bold">
+              <Microscope size={12} />
+              Protocolo de Seguridad
+            </div>
+            <h3 className="text-3xl font-serif text-ink italic italic">Ensayo de Armonía Dérmica</h3>
+            <p className="text-gray-500 font-light leading-relaxed">
+              La excelencia científica de Evocarelab se basa en la personalización biológica. Antes de tu primera inmersión total, aconsejamos aplicar una mínima dosis de esencia en la zona retroauricular (tras la oreja). Un compás de espera de <span className="font-bold text-ink underline decoration-gold/30">24 a 48 horas</span> confirmará la compatibilidad perfecta de nuestros activos con tu arquitectura celular.
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
@@ -360,7 +435,7 @@ const faqs = [
   },
   {
     question: "¿Es adecuada para mi tipo de piel?",
-    answer: "Sí, su fórmula clínica avanzada y libre de irritantes ha sido diseñada para ser tolerada por todo tipo de pieles, incluyendo las más sensibles, reactivas o con tendencia acnéica."
+    answer: "Nuestra fórmula es de grado clínico y está diseñada para la máxima tolerancia. Sin embargo, dado que cada piel es un ecosistema biológico único, recomendamos aplicar una pequeña gota detrás del lóbulo de la oreja y esperar entre 24 y 48 horas. Si no hay reactividad, disfruta del ritual con total seguridad."
   },
   {
     question: "¿Cuáles son los beneficios a largo plazo?",

@@ -12,7 +12,17 @@ export default function Product() {
   const { addItem } = useCart();
   const { product, loading } = useProduct();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [selectedPack, setSelectedPack] = useState(1);
   
+  const packs = [
+    { id: 1, name: '1 Pack', discount: 0, count: 1 },
+    { id: 2, name: '2 Packs', discount: 5, count: 2 },
+    { id: 3, name: '3 Packs', discount: 10, count: 3 },
+  ];
+
+  const currentUnitPrice = selectedPack === 1 ? (product?.price || 0) : selectedPack === 2 ? (product?.price || 0) * 0.95 : (product?.price || 0) * 0.9;
+  const totalPrice = currentUnitPrice * selectedPack;
+
   const images = [
     '/sobre.png',
     '/caja.png',
@@ -48,12 +58,13 @@ export default function Product() {
   }
 
   const handleAdd = () => {
+    if (!product) return;
     addItem({
       id: product.id,
       name: product.name,
       price: product.price,
       image: images[currentImageIndex]
-    });
+    }, selectedPack);
   };
 
   return (
@@ -153,13 +164,31 @@ export default function Product() {
               </div>
             </div>
 
+            {/* Pack Selection for Card */}
+            <div className="flex gap-2 mb-8">
+              {packs.map((pack) => (
+                <button
+                  key={pack.id}
+                  onClick={() => setSelectedPack(pack.id)}
+                  className={`flex-1 py-3 px-2 rounded-xl text-[9px] uppercase tracking-wider font-bold transition-all border ${
+                    selectedPack === pack.id 
+                    ? 'bg-ink text-white border-ink shadow-md' 
+                    : 'bg-white text-gray-400 border-gray-100 hover:border-gray-200'
+                  }`}
+                >
+                  {pack.name}
+                  {pack.discount > 0 && <span className="block text-[7px] text-gold mt-0.5">-{pack.discount}%</span>}
+                </button>
+              ))}
+            </div>
+
             <motion.button 
               onClick={handleAdd}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="cta-btn px-10 py-5 bg-black text-white text-[10px] uppercase tracking-[0.2em] font-bold shadow-2xl transition-shadow hover:shadow-gray-200"
+              className="cta-btn w-full sm:w-auto px-10 py-5 bg-black text-white text-[10px] uppercase tracking-[0.2em] font-bold shadow-2xl transition-shadow hover:shadow-gray-200"
             >
-              Añadir al carrito — {product.price.toFixed(2)}€
+              Añadir al carrito — {totalPrice.toFixed(2)}€
             </motion.button>
           </motion.div>
         </div>

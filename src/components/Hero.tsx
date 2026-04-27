@@ -5,23 +5,18 @@
 
 import { motion, useScroll, useTransform } from 'motion/react';
 import { ShoppingBag, ChevronRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useProduct } from '../hooks/useProduct';
 
 export default function Hero() {
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 500], [0, -50]);
-  const { addItem } = useCart();
+  const navigate = useNavigate();
   const { product, loading } = useProduct();
 
   const handleBuy = () => {
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.image_url
-    });
+    navigate('/producto');
   };
 
   return (

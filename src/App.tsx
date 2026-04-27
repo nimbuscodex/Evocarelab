@@ -5,6 +5,7 @@
 
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import AnnouncementBar from './components/AnnouncementBar';
 import Home from './pages/Home';
 import IngredientsPage from './pages/IngredientsPage';
 import Ritual from './pages/Ritual';
@@ -27,6 +28,7 @@ import CookieGate from './components/CookieGate';
 import DiscountPopup from './components/DiscountPopup';
 import Footer from './components/Footer';
 import FinalCTA from './components/FinalCTA';
+import ScrollToTop from './components/ScrollToTop';
 
 function AppContent() {
   const location = useLocation();
@@ -35,8 +37,14 @@ function AppContent() {
 
   return (
     <div className="flex flex-col min-h-screen selection:bg-ink selection:text-white relative">
-      {!isAdmin && <Navbar />}
-      <main className="flex-grow">
+      <ScrollToTop />
+      {!isAdmin && (
+        <div className="fixed top-0 left-0 right-0 z-50">
+          <AnnouncementBar />
+          <Navbar />
+        </div>
+      )}
+      <main className={`flex-grow ${!isAdmin ? 'pt-28 md:pt-32' : ''}`}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/tienda" element={<Store />} />

@@ -7,6 +7,11 @@ import { motion } from 'motion/react';
 
 const steps = [
   {
+    number: "00",
+    title: "Compatibilidad",
+    description: "Tu piel es única. Aplica una pequeña cantidad tras la oreja y espera de 24 a 48 horas para asegurar la armonía perfecta con tu dermis."
+  },
+  {
     number: "01",
     title: "Preparar",
     description: "Limpia profundamente tu piel para asegurar la absorción máxima de los micronutrientes."

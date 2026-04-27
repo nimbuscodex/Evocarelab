@@ -156,6 +156,22 @@ export default function Ritual() {
         </div>
       </section>
 
+      {/* Security Check Section (Patch Test) */}
+      <section className="py-24 bg-neutral-50 border-t border-neutral-100 italic">
+        <div className="container mx-auto px-6 text-center">
+          <div className="max-w-3xl mx-auto space-y-8">
+            <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-ink text-white rounded-full text-[9px] uppercase tracking-[0.3em] font-bold">
+              <span className="w-1.5 h-1.5 bg-gold rounded-full animate-pulse" />
+              Ensayo de Armonía Dérmica
+            </div>
+            <h3 className="text-4xl font-serif text-ink tracking-tight">Tu seguridad es nuestra <span className="text-gold">prioridad técnica</span>.</h3>
+            <p className="text-lg text-gray-500 font-light leading-relaxed">
+              Cada piel es un ecosistema biológico único. Aunque nuestra fórmula es de grado clínico y alta tolerancia, recomendamos realizar un <span className="font-bold text-ink">test de contacto</span>: aplica una mínima cantidad de esencia tras el lóbulo de la oreja y permite un compás de espera de <span className="font-bold text-ink underline decoration-gold/30">24 a 48 horas</span>. La ausencia de reactividad confirmará la sincronía perfecta con tu arquitectura celular.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Completion Section */}
       <section className="py-48 bg-ink text-center">
         <div className="container mx-auto px-6 max-w-4xl space-y-12">
@@ -173,7 +189,7 @@ export default function Ritual() {
           
           <div className="pt-12">
              <button 
-               onClick={() => navigate('/')}
+               onClick={() => navigate('/producto')}
                className="px-16 py-6 bg-gold text-ink text-xs uppercase tracking-[0.4em] font-bold hover:bg-white transition-all rounded-full shadow-2xl"
              >
                 COMPRAR YA

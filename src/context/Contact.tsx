@@ -97,20 +97,6 @@ export default function Contact() {
                   </p>
                 </div>
               </div>
-
-              <div className="space-y-4 pt-12 border-t border-gray-100">
-                <h3 className="text-[10px] uppercase tracking-[0.4em] text-gray-400 font-bold">Horarios</h3>
-                <div className="space-y-3 text-sm font-light text-gray-500">
-                  <div className="flex justify-between">
-                    <span>L-V</span>
-                    <span>09:00 — 18:00</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Sáb</span>
-                    <span>10:00 — 14:00</span>
-                  </div>
-                </div>
-              </div>
             </div>
           </motion.div>
 

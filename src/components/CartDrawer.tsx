@@ -80,7 +80,7 @@ export default function CartDrawer() {
                   <div className="absolute inset-0 bg-radial-[circle_at_30%_30%] from-gold/10 via-transparent to-transparent" />
                   <div className="relative z-10 text-center space-y-1">
                     <p className="text-[10px] uppercase tracking-[0.4em] font-bold text-gold">Núcleo</p>
-                    <p className="text-2xl md:text-3xl font-serif text-white">{totalSubtotal}€</p>
+                    <p className="text-2xl md:text-3xl font-serif text-white">{totalSubtotal.toFixed(2)}€</p>
                   </div>
                 </motion.div>
                 
@@ -173,7 +173,7 @@ export default function CartDrawer() {
                                    <span className="text-[9px] font-bold w-3 text-center">{item.quantity}</span>
                                    <button onClick={() => updateQuantity(item.id, 1)} className="text-white/40 hover:text-white transition-colors"><Plus size={10} /></button>
                                  </div>
-                                 <span className="text-[9px] font-bold text-gold">{item.price * item.quantity}€</span>
+                                 <span className="text-[9px] font-bold text-gold">{(item.price * item.quantity).toFixed(2)}€</span>
                                </div>
                              </div>
                           </div>
@@ -195,7 +195,7 @@ export default function CartDrawer() {
                 <div className="bg-white/5 backdrop-blur-xl border border-white/10 text-white p-2 rounded-full flex items-center justify-between shadow-2xl">
                   <div className="px-6">
                     <p className="text-[8px] uppercase tracking-[0.3em] text-white/40 mb-0.5">Total Selección</p>
-                    <p className="text-lg font-serif">{totalSubtotal}€</p>
+                    <p className="text-lg font-serif">{totalSubtotal.toFixed(2)}€</p>
                   </div>
                   <Link 
                     to="/checkout"

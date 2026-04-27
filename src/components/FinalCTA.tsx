@@ -15,12 +15,7 @@ export default function FinalCTA() {
   const { product, loading } = useProduct();
 
   const handleBuy = () => {
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.image_url
-    });
+    navigate('/producto');
   };
 
   return (
@@ -47,7 +42,7 @@ export default function FinalCTA() {
             onClick={handleBuy}
             className="cta-btn px-16 py-8 bg-ink text-white text-[11px] uppercase tracking-[0.4em] font-bold shadow-2xl transition-all duration-300"
           >
-            Comprar Ritual — {product.price.toFixed(2)}€
+            Comprar Ritual {product ? `— ${product.price.toFixed(2)}€` : ''}
           </motion.button>
           
           <div className="mt-24 flex gap-12 text-gray-400">
