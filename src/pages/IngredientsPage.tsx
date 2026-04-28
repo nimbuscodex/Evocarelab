@@ -5,9 +5,12 @@
 
 import { useEffect } from 'react';
 import { motion } from 'motion/react';
+import { useTranslation } from 'react-i18next';
 import IngredientsCarousel from '../components/IngredientsCarousel';
 
 export default function IngredientsPage() {
+  const { t } = useTranslation();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -24,7 +27,7 @@ export default function IngredientsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-[10px] uppercase tracking-[0.5em] text-gold font-bold mb-6 block"
               >
-                Ingredientes Activos
+                {t('pages.ingredients.badge')}
               </motion.span>
               <motion.h1 
                 initial={{ opacity: 0, y: 30 }}
@@ -32,8 +35,8 @@ export default function IngredientsPage() {
                 transition={{ delay: 0.1 }}
                 className="text-6xl md:text-8xl font-serif text-ink leading-[0.9] tracking-tight"
               >
-                Pureza <br />
-                <span className="italic font-light opacity-60">molecular.</span>
+                {t('pages.ingredients.title')} <br />
+                <span className="italic font-light opacity-60">{t('pages.ingredients.titleItalic')}</span>
               </motion.h1>
             </div>
             <div className="lg:col-span-5 pb-4">
@@ -43,7 +46,7 @@ export default function IngredientsPage() {
                 transition={{ delay: 0.2 }}
                 className="text-gray-500 font-light leading-relaxed text-lg italic border-l border-gold pl-8"
               >
-                "Nuestra búsqueda nos llevó desde los laboratorios más avanzados de Suiza hasta los ecosistemas más resilientes del planeta. El resultado es una sinergia perfecta entre ciencia y alma botánica."
+                "{t('pages.ingredients.quote')}"
               </motion.p>
             </div>
           </div>

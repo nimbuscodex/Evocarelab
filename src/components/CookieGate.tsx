@@ -7,6 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Shield, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { getLocalizedPath } from '../lib/i18n-utils';
 
 export default function CookieGate({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation();
@@ -61,7 +62,7 @@ export default function CookieGate({ children }: { children: React.ReactNode }) 
                     <h2 className="text-xl md:text-2xl font-serif text-white tracking-tight">{t('cookies.title')}</h2>
                     <p className="text-sm text-gray-400 font-light leading-relaxed max-w-2xl">
                       {t('cookies.description')}
-                      <a href="/privacidad" className="ml-1 text-gold hover:underline underline-offset-4 decoration-gold/30">Política de Cookies</a>.
+                      <a href={getLocalizedPath('privacy')} className="ml-1 text-gold hover:underline underline-offset-4 decoration-gold/30">{t('footer.cookies')}</a>.
                     </p>
                   </div>
 

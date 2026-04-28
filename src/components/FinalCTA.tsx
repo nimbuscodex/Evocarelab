@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { useCart } from '../context/CartContext';
 import { useProduct } from '../hooks/useProduct';
 import { getImageUrl } from '../lib/supabase';
+import { getLocalizedPath } from '../lib/i18n-utils';
 
 export default function FinalCTA() {
   const { t } = useTranslation();
@@ -18,7 +19,7 @@ export default function FinalCTA() {
   const { product, loading } = useProduct();
 
   const handleBuy = () => {
-    navigate('/producto');
+    navigate(getLocalizedPath('product'));
   };
 
   return (
@@ -49,7 +50,7 @@ export default function FinalCTA() {
           </motion.button>
           
           <div className="mt-24 flex gap-12 text-gray-400">
-            <Link to="/contacto" className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-bold hover:text-ink transition-colors">
+            <Link to={getLocalizedPath('contact')} className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-bold hover:text-ink transition-colors">
                <Mail size={14} /> {t('finalcta.contact')}
             </Link>
           </div>

@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { useCart } from '../context/CartContext';
 import { useProduct } from '../hooks/useProduct';
 import { getImageUrl } from '../lib/supabase';
+import { getLocalizedPath } from '../lib/i18n-utils';
 
 export default function Hero() {
   const { t } = useTranslation();
@@ -19,7 +20,7 @@ export default function Hero() {
   const { product, loading } = useProduct();
 
   const handleBuy = () => {
-    navigate('/producto');
+    navigate(getLocalizedPath('product'));
   };
 
   return (
@@ -62,7 +63,7 @@ export default function Hero() {
                 {t('hero.ctaBuy')}
               </button>
               <Link 
-                to="/producto"
+                to={getLocalizedPath('product')}
                 className="cta-btn border border-gray-200 px-10 py-5 text-[10px] uppercase tracking-[0.3em] font-semibold text-gray-400 active:scale-95 inline-block text-center"
               >
                 {t('hero.ctaLearn')}

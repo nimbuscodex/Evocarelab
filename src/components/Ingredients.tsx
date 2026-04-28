@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { getImageUrl } from '../lib/supabase';
+import { getLocalizedPath } from '../lib/i18n-utils';
 
 export default function Ingredients() {
   const { t } = useTranslation();
@@ -118,7 +119,7 @@ export default function Ingredients() {
           className="flex justify-center"
         >
           <Link 
-            to="/ingredientes"
+            to={getLocalizedPath('ingredients')}
             className="group flex flex-col items-center gap-4 text-center"
           >
             <div className="relative">

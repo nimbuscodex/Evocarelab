@@ -5,10 +5,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Sparkles, AlertCircle } from 'lucide-react';
+import { getLocalizedPath } from '../lib/i18n-utils';
 
 interface Product {
   id: string;
@@ -21,10 +23,13 @@ interface Product {
 }
 
 export default function Store() {
+  const { t, i18n } = useTranslation();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { addItem } = useCart();
+
+  const isSpanish = i18n.language.startsWith('es');
 
   useEffect(() => {
     async function fetchProducts() {
@@ -45,29 +50,33 @@ export default function Store() {
           setProducts([
             {
               id: 'triple-h-mask-1',
-              name: 'Triple Hyaluronic Acid Mask',
-              description: 'Nuestra fórmula magistral que combina colágeno biomimético de bajo peso molecular con un complejo de triple ácido hialurónico.',
+              name: isSpanish ? 'Máscara Triple Ácido Hialurónico' : 'Triple Hyaluronic Acid Mask',
+              description: isSpanish 
+                ? 'Nuestra fórmula magistral que combina colágeno biomimético de bajo peso molecular con un complejo de triple ácido hialurónico.'
+                : 'Our master formula that combines low molecular weight biomimetic collagen with a triple hyaluronic acid complex.',
               price: 29.95,
               image_url: 'https://www.kiyobeauty.com/cdn/shop/files/biodance-bio-collagen-real-deep-mask-1pc-PURESEOUL-UK-KBeauty-shop-2_1800x1800_0d187b16-fead-4418-b39a-2debfafbc0c3.webp?v=1756371372&width=1500',
-              category: 'Mascarillas',
-              badge: 'Más Vendido'
+              category: isSpanish ? 'Mascarillas' : 'Masks',
+              badge: t('store.bestseller')
             }
           ]);
         }
       } catch (err: any) {
         console.error('Error fetching products:', err.message);
-        setError('No pudimos cargar los productos desde Supabase.');
+        setError(isSpanish ? 'No pudimos cargar los productos desde Supabase.' : 'We could not load the products from Supabase.');
         
         // Fallback for visual purposes if no database is connected
         setProducts([
           {
             id: 'triple-h-mask-1',
-            name: 'Triple Hyaluronic Acid Mask',
-            description: 'Nuestra fórmula magistral que combina colágeno biomimético de bajo peso molecular con un complejo de triple ácido hialurónico.',
+            name: isSpanish ? 'Máscara Triple Ácido Hialurónico' : 'Triple Hyaluronic Acid Mask',
+            description: isSpanish 
+              ? 'Nuestra fórmula magistral que combina colágeno biomimético de bajo peso molecular con un complejo de triple ácido hialurónico.'
+              : 'Our master formula that combines low molecular weight biomimetic collagen with a triple hyaluronic acid complex.',
             price: 29.95,
             image_url: 'https://www.kiyobeauty.com/cdn/shop/files/biodance-bio-collagen-real-deep-mask-1pc-PURESEOUL-UK-KBeauty-shop-2_1800x1800_0d187b16-fead-4418-b39a-2debfafbc0c3.webp?v=1756371372&width=1500',
-            category: 'Mascarillas',
-            badge: 'Bestseller'
+            category: isSpanish ? 'Mascarillas' : 'Masks',
+            badge: t('store.bestseller')
           }
         ]);
       } finally {
@@ -76,7 +85,7 @@ export default function Store() {
     }
 
     fetchProducts();
-  }, []);
+  }, [isSpanish, t]);
 
   const handleAdd = (product: Product) => {
     addItem({
@@ -98,10 +107,10 @@ export default function Store() {
         >
           <span className="text-[10px] uppercase tracking-[0.4em] text-gray-400 mb-4 block">Evocarelab</span>
           <h1 className="text-5xl md:text-6xl font-serif text-ink mb-6">
-            Nuestra <span className="italic">Colección</span>
+            {t('store.title')}<span className="italic">{t('store.titleItalic')}</span>
           </h1>
           <p className="text-gray-500 font-light leading-relaxed">
-            Descubre nuestra gama de productos formulados científicamente para una hidratación profunda y resultados visibles.
+            {t('store.subtitle')}
           </p>
         </motion.div>
       </section>
@@ -112,8 +121,10 @@ export default function Store() {
           <div className="bg-amber-50 text-amber-800 p-4 rounded-xl flex items-start gap-4 text-sm font-light border border-amber-100/50">
             <AlertCircle size={20} className="shrink-0 mt-0.5 text-amber-500" />
             <div>
-              <strong className="font-medium block mb-1">Nota de Conectividad Supabase</strong>
-              {error} Asegúrate de haber configurado correctamente el archivo <code>.env.local</code> con tus credenciales de Vercel/Supabase y de haber creado la tabla <code>products</code>. Mostrando productos de demostración.
+              <strong className="font-medium block mb-1">{t('store.connectivityNote')}</strong>
+              {error} {isSpanish 
+                ? 'Asegúrate de haber configurado correctamente el archivo .env.local con tus credenciales de Vercel/Supabase y de haber creado la tabla products. Mostrando productos de demostración.'
+                : 'Make sure you have correctly configured the .env.local file with your Vercel/Supabase credentials and created the products table. Showing demo products.'}
             </div>
           </div>
         </div>
@@ -143,7 +154,7 @@ export default function Store() {
                       {product.badge}
                     </div>
                   )}
-                  <Link to="/producto" className="block w-full h-full">
+                  <Link to={getLocalizedPath('product')} className="block w-full h-full">
                     <img 
                       src={product.image_url} 
                       alt={product.name}
@@ -161,7 +172,7 @@ export default function Store() {
                       }}
                       className="w-full py-4 bg-ink text-white text-[10px] uppercase tracking-[0.2em] font-bold rounded-xl shadow-xl flex items-center justify-center gap-2 hover:bg-gold transition-colors"
                     >
-                      Añadir <span className="opacity-50 mx-2">|</span> {product.price.toFixed(2)}€
+                      {t('store.add')} <span className="opacity-50 mx-2">|</span> {product.price.toFixed(2)}€
                     </button>
                   </div>
                 </div>
@@ -169,9 +180,9 @@ export default function Store() {
                 {/* Info */}
                 <div className="flex-grow flex flex-col items-center text-center space-y-3 px-4">
                   <span className="text-[10px] uppercase tracking-widest text-gold font-bold">
-                    {product.category || 'Tratamiento'}
+                    {product.category || t('store.treatment')}
                   </span>
-                  <Link to="/producto">
+                  <Link to={getLocalizedPath('product')}>
                     <h3 className="text-xl font-serif text-ink tracking-tight hover:text-gold transition-colors">
                       {product.name}
                     </h3>
@@ -203,15 +214,15 @@ export default function Store() {
             className="relative z-10 max-w-2xl mx-auto space-y-8"
           >
             <Sparkles className="w-8 h-8 text-gold mx-auto opacity-50" />
-            <h2 className="text-4xl md:text-5xl font-serif text-ink">Completa tu Sistema</h2>
+            <h2 className="text-4xl md:text-5xl font-serif text-ink">{t('store.completeSystem')}</h2>
             <p className="text-gray-500 font-light text-lg">
-              Maximiza la absorción de los principios activos usando la mascarilla en combinación con nuestra rutina preparatoria.
+              {t('store.completeDesc')}
             </p>
             <Link 
-              to="/ritual" 
+              to={getLocalizedPath('ritual')} 
               className="inline-flex items-center gap-4 text-[10px] uppercase tracking-[0.3em] font-bold text-ink border-b border-ink/20 pb-2 hover:border-ink transition-colors"
             >
-              Descubrir Ritual <ArrowRight size={14} />
+              {t('store.discoverRitual')} <ArrowRight size={14} />
             </Link>
           </motion.div>
         </div>

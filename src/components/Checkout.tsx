@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { motion, AnimatePresence } from 'motion/react';
-import { CreditCard, Truck, Check, Loader2, ArrowLeft } from 'lucide-react';
+import { CreditCard, Truck, Check, Loader2, ArrowLeft, Globe } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useCart } from '../context/CartContext';
 
@@ -17,7 +17,8 @@ interface CheckoutProps {
 }
 
 export default function Checkout({ onBack }: CheckoutProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isSpanish = i18n.language.startsWith('es');
   const { totalSubtotal, items, clearCart } = useCart();
   const [step, setStep] = useState<1 | 2>(1);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -27,6 +28,7 @@ export default function Checkout({ onBack }: CheckoutProps) {
   const checkoutSchema = z.object({
     email: z.string().email(t('checkout.val_email')),
     fullName: z.string().min(3, t('checkout.val_name')),
+    country: z.string().min(1),
     address: z.string().min(10, t('checkout.val_address')),
     cardNumber: z.string().regex(/^\d{16}$/, t('checkout.val_card')),
     expiry: z.string().regex(/^(0[1-9]|1[0-2])\/\d{2}$/, t('checkout.val_expiry')),
@@ -38,7 +40,8 @@ export default function Checkout({ onBack }: CheckoutProps) {
   const { register, handleSubmit, formState: { errors } } = useForm<CheckoutData>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
-      cardNumber: "4242424242424242" // Demo hint
+      cardNumber: "4242424242424242", // Demo hint
+      country: "Spain"
     }
   });
 
@@ -110,7 +113,7 @@ export default function Checkout({ onBack }: CheckoutProps) {
             <div className="space-y-1">
               <input 
                 {...register("fullName")}
-                placeholder={t('checkout.namePlaceholder')}
+                placeholder={t('checkout.name')}
                 className="w-full bg-white border-b border-gray-100 py-3 text-sm focus:border-ink outline-none transition-colors"
               />
               {errors.fullName && <p className="text-[10px] text-red-400 uppercase italic">{errors.fullName.message}</p>}
@@ -119,16 +122,32 @@ export default function Checkout({ onBack }: CheckoutProps) {
             <div className="space-y-1">
               <input 
                 {...register("email")}
-                placeholder="Email"
+                placeholder={t('checkout.email')}
                 className="w-full bg-white border-b border-gray-100 py-3 text-sm focus:border-ink outline-none transition-colors"
               />
               {errors.email && <p className="text-[10px] text-red-400 uppercase italic">{errors.email.message}</p>}
             </div>
             
             <div className="space-y-1">
+              <div className="relative">
+                <select 
+                  {...register("country")}
+                  className="w-full bg-white border-b border-gray-100 py-3 text-sm focus:border-ink outline-none transition-colors appearance-none cursor-pointer"
+                >
+                  <option value="Spain">{t('checkout.countrySpain')}</option>
+                  {!isSpanish && <option value="International">{t('checkout.countryRest')}</option>}
+                </select>
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                  <Globe size={16} />
+                </div>
+              </div>
+              {errors.country && <p className="text-[10px] text-red-400 uppercase italic">{errors.country.message}</p>}
+            </div>
+
+            <div className="space-y-1">
               <input 
                 {...register("address")}
-                placeholder={t('checkout.addressPlaceholder')}
+                placeholder={t('checkout.address')}
                 className="w-full bg-white border-b border-gray-100 py-3 text-sm focus:border-ink outline-none transition-colors"
               />
               {errors.address && <p className="text-[10px] text-red-400 uppercase italic">{errors.address.message}</p>}

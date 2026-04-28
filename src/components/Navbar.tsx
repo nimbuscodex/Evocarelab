@@ -4,28 +4,34 @@
  */
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { ShoppingBag, Menu, X, Globe } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useCart } from '../context/CartContext';
+import { getLocalizedPath, translatePath } from '../lib/i18n-utils';
 
 export default function Navbar() {
   const { t, i18n } = useTranslation();
   const { itemCount, setIsCartOpen } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const toggleLanguage = () => {
-    const isSpanish = i18n.language.startsWith('es');
-    const nextLang = isSpanish ? 'en' : 'es';
+    const currentLang = i18n.language.split('-')[0];
+    const nextLang = currentLang === 'es' ? 'en' : 'es';
+    
+    const newPath = translatePath(location.pathname, nextLang);
+    navigate(newPath);
     i18n.changeLanguage(nextLang);
   };
 
   const menuLinks = [
-    { label: t('nav.store'), to: '/producto' },
-    { label: t('nav.science'), to: '/ingredientes' },
-    { label: t('nav.ritual'), to: '/ritual' },
-    { label: t('nav.contact'), to: '/contacto' }
+    { label: t('nav.store'), to: getLocalizedPath('product') },
+    { label: t('nav.science'), to: getLocalizedPath('ingredients') },
+    { label: t('nav.ritual'), to: getLocalizedPath('ritual') },
+    { label: t('nav.contact'), to: getLocalizedPath('contact') }
   ];
 
   return (
@@ -47,7 +53,7 @@ export default function Navbar() {
               <Menu size={24} />
             </button>
 
-            <Link to="/" className="font-serif text-xl md:text-2xl text-ink leading-none relative group">
+            <Link to={getLocalizedPath('home')} className="font-serif text-xl md:text-2xl text-ink leading-none relative group">
               Evocare
               <span className="text-[10px] md:text-[14px] absolute -bottom-2 md:-bottom-3 -right-2 md:-right-3 lowercase">lab</span>
             </Link>
@@ -101,7 +107,7 @@ export default function Navbar() {
               onClick={() => setIsCartOpen(true)}
               className="text-[10px] uppercase tracking-widest font-medium border-b border-ink pb-1 cursor-pointer transition-all hover:opacity-70 flex items-center gap-2"
             >
-              Bolsa ({itemCount})
+              {t('cart.bag')} ({itemCount})
             </button>
           </div>
         </div>
@@ -125,7 +131,7 @@ export default function Navbar() {
               className="fixed top-0 left-0 bottom-0 w-[80%] max-w-xs bg-white z-[70] p-10 flex flex-col"
             >
               <div className="flex items-center justify-between mb-16">
-                <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-2xl text-ink leading-none">
+                <Link to={getLocalizedPath('home')} onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-2xl text-ink leading-none">
                   Evocarelab
                 </Link>
                 <button 
@@ -161,7 +167,7 @@ export default function Navbar() {
               </div>
 
               <div className="mt-auto pt-10 border-t border-gray-100 italic font-light text-gray-500 text-sm">
-                La ciencia de la belleza celular.
+                {t('nav.moto')}
               </div>
             </motion.div>
           </>

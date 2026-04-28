@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { useCart } from '../context/CartContext';
 import { cn } from '../lib/utils';
 import { Link } from 'react-router-dom';
+import { getLocalizedPath } from '../lib/i18n-utils';
 
 export default function CartDrawer() {
   const { t } = useTranslation();
@@ -200,7 +201,7 @@ export default function CartDrawer() {
                     <p className="text-lg font-serif">{totalSubtotal.toFixed(2)}€</p>
                   </div>
                   <Link 
-                    to="/checkout"
+                    to={getLocalizedPath('checkout')}
                     onClick={() => setIsCartOpen(false)}
                     className="h-12 px-8 bg-gold text-ink rounded-full text-[10px] uppercase tracking-[0.3em] font-bold flex items-center gap-2 hover:bg-white transition-all"
                   >

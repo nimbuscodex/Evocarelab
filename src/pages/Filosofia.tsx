@@ -1,8 +1,11 @@
 import { useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Leaf, Hexagon, TestTubeDiagonal } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function Filosofia() {
+  const { t } = useTranslation();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -10,18 +13,18 @@ export default function Filosofia() {
   const pilares = [
     {
       icon: <TestTubeDiagonal className="w-6 h-6 text-gold" />,
-      title: "Rigor Científico",
-      desc: "Cada fórmula es sometida a rigurosas pruebas de estabilidad y eficacia clínica. No creemos en milagros, creemos en moléculas biodisponibles y resultados medibles."
+      title: t('pages.philosophy.pilar1_title'),
+      desc: t('pages.philosophy.pilar1_desc')
     },
     {
       icon: <Hexagon className="w-6 h-6 text-gold" />,
-      title: "Ingeniería de Tejidos",
-      desc: "Nuestra aproximación a la cosmética imita la estructura biológica de la piel. Formulamos para complementar el manto hidrolipídico, no para alterarlo."
+      title: t('pages.philosophy.pilar2_title'),
+      desc: t('pages.philosophy.pilar2_desc')
     },
     {
       icon: <Leaf className="w-6 h-6 text-gold" />,
-      title: "Pureza Absoluta",
-      desc: "Seleccionamos ingredientes con calidad farmacéutica (USP/EP). Filtramos impurezas, eliminamos fragancias innecesarias y maximizamos la concentración de activos puros."
+      title: t('pages.philosophy.pilar3_title'),
+      desc: t('pages.philosophy.pilar3_desc')
     }
   ];
 
@@ -36,13 +39,13 @@ export default function Filosofia() {
           className="text-center max-w-3xl mx-auto space-y-6 mb-24"
         >
           <span className="inline-block px-3 py-1 bg-ink/5 rounded-full text-[10px] uppercase tracking-[0.3em] font-medium text-ink">
-            Manifiesto
+            {t('pages.philosophy.badge')}
           </span>
           <h1 className="text-5xl md:text-6xl font-serif text-ink tracking-tight">
-            La Filosofía del <span className="italic font-light">Laboratorio</span>
+            {t('pages.philosophy.title')}<span className="italic font-light">{t('pages.philosophy.titleItalic')}</span>
           </h1>
           <p className="text-gray-500 font-light text-lg leading-relaxed">
-            Nacimos de una obsesión: la intersección perfecta entre la biotecnología avanzada y la estética pura. En Evocarelab, no formulamos cosméticos; desarrollamos soluciones moleculares.
+            {t('pages.philosophy.intro')}
           </p>
         </motion.div>
 
@@ -78,17 +81,17 @@ export default function Filosofia() {
         >
           <div className="flex-1 space-y-8">
             <h2 className="text-3xl md:text-4xl font-serif text-ink">
-              Ciencia sin <span className="italic font-light">compromisos.</span>
+              {t('pages.philosophy.section_title')}<span className="italic font-light">{t('pages.philosophy.section_titleItalic')}</span>
             </h2>
             <div className="space-y-6 text-gray-500 font-light leading-relaxed">
               <p>
-                Operamos desde nuestro laboratorio en Madrid con una misión singular: elevar el estándar del cuidado personal mediante la ciencia de materiales y la formulación avanzada. 
+                {t('pages.philosophy.section_p1')}
               </p>
               <p>
-                A diferencia de la cosmética tradicional que se queda en la superficie, nuestra tecnología hidrocoloide se diseñó originalmente para aplicaciones médicas de cicatrización de heridas. Hemos refinado ese mismo principio para la piel intacta, creando un microambiente sellado que fuerza a las moléculas activas a penetrar la barrera cutánea.
+                {t('pages.philosophy.section_p2')}
               </p>
               <p className="font-medium text-ink">
-                "No vendemos esperanza en un frasco. Entregamos resultados basados en principios termodinámicos y bioquímicos."
+                "{t('pages.philosophy.section_p3')}"
               </p>
             </div>
           </div>

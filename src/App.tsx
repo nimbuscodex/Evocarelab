@@ -9,7 +9,7 @@ import AnnouncementBar from './components/AnnouncementBar';
 import Home from './pages/Home';
 import IngredientsPage from './pages/IngredientsPage';
 import Ritual from './pages/Ritual';
-import Contact from './context/Contact';
+import Contact from './pages/ContactPage';
 import ProductDetail from './pages/ProductDetail';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import CookiesPolicy from './pages/CookiesPolicy';
@@ -29,11 +29,42 @@ import DiscountPopup from './components/DiscountPopup';
 import Footer from './components/Footer';
 import FinalCTA from './components/FinalCTA';
 import ScrollToTop from './components/ScrollToTop';
+import LanguageHandler from './components/LanguageHandler';
+import { useTranslation } from 'react-i18next';
+
+function AppRoutes() {
+  const { t } = useTranslation();
+  
+  return (
+    <Routes>
+      <Route index element={<Home />} />
+      <Route path={t('routes.store')} element={<Store />} />
+      <Route path={t('routes.ingredients')} element={<IngredientsPage />} />
+      <Route path={t('routes.ritual')} element={<Ritual />} />
+      <Route path={t('routes.contact')} element={<Contact />} />
+      <Route path={t('routes.product')} element={<ProductDetail />} />
+      <Route path={t('routes.privacy')} element={<PrivacyPolicy />} />
+      <Route path={t('routes.cookies')} element={<CookiesPolicy />} />
+      <Route path={t('routes.legal')} element={<AvisoLegal />} />
+      <Route path={t('routes.shipping')} element={<PoliticaEnvios />} />
+      <Route path={t('routes.philosophy')} element={<Filosofia />} />
+      <Route path={t('routes.secret')} element={<ElSecreto />} />
+      <Route path={t('routes.checkout')} element={<CheckoutPage />} />
+      <Route path={t('routes.success')} element={<SuccessPage />} />
+      
+      {/* Admin remains outside or with its own logic */}
+      <Route path="admin" element={<AdminPage />} />
+      
+      {/* Fallback for invalid paths within a language */}
+      <Route path="*" element={<Home />} />
+    </Routes>
+  );
+}
 
 function AppContent() {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith('/admin');
-  const isCheckout = location.pathname === '/checkout';
+  const isCheckout = location.pathname.includes('/checkout');
 
   return (
     <div className="flex flex-col min-h-screen selection:bg-ink selection:text-white relative">
@@ -46,21 +77,8 @@ function AppContent() {
       )}
       <main className={`flex-grow ${!isAdmin ? 'pt-28 md:pt-32' : ''}`}>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/tienda" element={<Store />} />
-          <Route path="/ingredientes" element={<IngredientsPage />} />
-          <Route path="/ritual" element={<Ritual />} />
-          <Route path="/contacto" element={<Contact />} />
-          <Route path="/producto" element={<ProductDetail />} />
-          <Route path="/privacidad" element={<PrivacyPolicy />} />
-          <Route path="/cookies" element={<CookiesPolicy />} />
-          <Route path="/aviso-legal" element={<AvisoLegal />} />
-          <Route path="/envios-devoluciones" element={<PoliticaEnvios />} />
-          <Route path="/filosofia" element={<Filosofia />} />
-          <Route path="/el-secreto" element={<ElSecreto />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/success" element={<SuccessPage />} />
-          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/:lang/*" element={<LanguageHandler><AppRoutes /></LanguageHandler>} />
+          <Route path="*" element={<LanguageHandler><Home /></LanguageHandler>} />
         </Routes>
       </main>
       {!isAdmin && !isCheckout && <FinalCTA />}
