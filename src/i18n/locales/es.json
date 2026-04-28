@@ -441,6 +441,23 @@
       "mapTitle": "Ubicación Evocarelab"
     }
   },
+  "discover_drawer": {
+    "badge": "Contenido",
+    "discover_more": "Descubrir más",
+    "rights": "© 2026 Todos los derechos reservados.",
+    "version": "Sección Descubre v1.1.0",
+    "company": "Evocarelab Science S.L.",
+    "links": {
+      "philosophy": {
+        "title": "Filosofía del Laboratorio",
+        "content": "Creemos en la intersección pura entre la biotecnología avanzada y la estética. Cada fórmula es el resultado de años de investigación sin compromisos, diseñada para redefinir los límites del cuidado de la piel."
+      },
+      "secret": {
+        "title": "El Secreto de la Máscara",
+        "content": "Nuestra mascarilla hidrocoloide patentada no es solo un producto, es un sistema de entrega molecular continuo. Desarrollada para reaccionar a la temperatura basal de la piel y liberar activos de forma prolongada."
+      }
+    }
+  },
   "checkout": {
     "continue": "Continuar comprando",
     "title": "Finalizar Pedido.",

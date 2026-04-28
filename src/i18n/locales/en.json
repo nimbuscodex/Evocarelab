@@ -440,6 +440,23 @@
       "mapTitle": "Evocarelab Location"
     }
   },
+  "discover_drawer": {
+    "badge": "Content",
+    "discover_more": "Discover more",
+    "rights": "© 2026 All rights reserved.",
+    "version": "Discover Section v1.1.0",
+    "company": "Evocarelab Science S.L.",
+    "links": {
+      "philosophy": {
+        "title": "Laboratory Philosophy",
+        "content": "We believe in the pure intersection between advanced biotechnology and aesthetics. Each formula is the result of years of research without compromise, designed to redefine the limits of skin care."
+      },
+      "secret": {
+        "title": "The Secret of the Mask",
+        "content": "Our patented hydrocolloid mask is not just a product, it is a continuous molecular delivery system. Developed to react to the skin's basal temperature and release actives over a prolonged period."
+      }
+    }
+  },
   "checkout": {
     "continue": "Continue shopping",
     "title": "Finalize Order.",
