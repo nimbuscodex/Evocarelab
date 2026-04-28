@@ -6,17 +6,26 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { ShoppingBag, Menu, X } from 'lucide-react';
+import { ShoppingBag, Menu, X, Globe } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useCart } from '../context/CartContext';
 
 export default function Navbar() {
+  const { t, i18n } = useTranslation();
   const { itemCount, setIsCartOpen } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  const toggleLanguage = () => {
+    const isSpanish = i18n.language.startsWith('es');
+    const nextLang = isSpanish ? 'en' : 'es';
+    i18n.changeLanguage(nextLang);
+  };
+
   const menuLinks = [
-    { label: 'Ingredientes', to: '/ingredientes' },
-    { label: 'Ritual', to: '/ritual' },
-    { label: 'Contacto', to: '/contacto' }
+    { label: t('nav.store'), to: '/producto' },
+    { label: t('nav.science'), to: '/ingredientes' },
+    { label: t('nav.ritual'), to: '/ritual' },
+    { label: t('nav.contact'), to: '/contacto' }
   ];
 
   return (
@@ -25,7 +34,7 @@ export default function Navbar() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="relative bg-white/80 backdrop-blur-md border-b border-gray-100/50 h-20 md:h-24 flex items-center"
+        className="fixed top-0 left-0 right-0 z-[50] bg-white/80 backdrop-blur-md border-b border-gray-100/50 h-20 md:h-24 flex items-center"
       >
         <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
           <div className="flex items-center gap-6">
@@ -44,9 +53,9 @@ export default function Navbar() {
             </Link>
           </div>
           
-          <div className="hidden md:flex items-center gap-10 text-[10px] uppercase tracking-[0.25em] font-medium text-gray-500">
+          <div className="hidden md:flex items-center gap-4 text-[10px] uppercase tracking-[0.25em] font-medium text-gray-500">
             {menuLinks.map((link) => (
-              <motion.div key={link.label} initial="initial" whileHover="hover" className="relative">
+              <motion.div key={link.label} initial="initial" whileHover="hover" className="relative group/nav">
                 <Link 
                   to={link.to} 
                   className="relative py-2 px-6 hover:text-ink transition-colors z-10 block"
@@ -62,7 +71,6 @@ export default function Navbar() {
                   className="absolute inset-0 z-0 pointer-events-none flex items-center justify-center"
                 >
                   <div className="w-full h-full relative">
-                    {/* Organic cream stroke shape */}
                     <svg 
                       viewBox="0 0 100 40" 
                       className="w-full h-full drop-shadow-[0_2px_4px_rgba(243,229,208,0.4)]"
@@ -72,13 +80,6 @@ export default function Navbar() {
                         d="M 5,20 Q 20,5 50,8 Q 80,11 95,22 Q 80,35 50,32 Q 20,29 5,20" 
                         fill="#f7f0e6" 
                       />
-                      <path 
-                        d="M 10,22 Q 30,12 60,15 Q 85,18 90,24" 
-                        fill="none" 
-                        stroke="#e9dcc9" 
-                        strokeWidth="0.5" 
-                        strokeLinecap="round"
-                      />
                     </svg>
                   </div>
                 </motion.div>
@@ -86,7 +87,16 @@ export default function Navbar() {
             ))}
           </div>
           
-          <div className="flex items-center">
+          <div className="flex items-center gap-6">
+            {/* Language Switcher */}
+            <button 
+              onClick={toggleLanguage}
+              className="hidden md:flex items-center gap-2 text-[10px] uppercase tracking-widest font-medium text-gray-400 hover:text-ink transition-colors"
+            >
+              <Globe size={14} className="opacity-50" />
+              {i18n.language.startsWith('es') ? 'EN' : 'ES'}
+            </button>
+
             <button 
               onClick={() => setIsCartOpen(true)}
               className="text-[10px] uppercase tracking-widest font-medium border-b border-ink pb-1 cursor-pointer transition-all hover:opacity-70 flex items-center gap-2"
@@ -97,7 +107,6 @@ export default function Navbar() {
         </div>
       </motion.nav>
 
-      {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <>
@@ -138,6 +147,17 @@ export default function Navbar() {
                     {link.label}
                   </Link>
                 ))}
+                
+                <button 
+                  onClick={() => {
+                    toggleLanguage();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="text-left text-lg font-serif text-gray-400 hover:text-ink flex items-center gap-2"
+                >
+                  <Globe size={18} />
+                  {i18n.language.startsWith('es') ? 'English (EN)' : 'Español (ES)'}
+                </button>
               </div>
 
               <div className="mt-auto pt-10 border-t border-gray-100 italic font-light text-gray-500 text-sm">

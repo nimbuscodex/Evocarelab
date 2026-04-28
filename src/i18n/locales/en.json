@@ -1,0 +1,240 @@
+{
+  "hero": {
+    "badge": "Biotechnological Purity",
+    "title": "Perfect skin.",
+    "subtitle": "Effortlessly.",
+    "description": "Triple hyaluronic acid for deep three-dimensional hydration. The next generation in biotechnological facial care.",
+    "ctaBuy": "Buy now",
+    "ctaLearn": "Discover more",
+    "resultsBadge": "Results",
+    "resultsText": "Increase in dermal hydration after the first use."
+  },
+  "nav": {
+    "store": "Shop",
+    "about": "Philosophy",
+    "ritual": "The Ritual",
+    "science": "Science",
+    "contact": "Contact"
+  },
+  "benefits": {
+    "leaf01_title": "Radiance",
+    "leaf01_desc": "Instant natural glow.",
+    "leaf02_title": "Revitalizing Effect",
+    "leaf02_desc": "Deep cellular energy.",
+    "leaf03_title": "Barrier Protection",
+    "leaf03_desc": "Invisible environmental shield.",
+    "reviews": "Real Reviews",
+    "quote": "\"The transformation of my skin has been absolute in just 20 minutes.\"",
+    "verified": "Verified Customer",
+    "evaluation": "Dermatological evaluation based on dermo-epidermal regeneration after continuous use of Evocarelab Science."
+  },
+  "newsletter": {
+    "badge": "Scientific Circle",
+    "title": "Access to the ",
+    "titleItalic": "Laboratory.",
+    "description": "Join our private list to receive exclusive advances in cellular biotechnology, limited releases, and advanced ritual protocols.",
+    "placeholder": "Your academic email...",
+    "cta": "Request Access",
+    "successTitle": "Credentials Confirmed.",
+    "successDesc": "You will receive an invitation in your inbox shortly.",
+    "label1": "Selective Enrollment",
+    "label2": "No Propaganda",
+    "label3": "Only Science"
+  },
+  "problem": {
+    "title1": "Why settle for less when ",
+    "titleItalic": "your skin",
+    "title2": " deserves the glow of perfection?",
+    "description": "While conventional solutions only provide superficial hydration, Evocarelab works from within, fusing advanced biotechnology with luxury natural ingredients for an immediate and lasting lifting effect."
+  },
+  "product": {
+    "formula": "Advanced Formula",
+    "texture": "Luxury Texture",
+    "textureQuote": "\"A silken caress that melts instantly into your skin.\"",
+    "effectLabel": "Effect",
+    "effectValue": "Immediate lifting",
+    "finishLabel": "Finish",
+    "finishValue": "Plump and radiant skin",
+    "add": "Add to cart",
+    "defaultName": "Triple Hyaluronic Acid Mask",
+    "defaultDesc": "Our master formula combining low molecular weight biomimetic collagen with a triple hyaluronic acid complex."
+  },
+  "footer": {
+    "nav": "Navigation",
+    "science": "Ingredient Science",
+    "legal": "Legal",
+    "shipping": "Shipping and Returns",
+    "legalNotice": "Legal Notice",
+    "privacy": "Privacy Policy",
+    "cookies": "Cookie Policy",
+    "headquarters": "Headquarters",
+    "rights": "© 2026 Evocarelab Science. All rights reserved.",
+    "design": "Design by Evocarelab Team",
+    "biotech": "Applied Biotechnology"
+  },
+  "announcement": {
+    "msg1": "Free shipping on all orders 🚚",
+    "msg2": "14-day return guarantee",
+    "msg3": "Satisfaction guaranteed or refund"
+  },
+  "cart": {
+    "clear": "Clear",
+    "clearTitle": "Clear bag",
+    "close": "Close",
+    "closeTitle": "Close bag",
+    "core": "Core",
+    "empty": "Your purity system is empty.",
+    "total": "Selection Total",
+    "checkout": "Verified"
+  },
+  "ingredients": {
+    "badge": "Cutting-edge Science",
+    "title": "Molecular ",
+    "titleItalic": "Purity System.",
+    "cta": "Discover more",
+    "ctaDesc": "Explore the full molecular technology",
+    "ing1_name": "Sodium Hyaluronate",
+    "ing1_highlight": "Hydrate",
+    "ing1_desc": "Rapidly hydrates the stratum corneum and instantly relieves dryness and tightness.",
+    "ing2_name": "Hydrolyzed Hyaluronic Acid",
+    "ing2_highlight": "Penetrate",
+    "ing2_desc": "Ultra-small molecules that penetrate deeply and increase the structural hydration level.",
+    "ing3_name": "Acetylated Sodium Hyaluronate",
+    "ing3_highlight": "Retain",
+    "ing3_desc": "Improves skin adhesion and moisture retention capacity, prolonging the hydrating effect."
+  },
+  "howtouse": {
+    "badge": "The Ritual",
+    "title": "The art of ",
+    "titleItalic": "self-care.",
+    "step0_title": "Compatibility",
+    "step0_desc": "Your skin is unique. Apply a small amount behind the ear and wait 24 to 48 hours to ensure perfect harmony with your dermis.",
+    "step1_title": "Prepare",
+    "step1_desc": "Deeply clean your skin to ensure maximum absorption of micronutrients.",
+    "step2_title": "Apply",
+    "step2_desc": "Spread the mask over a clean face for 15–20 minutes.",
+    "step3_title": "Frequency",
+    "step3_desc": "Use 2–3 times per week or according to your skin's specific needs.",
+    "step4_title": "Reveal",
+    "step4_desc": "Remove and massage the excess essence for a smooth, plump, and radiant finish."
+  },
+  "testimonials": {
+    "title": "Voices of the ",
+    "titleItalic": "community",
+    "t1_name": "Elena Rodriguez",
+    "t1_role": "Beauty Editor",
+    "t1_quote": "It is the first mask that truly changes my skin texture in just 15 minutes. Essential.",
+    "t2_name": "Marco V.",
+    "t2_role": "Skin Enthusiast",
+    "t2_quote": "Minimalism taken to cosmetics. The results are as clean as its design.",
+    "t3_name": "Sophia Chen",
+    "t3_role": "Model",
+    "t3_quote": "My secret before every photo shoot. A boost of light that I haven't found in any other brand."
+  },
+  "philosophy": {
+    "badge": "Our Philosophy",
+    "quote": "\"We believe that real luxury lies in the simplicity of the essential and in the honesty of what you apply to your skin.\"",
+    "label1": "Organic",
+    "label2": "Toxins",
+    "label3": "Radiance"
+  },
+  "results": {
+    "badge": "Real Results",
+    "title": "Cellular architecture ",
+    "titleItalic": "transformed.",
+    "description": "After a 28-day protocol with our biocellulose mask, results are visible. Observe the regeneration of the skin barrier and the redensification of epidermal tissue.",
+    "stat1": "Deep hydration",
+    "stat2": "Expression lines",
+    "cardTitle": "Regenerative Effect",
+    "cardDesc": "Clinical visualization of cellular redensification after 4 applications.",
+    "day0": "Day 0",
+    "day28": "Day 28",
+    "help": "Slide to see the transformation"
+  },
+  "benefits": {
+    "reviews": "Featured Reviews",
+    "quote": "\"My skin has never felt so elastic and alive. It's as if every pore has awakened after years of lethargy.\"",
+    "verified": "Verified Buyer",
+    "evaluation": "Evaluated by independent cosmetologists under controlled clinical conditions.",
+    "leaf01_title": "Hydration",
+    "leaf01_desc": "Structural water for every epidermal layer.",
+    "leaf02_title": "Radiance",
+    "leaf02_desc": "Immediate flash effect from the first session.",
+    "leaf03_title": "Firmness",
+    "leaf03_desc": "Improves your face's natural elasticity."
+  },
+  "problem": {
+    "title1": "Most masks ",
+    "titleItalic": "only wet",
+    "title2": "the surface.",
+    "description": "Evocarelab uses medical-grade biocellulose and nanotechnology to ensure that active ingredients don't just stay on the stratum corneum, but penetrate where they really matter."
+  },
+  "finalcta": {
+    "title": "Ready to shine?",
+    "description": "Join the Evocarelab evolution and transform your daily routine into a timeless luxury ritual.",
+    "cta": "Shop Ritual",
+    "contact": "Direct Contact"
+  },
+  "newsletter": {
+    "badge": "Newsletter",
+    "title": "Exclusive ",
+    "titleItalic": "Invitation",
+    "description": "Receive rituals, early launches, and scientific discoveries directly in your inbox.",
+    "placeholder": "Your email address",
+    "cta": "Join now",
+    "successTitle": "Welcome to the club",
+    "successDesc": "Your subscription has been confirmed.",
+    "label1": "Science",
+    "label2": "Luxury",
+    "label3": "Purity"
+  },
+  "announcement": {
+    "msg1": "Free Shipping on Orders Over €50",
+    "msg2": "Free Returns Within 14 Days",
+    "msg3": "100% Guaranteed Secure Payment"
+  },
+  "cookies": {
+    "badge": "Privacy",
+    "title": "Your biotechnological experience.",
+    "description": "We use cookies to personalize your browsing and analyze our cellular architecture. By continuing, you accept our Cookie Policy.",
+    "accept": "Accept",
+    "reject": "Reject",
+    "config": "Cookie Settings"
+  },
+  "product": {
+    "defaultName": "Triple H Bio-Cellulose Mask",
+    "defaultDesc": "A masterpiece of molecular synthesis. Our biocellulose mask uses three hyaluronic acid weights for three-dimensional regeneration.",
+    "formula": "Advanced Formula",
+    "texture": "Second Skin Texture",
+    "textureQuote": "Ultra-fine medical-grade biocellulose for perfect molecular contact.",
+    "effectLabel": "Effect",
+    "effectValue": "Deep hydration + Redensification",
+    "finishLabel": "Finish",
+    "finishValue": "Non-greasy protective film",
+    "add": "Add to ritual",
+    "pack": "Pack",
+    "packs": "Packs"
+  },
+  "checkout": {
+    "back": "Back to bag",
+    "shipping": "Shipping Details",
+    "payment": "Payment Method",
+    "total": "Final Total",
+    "processing": "Processing...",
+    "confirm": "Confirm and Pay",
+    "secure": "SECURE AND TRUE PAYMENT (AES-256)",
+    "successTitle": "Order Confirmed!",
+    "successDesc": "Thank you for trusting Evocarelab. Your order {{orderId}} is being prepared for shipment.",
+    "successNote": "You will receive a confirmation email soon.",
+    "namePlaceholder": "Full Name",
+    "addressPlaceholder": "Shipping Address",
+    "cardPlaceholder": "Card Number",
+    "val_email": "Invalid email",
+    "val_name": "Minimum 3 characters",
+    "val_address": "Address too short",
+    "val_card": "Must be 16 digits",
+    "val_expiry": "Format MM/YY",
+    "val_cvv": "3 digits",
+    "server_error": "Server connection error"
+  }
+}

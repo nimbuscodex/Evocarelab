@@ -5,11 +5,13 @@
 
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Minus, Plus, ShoppingBag, ArrowRight, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useCart } from '../context/CartContext';
 import { cn } from '../lib/utils';
 import { Link } from 'react-router-dom';
 
 export default function CartDrawer() {
+  const { t } = useTranslation();
   const { items, isCartOpen, setIsCartOpen, removeItem, updateQuantity, totalSubtotal, clearCart } = useCart();
 
   return (
@@ -35,22 +37,22 @@ export default function CartDrawer() {
               <button 
                 onClick={clearCart}
                 className="w-12 h-12 bg-white/5 hover:bg-white/20 backdrop-blur-md border border-white/10 rounded-full transition-all text-white/70 hover:text-white flex items-center justify-center group relative pointer-events-auto"
-                title="Vaciar bolsa"
+                title={t('cart.clearTitle')}
               >
                 <Trash2 size={20} />
                 <span className="absolute right-full mr-4 text-[10px] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-ink/80 px-3 py-1.5 rounded-md border border-white/10 text-white pointer-events-none">
-                  Vaciar
+                  {t('cart.clear')}
                 </span>
               </button>
             )}
             <button 
               onClick={() => setIsCartOpen(false)}
               className="w-12 h-12 bg-white/5 hover:bg-white/20 backdrop-blur-md border border-white/10 rounded-full transition-all text-white/70 hover:text-white flex items-center justify-center group relative pointer-events-auto"
-              title="Cerrar bolsa"
+              title={t('cart.closeTitle')}
             >
               <X size={24} />
               <span className="absolute right-full mr-4 text-[10px] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-ink/80 px-3 py-1.5 rounded-md border border-white/10 text-white pointer-events-none">
-                Cerrar
+                {t('cart.close')}
               </span>
             </button>
           </motion.div>
@@ -79,7 +81,7 @@ export default function CartDrawer() {
                 >
                   <div className="absolute inset-0 bg-radial-[circle_at_30%_30%] from-gold/10 via-transparent to-transparent" />
                   <div className="relative z-10 text-center space-y-1">
-                    <p className="text-[10px] uppercase tracking-[0.4em] font-bold text-gold">Núcleo</p>
+                    <p className="text-[10px] uppercase tracking-[0.4em] font-bold text-gold">{t('cart.core')}</p>
                     <p className="text-2xl md:text-3xl font-serif text-white">{totalSubtotal.toFixed(2)}€</p>
                   </div>
                 </motion.div>
@@ -121,7 +123,7 @@ export default function CartDrawer() {
                   className="absolute inset-0 flex flex-col items-center justify-center text-center space-y-4"
                 >
                   <ShoppingBag size={48} className="text-white/20" />
-                  <p className="text-white/40 font-light italic">Su sistema de pureza está vacío.</p>
+                  <p className="text-white/40 font-light italic">{t('cart.empty')}</p>
                 </motion.div>
               ) : (
                 <motion.div 
@@ -194,7 +196,7 @@ export default function CartDrawer() {
               >
                 <div className="bg-white/5 backdrop-blur-xl border border-white/10 text-white p-2 rounded-full flex items-center justify-between shadow-2xl">
                   <div className="px-6">
-                    <p className="text-[8px] uppercase tracking-[0.3em] text-white/40 mb-0.5">Total Selección</p>
+                    <p className="text-[8px] uppercase tracking-[0.3em] text-white/40 mb-0.5">{t('cart.total')}</p>
                     <p className="text-lg font-serif">{totalSubtotal.toFixed(2)}€</p>
                   </div>
                   <Link 
@@ -202,7 +204,7 @@ export default function CartDrawer() {
                     onClick={() => setIsCartOpen(false)}
                     className="h-12 px-8 bg-gold text-ink rounded-full text-[10px] uppercase tracking-[0.3em] font-bold flex items-center gap-2 hover:bg-white transition-all"
                   >
-                    Verificado <ArrowRight size={14} />
+                    {t('cart.checkout')} <ArrowRight size={14} />
                   </Link>
                 </div>
               </motion.div>

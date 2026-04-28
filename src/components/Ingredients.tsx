@@ -6,43 +6,39 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { getImageUrl } from '../lib/supabase';
 
-const mainIngredients = [
-  {
-    id: "ing-1",
-    name: "Hialuronato de sodio",
-    highlight: "Hidratar",
-    description: "Hidrata rápidamente el estrato córneo y alivia la sequedad y la tirantez de forma instantánea.",
-    image: getImageUrl("moleculaquimica.png"),
-    level: "Superficie"
-  },
-  {
-    id: "ing-2",
-    name: "Ácido hialurónico hidrolizado",
-    highlight: "Penetrar",
-    description: "Moléculas ultra-pequeñas que penetran profundamente y aumentan el nivel de hidratación estructural.",
-    image: getImageUrl("acido-hialuronico.png"),
-    level: "Profundo"
-  },
-  {
-    id: "ing-3",
-    name: "Hialuronato de sodio acetilado",
-    highlight: "Retener",
-    description: "Mejora la adhesión a la piel y la capacidad de retención de humedad, prolongando el efecto hidratante.",
-    image: "https://png.pngtree.com/png-vector/20231229/ourlarge/pngtree-molecule-3d-physics-png-image_11244259.png",
-    level: "Prolongado"
-  }
-];
-
-const secondaryIngredients = [
-  { name: "β-glucano", benefit: "Calma y fortalece la barrera" },
-  { name: "Trehalosa", benefit: "Reduce la pérdida de agua" },
-  { name: "Glicosaminoglicanos", benefit: "Elasticidad e hidratación" }
-];
-
 export default function Ingredients() {
+  const { t } = useTranslation();
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+
+  const mainIngredients = [
+    {
+      id: "ing-1",
+      name: t('ingredients.ing1_name'),
+      highlight: t('ingredients.ing1_highlight'),
+      description: t('ingredients.ing1_desc'),
+      image: getImageUrl("moleculaquimica.png"),
+      level: "Superficie"
+    },
+    {
+      id: "ing-2",
+      name: t('ingredients.ing2_name'),
+      highlight: t('ingredients.ing2_highlight'),
+      description: t('ingredients.ing2_desc'),
+      image: getImageUrl("acido-hialuronico.png"),
+      level: "Profundo"
+    },
+    {
+      id: "ing-3",
+      name: t('ingredients.ing3_name'),
+      highlight: t('ingredients.ing3_highlight'),
+      description: t('ingredients.ing3_desc'),
+      image: "https://png.pngtree.com/png-vector/20231229/ourlarge/pngtree-molecule-3d-physics-png-image_11244259.png",
+      level: "Prolongado"
+    }
+  ];
 
   // For infinite carousel effect
   const carouselImages = [...mainIngredients, ...mainIngredients, ...mainIngredients];
@@ -57,7 +53,7 @@ export default function Ingredients() {
             viewport={{ once: true }}
             className="text-[10px] uppercase tracking-[0.4em] text-gold font-bold mb-4 block"
           >
-            Ciencia de Vanguardia
+            {t('ingredients.badge')}
           </motion.span>
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
@@ -66,7 +62,7 @@ export default function Ingredients() {
             transition={{ delay: 0.1 }}
             className="text-4xl md:text-5xl font-serif text-ink leading-tight mb-4"
           >
-            Sistema de <span className="italic font-light">Pureza Molecular.</span>
+            {t('ingredients.title')}<span className="italic font-light">{t('ingredients.titleItalic')}</span>
           </motion.h2>
         </div>
       </div>
@@ -137,9 +133,9 @@ export default function Ingredients() {
             </div>
             <div className="space-y-1">
               <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-ink group-hover:text-gold transition-colors block">
-                Descubrir más
+                {t('ingredients.cta')}
               </span>
-              <span className="text-[9px] text-gray-400 italic">Explora la tecnología molecular completa</span>
+              <span className="text-[9px] text-gray-400 italic">{t('ingredients.ctaDesc')}</span>
             </div>
           </Link>
         </motion.div>

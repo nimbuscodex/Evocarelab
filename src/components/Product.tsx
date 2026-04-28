@@ -5,20 +5,27 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, useMotionValue, useTransform, useSpring, AnimatePresence } from 'motion/react';
+import { useTranslation } from 'react-i18next';
 import { useCart } from '../context/CartContext';
 import { useProduct } from '../hooks/useProduct';
 import { supabase, getImageUrl } from '../lib/supabase';
 
 export default function Product() {
+  const { t, i18n } = useTranslation();
   const { addItem } = useCart();
   const { product, loading } = useProduct();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedPack, setSelectedPack] = useState(1);
   
+  // Use translated defaults if product is the default fallback
+  const isDefault = product?.id === 'triple-h-mask-1';
+  const displayName = isDefault ? t('product.defaultName') : product?.name;
+  const displayDescription = isDefault ? t('product.defaultDesc') : product?.description;
+
   const packs = [
-    { id: 1, name: '1 Pack', discount: 0, count: 1 },
-    { id: 2, name: '2 Packs', discount: 5, count: 2 },
-    { id: 3, name: '3 Packs', discount: 10, count: 3 },
+    { id: 1, name: `1 ${t('product.pack')}`, discount: 0, count: 1 },
+    { id: 2, name: `2 ${t('product.packs')}`, discount: 5, count: 2 },
+    { id: 3, name: `3 ${t('product.packs')}`, discount: 10, count: 3 },
   ];
 
   const currentUnitPrice = selectedPack === 1 ? (product?.price || 0) : selectedPack === 2 ? (product?.price || 0) * 0.95 : (product?.price || 0) * 0.9;
@@ -136,8 +143,8 @@ export default function Product() {
               transition={{ duration: 4, repeat: Infinity }}
               className="absolute -bottom-6 -right-6 lg:-right-12 bg-white/90 backdrop-blur-md p-8 rounded-3xl shadow-2xl border border-white/50 max-w-[200px] z-20"
             >
-              <p className="text-[10px] text-gold uppercase tracking-widest mb-2 font-bold">Textura Luxury</p>
-              <p className="text-sm font-medium leading-relaxed italic text-ink">"Una caricia de seda que se funde instantáneamente con tu piel."</p>
+              <p className="text-[10px] text-gold uppercase tracking-widest mb-2 font-bold">{t('product.texture')}</p>
+              <p className="text-sm font-medium leading-relaxed italic text-ink">{t('product.textureQuote')}</p>
             </motion.div>
           </motion.div>
 
@@ -148,20 +155,20 @@ export default function Product() {
             transition={{ duration: 1, ease: "easeOut" }}
             className="flex-1"
           >
-            <span className="text-[10px] text-gray-400 uppercase tracking-[0.4em] mb-6 block font-medium">Fórmula Avanzada</span>
-            <h2 className="text-5xl lg:text-6xl font-serif mb-8 leading-tight text-ink text-balance">{product.name}</h2>
+            <span className="text-[10px] text-gray-400 uppercase tracking-[0.4em] mb-6 block font-medium">{t('product.formula')}</span>
+            <h2 className="text-5xl lg:text-6xl font-serif mb-8 leading-tight text-ink text-balance">{displayName}</h2>
             <p className="text-lg text-gray-500 font-light leading-relaxed mb-10">
-              {product.description}
+              {displayDescription}
             </p>
             
             <div className="grid grid-cols-2 gap-8 mb-12">
               <div className="space-y-2">
-                <p className="text-[10px] uppercase tracking-widest font-bold text-ink">Efecto</p>
-                <p className="text-sm text-gray-500 font-light">Lifting inmediato</p>
+                <p className="text-[10px] uppercase tracking-widest font-bold text-ink">{t('product.effectLabel')}</p>
+                <p className="text-sm text-gray-500 font-light">{t('product.effectValue')}</p>
               </div>
               <div className="space-y-2">
-                <p className="text-[10px] uppercase tracking-widest font-bold text-ink">Acabado</p>
-                <p className="text-sm text-gray-500 font-light">Piel rellena y luminosa</p>
+                <p className="text-[10px] uppercase tracking-widest font-bold text-ink">{t('product.finishLabel')}</p>
+                <p className="text-sm text-gray-500 font-light">{t('product.finishValue')}</p>
               </div>
             </div>
 
@@ -189,7 +196,7 @@ export default function Product() {
               whileTap={{ scale: 0.97 }}
               className="cta-btn w-full sm:w-auto px-10 py-5 bg-black text-white text-[10px] uppercase tracking-[0.2em] font-bold shadow-2xl transition-shadow hover:shadow-gray-200"
             >
-              Añadir al carrito — {totalPrice.toFixed(2)}€
+              {t('product.add')} — {totalPrice.toFixed(2)}€
             </motion.button>
           </motion.div>
         </div>

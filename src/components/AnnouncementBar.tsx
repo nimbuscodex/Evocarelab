@@ -1,22 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Truck, RotateCcw, Wallet } from 'lucide-react';
-
-const messages = [
-  { text: 'Envío gratuito en todos los pedidos 🚚', icon: <Truck size={12} /> },
-  { text: 'Garantía de devolución de 14 días', icon: <RotateCcw size={12} /> },
-  { text: 'Satisfacción garantizada o reembolso', icon: <Wallet size={12} /> },
-];
+import { useTranslation } from 'react-i18next';
 
 export default function AnnouncementBar() {
+  const { t } = useTranslation();
   const [index, setIndex] = useState(0);
+
+  const messages = [
+    { text: t('announcement.msg1'), icon: <Truck size={12} /> },
+    { text: t('announcement.msg2'), icon: <RotateCcw size={12} /> },
+    { text: t('announcement.msg3'), icon: <Wallet size={12} /> },
+  ];
 
   useEffect(() => {
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % messages.length);
     }, 4000);
     return () => clearInterval(timer);
-  }, []);
+  }, [messages.length]);
 
   return (
     <div className="bg-ink text-white py-2 overflow-hidden border-b border-white/5">
@@ -30,9 +32,9 @@ export default function AnnouncementBar() {
             transition={{ duration: 0.5, ease: "circOut" }}
             className="flex items-center gap-3 whitespace-nowrap"
           >
-            <span className="text-gold opacity-80">{messages[index].icon}</span>
+            <span className="text-gold opacity-80">{messages[index]?.icon}</span>
             <span className="text-[9px] uppercase tracking-[0.3em] font-medium font-sans">
-              {messages[index].text}
+              {messages[index]?.text}
             </span>
           </motion.div>
         </AnimatePresence>

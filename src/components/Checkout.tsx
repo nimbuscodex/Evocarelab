@@ -9,29 +9,31 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { motion, AnimatePresence } from 'motion/react';
 import { CreditCard, Truck, Check, Loader2, ArrowLeft } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useCart } from '../context/CartContext';
-
-const checkoutSchema = z.object({
-  email: z.string().email("Email inválido"),
-  fullName: z.string().min(3, "Mínimo 3 caracteres"),
-  address: z.string().min(10, "Dirección demasiado corta"),
-  cardNumber: z.string().regex(/^\d{16}$/, "Deben ser 16 dígitos"),
-  expiry: z.string().regex(/^(0[1-9]|1[0-2])\/\d{2}$/, "Formato MM/YY"),
-  cvv: z.string().regex(/^\d{3}$/, "3 dígitos")
-});
-
-type CheckoutData = z.infer<typeof checkoutSchema>;
 
 interface CheckoutProps {
   onBack: () => void;
 }
 
 export default function Checkout({ onBack }: CheckoutProps) {
+  const { t } = useTranslation();
   const { totalSubtotal, items, clearCart } = useCart();
   const [step, setStep] = useState<1 | 2>(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const [successOrder, setSuccessOrder] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const checkoutSchema = z.object({
+    email: z.string().email(t('checkout.val_email')),
+    fullName: z.string().min(3, t('checkout.val_name')),
+    address: z.string().min(10, t('checkout.val_address')),
+    cardNumber: z.string().regex(/^\d{16}$/, t('checkout.val_card')),
+    expiry: z.string().regex(/^(0[1-9]|1[0-2])\/\d{2}$/, t('checkout.val_expiry')),
+    cvv: z.string().regex(/^\d{3}$/, t('checkout.val_cvv'))
+  });
+
+  type CheckoutData = z.infer<typeof checkoutSchema>;
 
   const { register, handleSubmit, formState: { errors } } = useForm<CheckoutData>({
     resolver: zodResolver(checkoutSchema),
@@ -61,7 +63,7 @@ export default function Checkout({ onBack }: CheckoutProps) {
         setError(result.message);
       }
     } catch (err) {
-      setError("Error de conexión con el servidor");
+      setError(t('checkout.server_error'));
     } finally {
       setIsProcessing(false);
     }
@@ -77,12 +79,12 @@ export default function Checkout({ onBack }: CheckoutProps) {
         >
           <Check size={40} />
         </motion.div>
-        <h3 className="text-2xl font-serif">¡Pedido Confirmado!</h3>
+        <h3 className="text-2xl font-serif">{t('checkout.successTitle')}</h3>
         <p className="text-gray-400 font-light max-w-xs text-sm">
-          Gracias por confiar en Evocarelab. Tu pedido <span className="font-bold text-ink">{successOrder}</span> está siendo preparado para su envío.
+          {t('checkout.successDesc', { orderId: successOrder })}
         </p>
         <div className="pt-6">
-          <p className="text-[10px] uppercase tracking-widest text-gray-300">Recibirás un email de confirmación pronto.</p>
+          <p className="text-[10px] uppercase tracking-widest text-gray-300">{t('checkout.successNote')}</p>
         </div>
       </div>
     );
@@ -94,21 +96,21 @@ export default function Checkout({ onBack }: CheckoutProps) {
         onClick={onBack}
         className="flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-ink transition-colors mb-8"
       >
-        <ArrowLeft size={14} /> Regresar a la bolsa
+        <ArrowLeft size={14} /> {t('checkout.back')}
       </button>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 flex-grow">
         <div className="space-y-6">
           <div className="flex items-center gap-3 text-ink">
             <Truck size={18} />
-            <h3 className="text-[11px] uppercase tracking-[0.2em] font-bold">Detalles de Envío</h3>
+            <h3 className="text-[11px] uppercase tracking-[0.2em] font-bold">{t('checkout.shipping')}</h3>
           </div>
           
           <div className="grid grid-cols-1 gap-4">
             <div className="space-y-1">
               <input 
                 {...register("fullName")}
-                placeholder="Nombre Completo"
+                placeholder={t('checkout.namePlaceholder')}
                 className="w-full bg-white border-b border-gray-100 py-3 text-sm focus:border-ink outline-none transition-colors"
               />
               {errors.fullName && <p className="text-[10px] text-red-400 uppercase italic">{errors.fullName.message}</p>}
@@ -126,7 +128,7 @@ export default function Checkout({ onBack }: CheckoutProps) {
             <div className="space-y-1">
               <input 
                 {...register("address")}
-                placeholder="Dirección de Envío"
+                placeholder={t('checkout.addressPlaceholder')}
                 className="w-full bg-white border-b border-gray-100 py-3 text-sm focus:border-ink outline-none transition-colors"
               />
               {errors.address && <p className="text-[10px] text-red-400 uppercase italic">{errors.address.message}</p>}
@@ -137,14 +139,14 @@ export default function Checkout({ onBack }: CheckoutProps) {
         <div className="space-y-6 pt-4">
           <div className="flex items-center gap-3 text-ink">
             <CreditCard size={18} />
-            <h3 className="text-[11px] uppercase tracking-[0.2em] font-bold">Método de Pago</h3>
+            <h3 className="text-[11px] uppercase tracking-[0.2em] font-bold">{t('checkout.payment')}</h3>
           </div>
           
           <div className="grid grid-cols-1 gap-4">
             <div className="space-y-1">
               <input 
                 {...register("cardNumber")}
-                placeholder="Número de Tarjeta"
+                placeholder={t('checkout.cardPlaceholder')}
                 maxLength={16}
                 className="w-full bg-white border-b border-gray-100 py-3 text-sm focus:border-ink outline-none transition-colors"
               />
@@ -181,7 +183,7 @@ export default function Checkout({ onBack }: CheckoutProps) {
 
         <div className="pt-8 border-t border-gray-100">
           <div className="flex justify-between items-center mb-6">
-            <p className="text-[10px] uppercase tracking-widest font-bold text-gray-400">Total Final</p>
+            <p className="text-[10px] uppercase tracking-widest font-bold text-gray-400">{t('checkout.total')}</p>
             <p className="text-2xl font-serif">{totalSubtotal}€</p>
           </div>
           
@@ -191,12 +193,12 @@ export default function Checkout({ onBack }: CheckoutProps) {
             className="w-full bg-ink text-white py-6 text-[10px] uppercase tracking-[0.3em] font-bold cta-btn flex items-center justify-center gap-3 disabled:opacity-50"
           >
             {isProcessing ? (
-              <>Procesando... <Loader2 size={16} className="animate-spin" /></>
+              <>{t('checkout.processing')} <Loader2 size={16} className="animate-spin" /></>
             ) : (
-              "Confirmar y Pagar"
+              t('checkout.confirm')
             )}
           </button>
-          <p className="text-center text-[9px] text-gray-300 mt-4 tracking-widest">PAGO CIERTO Y SEGURO (AES-256)</p>
+          <p className="text-center text-[9px] text-gray-300 mt-4 tracking-widest">{t('checkout.secure')}</p>
         </div>
       </form>
     </div>

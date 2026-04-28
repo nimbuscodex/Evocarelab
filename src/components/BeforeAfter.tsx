@@ -6,9 +6,11 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Eye, MoveHorizontal } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { getImageUrl } from '../lib/supabase';
 
 export default function BeforeAfter() {
+  const { t } = useTranslation();
   const [sliderPos, setSliderPos] = useState(50);
 
   const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
@@ -26,26 +28,26 @@ export default function BeforeAfter() {
           <div className="lg:w-1/2 space-y-8">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold/10 border border-gold/20">
               <Eye size={12} className="text-gold" />
-              <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-gold">Resultados Reales</span>
+              <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-gold">{t('results.badge')}</span>
             </div>
             
             <h2 className="text-5xl md:text-6xl font-serif text-ink tracking-tighter leading-[1.1]">
-              Arquitectura celular <br />
-              <span className="italic text-gray-400">transformada.</span>
+              {t('results.title')} <br />
+              <span className="italic text-gray-400">{t('results.titleItalic')}</span>
             </h2>
             
             <p className="text-lg text-gray-500 font-light leading-relaxed max-w-lg">
-              Tras 28 días de protocolo con nuestra mascarilla de biocelulosa, los resultados son visibles. Observe la regeneración de la barrera cutánea y la redensificación del tejido epidérmico.
+              {t('results.description')}
             </p>
 
             <div className="grid grid-cols-2 gap-8 pt-6">
               <div>
                 <span className="block text-4xl font-serif text-ink">+42%</span>
-                <span className="text-[10px] uppercase tracking-widest text-gray-400 mt-2 block">Hidratación profunda</span>
+                <span className="text-[10px] uppercase tracking-widest text-gray-400 mt-2 block">{t('results.stat1')}</span>
               </div>
               <div>
                 <span className="block text-4xl font-serif text-ink">-28%</span>
-                <span className="text-[10px] uppercase tracking-widest text-gray-400 mt-2 block">Líneas de expresión</span>
+                <span className="text-[10px] uppercase tracking-widest text-gray-400 mt-2 block">{t('results.stat2')}</span>
               </div>
             </div>
 
@@ -60,8 +62,8 @@ export default function BeforeAfter() {
                 <img src={getImageUrl("efectos.png")} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Clinical Effects" />
               </div>
               <div>
-                <h4 className="text-[10px] uppercase tracking-widest font-bold text-ink mb-1">Efecto Regenerativo</h4>
-                <p className="text-[11px] text-gray-500 font-light leading-relaxed">Visualización clínica de la redensificación celular tras 4 aplicaciones.</p>
+                <h4 className="text-[10px] uppercase tracking-widest font-bold text-ink mb-1">{t('results.cardTitle')}</h4>
+                <p className="text-[11px] text-gray-500 font-light leading-relaxed">{t('results.cardDesc')}</p>
               </div>
             </motion.div>
           </div>
@@ -79,7 +81,7 @@ export default function BeforeAfter() {
                 style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=2000&auto=format&fit=crop")' }}
               >
                 <div className="absolute top-6 right-6 px-4 py-2 bg-ink/80 backdrop-blur-md rounded-full text-white text-[10px] uppercase tracking-widest font-bold">
-                  Día 28
+                  {t('results.day28')}
                 </div>
               </div>
 
@@ -92,7 +94,7 @@ export default function BeforeAfter() {
                 }}
               >
                 <div className="absolute top-6 left-6 px-4 py-2 bg-white/80 backdrop-blur-md rounded-full text-ink text-[10px] uppercase tracking-widest font-bold">
-                  Día 0
+                  {t('results.day0')}
                 </div>
               </div>
 
@@ -108,7 +110,7 @@ export default function BeforeAfter() {
             </div>
             
             <p className="text-center mt-8 text-[9px] text-gray-400 uppercase tracking-[0.4em] font-medium animate-pulse">
-              Deslice para ver la transformación
+              {t('results.help')}
             </p>
           </div>
         </div>
