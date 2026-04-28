@@ -4,6 +4,7 @@
  */
 
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import Navbar from './components/Navbar';
 import AnnouncementBar from './components/AnnouncementBar';
 import Home from './pages/Home';
@@ -98,6 +99,7 @@ export default function App() {
           <AppContent />
         </CookieGate>
       </CartProvider>
+      <SpeedInsights />
     </BrowserRouter>
   );
 }
