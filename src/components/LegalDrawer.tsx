@@ -32,8 +32,6 @@ export default function LegalDrawer() {
 
   return (
     <>
-      {/* Side Toggle Button ... */}
-      {/* (Unchanged part ...) */}
       <button 
         onClick={() => setIsOpen(true)}
         className="fixed right-0 top-1/2 -translate-y-1/2 z-40 bg-ink text-white p-3 rounded-l-xl border-l border-y border-white/10 hover:bg-gold transition-colors duration-500 shadow-2xl group flex flex-col items-center gap-2"
