@@ -293,21 +293,26 @@ async function startServer() {
   if (!isProduction) {
     const vite = await createViteServer({
       server: { middlewareMode: true },
-      appType: "spa",
+      appType: "custom", // Use custom to manually handle index.html serving
     });
     app.use(vite.middlewares);
     
-    // Fallback for development to serve index.html for SPA routes
+    // Explicitly handle all other requests by serving index.html
     app.get('*', async (req, res, next) => {
       const url = req.originalUrl;
-      if (url.startsWith('/api')) return next();
+      
+      // Exclude API calls and files that should have been handled by vite.middlewares
+      if (url.startsWith('/api') || url.includes('.')) {
+        return next();
+      }
 
       try {
         const indexPath = path.resolve(process.cwd(), 'index.html');
         if (fs.existsSync(indexPath)) {
-          const html = fs.readFileSync(indexPath, 'utf-8');
-          const transformedHtml = await vite.transformIndexHtml(url, html);
-          res.status(200).set({ 'Content-Type': 'text/html' }).end(transformedHtml);
+          let template = fs.readFileSync(indexPath, 'utf-8');
+          // Apply Vite HTML transforms
+          template = await vite.transformIndexHtml(url, template);
+          res.status(200).set({ 'Content-Type': 'text/html' }).end(template);
         } else {
           next();
         }
@@ -319,15 +324,21 @@ async function startServer() {
   } else {
     const distPath = path.resolve(process.cwd(), 'dist');
     
-    // Serve static files from dist
-    app.use(express.static(distPath));
+    // Serve static files from dist first
+    app.use(express.static(distPath, { index: false }));
     
-    // Fallback for production to serve index.html for all non-API routes
-    app.get('*', (req, res) => {
-      if (req.originalUrl.startsWith('/api')) {
-        return res.status(404).json({ error: "API route not found" });
+    // Fallback for production: send index.html for all non-API routes
+    app.get('*', (req, res, next) => {
+      if (req.originalUrl.startsWith('/api') || req.originalUrl.includes('.')) {
+        return next();
       }
-      res.sendFile(path.resolve(distPath, 'index.html'));
+      
+      const indexPath = path.resolve(distPath, 'index.html');
+      if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+      } else {
+        next();
+      }
     });
   }
 
