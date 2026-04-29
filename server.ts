@@ -569,7 +569,7 @@ async function startServer() {
   if (!isProduction) {
     const vite = await createViteServer({
       server: { middlewareMode: true },
-      appType: "spa",
+      appType: "custom", // Changing to custom to have full control over fallback
     });
     app.use(vite.middlewares);
     
@@ -577,8 +577,8 @@ async function startServer() {
     app.get('*', async (req, res, next) => {
       const url = req.originalUrl;
       
-      // Ignore API calls
-      if (url.startsWith('/api')) {
+      // Exclude API calls and static assets that should have been caught by vite.middlewares
+      if (url.startsWith('/api') || url.includes('.')) {
         return next();
       }
 
@@ -586,8 +586,11 @@ async function startServer() {
         const indexPath = path.resolve(process.cwd(), 'index.html');
         if (fs.existsSync(indexPath)) {
           const html = fs.readFileSync(indexPath, 'utf-8');
+          // Use vite.transformIndexHtml to inject the dev scripts correctly
           const transformedHtml = await vite.transformIndexHtml(url, html);
-          res.status(200).set({ 'Content-Type': 'text/html' }).end(transformedHtml);
+          res.status(200)
+             .set({ 'Content-Type': 'text/html', 'X-SPA-Fallback': 'dev' })
+             .end(transformedHtml);
         } else {
           next();
         }
@@ -599,18 +602,23 @@ async function startServer() {
   } else {
     const distPath = path.resolve(process.cwd(), 'dist');
     
-    // Serve static files from dist
-    app.use(express.static(distPath));
+    // Serve static files from dist first
+    app.use(express.static(distPath, { index: false }));
     
-    // Fallback for production to serve index.html for all other routes
+    // Fallback for production to serve index.html for all non-asset routes
     app.get('*', (req, res, next) => {
-      if (req.originalUrl.startsWith('/api')) {
+      const url = req.originalUrl;
+
+      // If it looks like a file (has a dot) or is an API, let it 404 or next()
+      if (url.startsWith('/api') || url.includes('.')) {
         return next();
       }
       
       const indexPath = path.resolve(distPath, 'index.html');
       if (fs.existsSync(indexPath)) {
-        res.sendFile(indexPath);
+        res.status(200)
+           .set({ 'X-SPA-Fallback': 'prod' })
+           .sendFile(indexPath);
       } else {
         next();
       }
