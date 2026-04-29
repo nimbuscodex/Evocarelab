@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Copy, CheckCircle } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { X, Copy, CheckCircle, Sparkles } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function DiscountPopup() {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const discountCode = 'EVO10';
@@ -13,10 +14,10 @@ export default function DiscountPopup() {
     const hasSeenPopup = localStorage.getItem('hasSeenDiscountPopup');
     
     if (!hasSeenPopup) {
-      // Show popup after 5 seconds
+      // Show popup after 3 seconds
       const timer = setTimeout(() => {
         setIsOpen(true);
-      }, 5000);
+      }, 3000);
       
       return () => clearTimeout(timer);
     }
@@ -43,59 +44,105 @@ export default function DiscountPopup() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={closePopup}
-            className="fixed inset-0 bg-black/60 z-[100] backdrop-blur-sm"
+            className="fixed inset-0 bg-ink/70 z-[100] backdrop-blur-md"
             style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
           />
           
-          {/* Popup */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[90%] max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col sm:flex-row"
-          >
-            <div className="relative w-full p-8 flex flex-col items-center text-center">
-              <button 
-                onClick={closePopup}
-                className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-900 transition-colors bg-gray-100 hover:bg-gray-200 rounded-full"
-                aria-label="Cerrar"
-              >
-                <X className="w-5 h-5" />
-              </button>
-              
-              <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-6">
-                <span className="text-2xl font-bold">%</span>
+          {/* Popup Container */}
+          <div className="fixed inset-0 flex items-center justify-center p-4 z-[101] pointer-events-none">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 30 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="relative w-full max-w-4xl bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.4)] overflow-hidden flex flex-col md:flex-row pointer-events-auto"
+            >
+              {/* Image Section */}
+              <div className="relative w-full md:w-1/2 h-56 md:h-auto overflow-hidden">
+                <img 
+                  src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&q=80&w=1200" 
+                  alt="Evocarelab Experience"
+                  className="absolute inset-0 w-full h-full object-cover grayscale-[30%] hover:scale-105 transition-transform duration-[5s] ease-out"
+                  referrerPolicy="no-referrer"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-white/10" />
+                <div className="absolute bottom-6 left-6 right-6 text-white md:hidden">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Sparkles size={10} className="text-gold" />
+                    <span className="text-[8px] uppercase tracking-[0.4em] font-bold opacity-80">{t('discount_popup.title')}</span>
+                  </div>
+                  <h3 className="text-2xl font-serif leading-tight italic">{t('discount_popup.subtitle')}</h3>
+                </div>
               </div>
-              
-              <h3 className="text-2xl font-semibold text-ink mb-2">¡Bienvenido a EVOCARELAB!</h3>
-              <p className="text-gray-600 mb-6">
-                Disfruta de un <strong>10% de descuento</strong> en tu primera compra con nosotros.
-              </p>
-              
-              <div className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 mb-6 flex items-center justify-between group">
-                <span className="font-mono text-xl font-bold tracking-wider text-ink ml-4">{discountCode}</span>
+
+              {/* Content Section */}
+              <div className="relative w-full md:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
                 <button 
-                  onClick={copyToClipboard}
-                  className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+                  onClick={closePopup}
+                  className="absolute top-6 right-6 p-2 text-ink/20 hover:text-ink hover:bg-neutral-100 transition-all rounded-full"
+                  aria-label="Cerrar"
                 >
-                  {copied ? (
-                    <><CheckCircle className="w-4 h-4 text-emerald-500" /> Copiado</>
-                  ) : (
-                    <><Copy className="w-4 h-4 text-gray-500 group-hover:text-ink" /> Copiar</>
-                  )}
+                  <X className="w-5 h-5" />
                 </button>
+
+                <div className="hidden md:block space-y-3 mb-10">
+                  <div className="flex items-center gap-3 text-gold">
+                    <Sparkles size={14} className="animate-pulse" />
+                    <span className="text-[10px] uppercase tracking-[0.6em] font-bold">{t('discount_popup.title')}</span>
+                  </div>
+                  <h3 className="text-4xl lg:text-6xl font-serif text-ink tracking-tighter leading-none italic">
+                    {t('discount_popup.subtitle')}
+                  </h3>
+                </div>
+
+                <p className="text-gray-500 font-light leading-relaxed mb-10 md:text-lg lg:text-xl">
+                  {t('discount_popup.description')}
+                </p>
+
+                <div className="space-y-6">
+                  <div className="group relative">
+                    <div className="absolute -top-2.5 left-6 px-3 bg-white text-[9px] uppercase tracking-widest text-gold font-bold z-10">
+                      {t('discount_popup.codeLabel')}
+                    </div>
+                    <div className="flex items-center justify-between p-6 bg-neutral-50 border border-neutral-100 rounded-2xl group-hover:border-gold/30 transition-all duration-500">
+                      <span className="font-mono text-2xl lg:text-3xl font-bold tracking-[0.2em] text-ink">{discountCode}</span>
+                      <button 
+                        onClick={copyToClipboard}
+                        className="flex items-center gap-2 px-6 py-3 bg-ink text-white rounded-xl text-[10px] uppercase tracking-widest font-bold hover:bg-gold hover:text-ink transition-all shadow-xl shadow-ink/10 active:scale-95"
+                      >
+                        {copied ? (
+                          <><CheckCircle className="w-4 h-4" /> {t('discount_popup.copied')}</>
+                        ) : (
+                          <><Copy className="w-4 h-4" /> {t('discount_popup.copy')}</>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-5">
+                    <button
+                      onClick={closePopup}
+                      className="w-full py-6 bg-gold text-ink text-[10px] uppercase tracking-[0.5em] font-bold rounded-2xl shadow-2xl shadow-gold/20 hover:shadow-gold/40 hover:-translate-y-1 transition-all active:translate-y-0"
+                    >
+                      {t('discount_popup.continue')}
+                    </button>
+                    <button
+                      onClick={closePopup}
+                      className="w-full text-[10px] uppercase tracking-[0.4em] text-gray-400 font-bold hover:text-ink transition-colors py-2"
+                    >
+                      {t('discount_popup.noThanks')}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="mt-12 pt-8 border-t border-neutral-100 flex items-center justify-center gap-6 opacity-20">
+                  <div className="h-px w-8 bg-ink" />
+                  <span className="text-[8px] uppercase tracking-[1.5em] font-bold">EVOCARELAB</span>
+                  <div className="h-px w-8 bg-ink" />
+                </div>
               </div>
-              
-              <button
-                onClick={() => {
-                  closePopup();
-                }}
-                className="w-full bg-ink text-white py-3.5 rounded-xl font-medium hover:bg-ink-light transition-colors"
-              >
-                Continuar comprando
-              </button>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>
