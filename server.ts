@@ -575,18 +575,15 @@ async function startServer() {
     
     // Fallback for development to serve index.html for SPA routes
     app.get('*', async (req, res, next) => {
-      const url = req.originalUrl;
-      
-      // Ignore API calls
-      if (url.startsWith('/api')) {
+      if (req.originalUrl.startsWith('/api') || req.originalUrl.includes('.')) {
         return next();
       }
 
       try {
-        const htmlPath = path.resolve(process.cwd(), 'index.html');
+        const htmlPath = path.join(__dirname, 'index.html');
         if (fs.existsSync(htmlPath)) {
           const html = fs.readFileSync(htmlPath, 'utf-8');
-          const transformedHtml = await vite.transformIndexHtml(url, html);
+          const transformedHtml = await vite.transformIndexHtml(req.originalUrl, html);
           res.status(200).set({ 'Content-Type': 'text/html' }).end(transformedHtml);
         } else {
           next();
@@ -597,23 +594,19 @@ async function startServer() {
       }
     });
   } else {
-    const distPath = path.resolve(process.cwd(), 'dist');
+    const distPath = path.join(__dirname, 'dist');
     
     // Serve static files from dist
     app.use(express.static(distPath));
     
     // Fallback for production to serve index.html for all other routes
     app.get('*', (req, res, next) => {
-      if (req.originalUrl.startsWith('/api')) {
+      if (req.originalUrl.startsWith('/api') || req.originalUrl.includes('.')) {
         return next();
       }
       
-      const indexPath = path.resolve(distPath, 'index.html');
-      if (fs.existsSync(indexPath)) {
-        res.sendFile(indexPath);
-      } else {
-        res.status(404).send('Not found');
-      }
+      const indexPath = path.join(distPath, 'index.html');
+      res.sendFile(indexPath);
     });
   }
 
