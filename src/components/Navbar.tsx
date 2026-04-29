@@ -28,7 +28,7 @@ export default function Navbar() {
   };
 
   const menuLinks = [
-    { label: t('nav.store'), to: getLocalizedPath('store') },
+    { label: t('nav.store'), to: getLocalizedPath('product') },
     { label: t('nav.science'), to: getLocalizedPath('ingredients') },
     { label: t('nav.ritual'), to: getLocalizedPath('ritual') },
     { label: t('nav.contact'), to: getLocalizedPath('contact') }

@@ -37,7 +37,6 @@ function AppRoutes() {
   return (
     <Routes>
       <Route index element={<Home />} />
-      <Route path={t('routes.store')} element={<ProductDetail />} />
       <Route path={t('routes.ingredients')} element={<IngredientsPage />} />
       <Route path={t('routes.ritual')} element={<Ritual />} />
       <Route path={t('routes.contact')} element={<Contact />} />

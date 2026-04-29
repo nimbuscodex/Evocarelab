@@ -55,28 +55,30 @@ export default function DiscountPopup() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 30 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-4xl bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.4)] overflow-hidden flex flex-col md:flex-row pointer-events-auto"
+              className="relative w-full max-w-6xl bg-white rounded-3xl shadow-[0_30px_100px_rgba(0,0,0,0.4)] overflow-hidden flex flex-col md:flex-row pointer-events-auto min-h-[500px]"
             >
-              {/* Image Section */}
-              <div className="relative w-full md:w-1/2 h-56 md:h-auto overflow-hidden">
+              {/* Image Section - WIDER (65%) */}
+              <div className="relative w-full md:w-[65%] h-72 md:h-auto overflow-hidden">
                 <img 
                   src="https://iiuxmreplcrjqmsprzvk.supabase.co/storage/v1/object/public/product-images/fondoEVO10.png" 
                   alt="Evocarelab Experience"
-                  className="absolute inset-0 w-full h-full object-cover grayscale-[30%] hover:scale-105 transition-transform duration-[5s] ease-out"
+                  className="absolute inset-0 w-full h-full object-cover object-[15%_center] grayscale-[10%] hover:scale-110 transition-transform duration-[10s] ease-out"
                   referrerPolicy="no-referrer"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-white/10" />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/30 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-white/5" />
+                
+                {/* Mobile Branding Overlay */}
                 <div className="absolute bottom-6 left-6 right-6 text-white md:hidden">
                   <div className="flex items-center gap-2 mb-1">
                     <Sparkles size={10} className="text-gold" />
                     <span className="text-[8px] uppercase tracking-[0.4em] font-bold opacity-80">{t('discount_popup.title')}</span>
                   </div>
-                  <h3 className="text-2xl font-serif leading-tight italic">{t('discount_popup.subtitle')}</h3>
+                  <h3 className="text-3xl font-serif leading-tight italic">{t('discount_popup.subtitle')}</h3>
                 </div>
               </div>
 
-              {/* Content Section */}
-              <div className="relative w-full md:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
+              {/* Content Section - NARROWER (35%) */}
+              <div className="relative w-full md:w-[35%] p-8 md:p-12 lg:p-14 flex flex-col justify-center bg-white">
                 <button 
                   onClick={closePopup}
                   className="absolute top-6 right-6 p-2 text-ink/20 hover:text-ink hover:bg-neutral-100 transition-all rounded-full"
