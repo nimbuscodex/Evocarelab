@@ -565,7 +565,6 @@ async function startServer() {
 
   // Vite middleware for development
   const isProduction = process.env.NODE_ENV === 'production';
-  console.log(`[SERVER] Mode: ${isProduction ? 'Production' : 'Development'}`);
 
   if (!isProduction) {
     const vite = await createViteServer({
@@ -576,40 +575,45 @@ async function startServer() {
     
     // Fallback for development to serve index.html for SPA routes
     app.get('*', async (req, res, next) => {
-      // Exclude API calls and static files with extensions (e.g. .png, .js)
-      if (req.originalUrl.startsWith('/api') || req.originalUrl.includes('.')) {
+      const url = req.originalUrl;
+      
+      // Ignore API calls
+      if (url.startsWith('/api')) {
         return next();
       }
-      
+
       try {
-        const url = req.originalUrl;
-        console.log(`[DEV SERVER] Handling SPA route: ${url}`);
-        const html = fs.readFileSync(path.resolve(__dirname, 'index.html'), 'utf-8');
-        const transformedHtml = await vite.transformIndexHtml(url, html);
-        res.status(200).set({ 'Content-Type': 'text/html' }).end(transformedHtml);
+        const htmlPath = path.resolve(process.cwd(), 'index.html');
+        if (fs.existsSync(htmlPath)) {
+          const html = fs.readFileSync(htmlPath, 'utf-8');
+          const transformedHtml = await vite.transformIndexHtml(url, html);
+          res.status(200).set({ 'Content-Type': 'text/html' }).end(transformedHtml);
+        } else {
+          next();
+        }
       } catch (e: any) {
         vite.ssrFixStacktrace(e);
-        console.error(`[DEV SERVER] Error transforming HTML:`, e);
         res.status(500).end(e.message);
       }
     });
   } else {
     const distPath = path.resolve(process.cwd(), 'dist');
-    console.log(`[PROD SERVER] Serving static files from: ${distPath}`);
     
-    // Handle static files first
-    app.use(express.static(distPath, { index: false }));
+    // Serve static files from dist
+    app.use(express.static(distPath));
     
-    // Handle SPA fallback for all other routes
+    // Fallback for production to serve index.html for all other routes
     app.get('*', (req, res, next) => {
-      // Exclude API calls
       if (req.originalUrl.startsWith('/api')) {
         return next();
       }
       
-      const indexPath = path.join(distPath, 'index.html');
-      console.log(`[PROD SERVER] Fallback to index.html for: ${req.originalUrl}`);
-      res.sendFile(indexPath);
+      const indexPath = path.resolve(distPath, 'index.html');
+      if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+      } else {
+        res.status(404).send('Not found');
+      }
     });
   }
 
