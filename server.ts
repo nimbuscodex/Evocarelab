@@ -564,7 +564,10 @@ async function startServer() {
   });
 
   // Vite middleware for development
-  if (process.env.NODE_ENV !== "production") {
+  const isProduction = process.env.NODE_ENV === 'production';
+  console.log(`[SERVER] Mode: ${isProduction ? 'Production' : 'Development'}`);
+
+  if (!isProduction) {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
@@ -573,24 +576,40 @@ async function startServer() {
     
     // Fallback for development to serve index.html for SPA routes
     app.get('*', async (req, res, next) => {
-      if (req.originalUrl.startsWith('/api')) {
+      // Exclude API calls and static files with extensions (e.g. .png, .js)
+      if (req.originalUrl.startsWith('/api') || req.originalUrl.includes('.')) {
         return next();
       }
+      
       try {
         const url = req.originalUrl;
+        console.log(`[DEV SERVER] Handling SPA route: ${url}`);
         const html = fs.readFileSync(path.resolve(__dirname, 'index.html'), 'utf-8');
         const transformedHtml = await vite.transformIndexHtml(url, html);
         res.status(200).set({ 'Content-Type': 'text/html' }).end(transformedHtml);
       } catch (e: any) {
         vite.ssrFixStacktrace(e);
+        console.error(`[DEV SERVER] Error transforming HTML:`, e);
         res.status(500).end(e.message);
       }
     });
   } else {
-    const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
+    const distPath = path.resolve(process.cwd(), 'dist');
+    console.log(`[PROD SERVER] Serving static files from: ${distPath}`);
+    
+    // Handle static files first
+    app.use(express.static(distPath, { index: false }));
+    
+    // Handle SPA fallback for all other routes
+    app.get('*', (req, res, next) => {
+      // Exclude API calls
+      if (req.originalUrl.startsWith('/api')) {
+        return next();
+      }
+      
+      const indexPath = path.join(distPath, 'index.html');
+      console.log(`[PROD SERVER] Fallback to index.html for: ${req.originalUrl}`);
+      res.sendFile(indexPath);
     });
   }
 
