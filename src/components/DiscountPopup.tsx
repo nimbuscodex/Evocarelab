@@ -60,7 +60,7 @@ export default function DiscountPopup() {
               {/* Image Section */}
               <div className="relative w-full md:w-1/2 h-56 md:h-auto overflow-hidden">
                 <img 
-                  src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&q=80&w=1200" 
+                  src="https://iiuxmreplcrjqmsprzvk.supabase.co/storage/v1/object/public/product-images/fondoEVO10.png" 
                   alt="Evocarelab Experience"
                   className="absolute inset-0 w-full h-full object-cover grayscale-[30%] hover:scale-105 transition-transform duration-[5s] ease-out"
                   referrerPolicy="no-referrer"
