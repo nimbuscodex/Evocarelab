@@ -92,7 +92,7 @@ export default function DiscountPopup() {
                     <Sparkles size={14} className="animate-pulse" />
                     <span className="text-[10px] uppercase tracking-[0.6em] font-bold">{t('discount_popup.title')}</span>
                   </div>
-                  <h3 className="text-4xl lg:text-6xl font-serif text-ink tracking-tighter leading-none italic">
+                  <h3 className="text-3xl lg:text-5xl font-serif text-ink tracking-tighter leading-none italic">
                     {t('discount_popup.subtitle')}
                   </h3>
                 </div>
@@ -107,7 +107,7 @@ export default function DiscountPopup() {
                       {t('discount_popup.codeLabel')}
                     </div>
                     <div className="flex items-center justify-between p-6 bg-neutral-50 border border-neutral-100 rounded-2xl group-hover:border-gold/30 transition-all duration-500">
-                      <span className="font-mono text-2xl lg:text-3xl font-bold tracking-[0.2em] text-ink">{discountCode}</span>
+                      <span className="font-mono text-xl lg:text-2xl font-bold tracking-[0.2em] text-ink">{discountCode}</span>
                       <button 
                         onClick={copyToClipboard}
                         className="flex items-center gap-2 px-6 py-3 bg-ink text-white rounded-xl text-[10px] uppercase tracking-widest font-bold hover:bg-gold hover:text-ink transition-all shadow-xl shadow-ink/10 active:scale-95"
