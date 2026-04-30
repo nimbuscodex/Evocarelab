@@ -5,23 +5,22 @@
 
 import { motion, useScroll, useTransform } from 'motion/react';
 import { ShoppingBag, ChevronRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useCart } from '../context/CartContext';
 import { useProduct } from '../hooks/useProduct';
+import { getImageUrl } from '../lib/supabase';
+import { getLocalizedPath } from '../lib/i18n-utils';
 
 export default function Hero() {
+  const { t } = useTranslation();
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 500], [0, -50]);
-  const { addItem } = useCart();
+  const navigate = useNavigate();
   const { product, loading } = useProduct();
 
   const handleBuy = () => {
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.image_url
-    });
+    navigate(getLocalizedPath('product'));
   };
 
   return (
@@ -35,10 +34,10 @@ export default function Hero() {
               transition={{ duration: 0.8, ease: "easeOut" }}
               className="space-y-4"
             >
-              <span className="text-[10px] uppercase tracking-[0.4em] text-gray-400 font-medium">Pureza Biotecnológica</span>
+              <span className="text-[10px] uppercase tracking-[0.4em] text-gray-400 font-medium">{t('hero.badge')}</span>
               <h1 className="text-6xl lg:text-7xl font-serif leading-[1.1] text-ink text-balance">
-                Piel perfecta.<br />
-                <span className="italic font-light">Sin esfuerzo.</span>
+                {t('hero.title')}<br />
+                <span className="italic font-light">{t('hero.subtitle')}</span>
               </h1>
             </motion.div>
 
@@ -48,7 +47,7 @@ export default function Hero() {
               transition={{ duration: 1, delay: 0.4 }}
               className="text-lg text-gray-500 font-light max-w-sm leading-relaxed"
             >
-              Triple ácido hialurónico para una hidratación tridimensional profunda. La nueva generación en cuidado facial biotecnológico.
+              {t('hero.description')}
             </motion.p>
 
             <motion.div 
@@ -61,13 +60,13 @@ export default function Hero() {
                 onClick={handleBuy}
                 className="cta-btn bg-ink text-white px-10 py-5 text-[10px] uppercase tracking-[0.3em] font-semibold active:scale-95"
               >
-                Comprar ahora
+                {t('hero.ctaBuy')}
               </button>
               <Link 
-                to="/producto"
+                to={getLocalizedPath('product')}
                 className="cta-btn border border-gray-200 px-10 py-5 text-[10px] uppercase tracking-[0.3em] font-semibold text-gray-400 active:scale-95 inline-block text-center"
               >
-                Descubrir más
+                {t('hero.ctaLearn')}
               </Link>
             </motion.div>
           </div>
@@ -83,7 +82,7 @@ export default function Hero() {
               className="mask-visual w-64 h-[420px] sm:w-80 sm:h-[520px] md:w-[400px] md:h-[540px] lg:w-[480px] lg:h-[640px] flex items-center justify-center relative z-10 overflow-visible"
             >
               <motion.img 
-                src="/modelo 1.png"
+                src={getImageUrl("modelo1.png")}
                 className="w-[75%] h-[75%] object-cover relative z-10 drop-shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/40 bg-white/5 p-1"
                 alt="3D Isolated Sheet Mask"
                 loading="eager"
@@ -111,9 +110,9 @@ export default function Hero() {
                 transition={{ duration: 1, delay: 1 }}
                 className="bg-white/40 backdrop-blur-md p-6 rounded-2xl border border-white/50 shadow-sm absolute -bottom-8 -right-8 w-44 md:w-48"
               >
-                <p className="text-[9px] uppercase tracking-widest font-bold mb-1 text-ink">Resultados</p>
+                <p className="text-[9px] uppercase tracking-widest font-bold mb-1 text-ink">{t('hero.resultsBadge')}</p>
                 <p className="text-2xl font-serif font-semibold text-ink">+84%</p>
-                <p className="text-[10px] text-gray-400 leading-tight">Incremento en hidratación dérmica tras el primer uso.</p>
+                <p className="text-[10px] text-gray-400 leading-tight">{t('hero.resultsText')}</p>
               </motion.div>
             </motion.div>
           </div>

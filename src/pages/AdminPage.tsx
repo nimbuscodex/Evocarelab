@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { getLocalizedPath } from '../lib/i18n-utils';
 import { Package, Truck, CheckCircle, Clock, LogOut, Printer, Search, RefreshCw, XCircle, TrendingUp, DollarSign, ShoppingBag, Activity } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { jsPDF } from 'jspdf';
@@ -72,7 +73,7 @@ export default function AdminPage() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    navigate('/');
+    navigate(getLocalizedPath('home'));
   };
 
   const fetchOrders = async () => {

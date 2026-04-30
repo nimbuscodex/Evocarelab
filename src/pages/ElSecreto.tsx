@@ -1,8 +1,11 @@
 import { useEffect } from 'react';
 import { motion } from 'motion/react';
+import { useTranslation } from 'react-i18next';
 import { Sparkles, Droplets, Clock, ShieldCheck } from 'lucide-react';
 
 export default function ElSecreto() {
+  const { t } = useTranslation();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -10,18 +13,18 @@ export default function ElSecreto() {
   const features = [
     {
       icon: <Droplets className="w-5 h-5 text-ink" />,
-      title: "Absorción Osmótica",
-      desc: "La matriz oclusiva fuerza a la piel a absorber la esencia hasta un 400% más profundo que las mascarillas de papel tradicionales."
+      title: t('pages.secret.feat1_title'),
+      desc: t('pages.secret.feat1_desc')
     },
     {
       icon: <Clock className="w-5 h-5 text-ink" />,
-      title: "Liberación Sostenida",
-      desc: "Los bioactivos no se evaporan. Se infunden gota a gota durante las 3-4 horas de aplicación."
+      title: t('pages.secret.feat2_title'),
+      desc: t('pages.secret.feat2_desc')
     },
     {
       icon: <ShieldCheck className="w-5 h-5 text-ink" />,
-      title: "Termorregulación",
-      desc: "El material reacciona al calor basal de tu piel, derritiéndose orgánicamente sobre los poros para una adaptación anatómica perfecta."
+      title: t('pages.secret.feat3_title'),
+      desc: t('pages.secret.feat3_desc')
     }
   ];
 
@@ -43,13 +46,13 @@ export default function ElSecreto() {
           >
             <span className="flex items-center gap-2 text-gold text-[10px] uppercase tracking-[0.3em] font-bold mb-6">
               <Sparkles className="w-4 h-4" />
-              Tecnología Propietaria
+              {t('pages.secret.badge')}
             </span>
             <h1 className="text-5xl md:text-7xl font-serif tracking-tight mb-8">
-              El Secreto de la <br /><span className="italic font-light text-gold text-opacity-90">Máscara</span>
+              {t('pages.secret.title')} <br /><span className="italic font-light text-gold text-opacity-90">{t('pages.secret.titleItalic')}</span>
             </h1>
             <p className="text-xl font-light text-gray-300 leading-relaxed max-w-2xl">
-              Olvídate de las mascarillas de tela. Nuestra matriz hidrocoloide inteligente no es un tejido empapado, es un sistema sólido de bioactivos que se funde con tu piel.
+              {t('pages.secret.intro')}
             </p>
           </motion.div>
         </div>
@@ -67,14 +70,14 @@ export default function ElSecreto() {
               className="lg:w-1/2 space-y-8"
             >
               <h2 className="text-3xl lg:text-5xl font-serif text-ink leading-tight">
-                Anatomía de una revolución <span className="italic font-light">dérmica.</span>
+                {t('pages.secret.section_title')} <span className="italic font-light">{t('pages.secret.section_titleItalic')}</span>
               </h2>
               <div className="h-px w-24 bg-gold" />
               <p className="text-gray-500 font-light leading-relaxed text-lg">
-                El secreto radica en el estado físico del producto. Comenzamos con un gel de ácido hialurónico súper concentrado, colágeno hidrolizado y péptidos, que a través de un proceso de polimerización, solidificamos en una matriz flexible.
+                {t('pages.secret.section_p1')}
               </p>
               <p className="text-gray-500 font-light leading-relaxed text-lg">
-                Cuando la mascarilla entra en contacto con tu rostro, la temperatura natural de tu piel comienza a derretir lentamente esta matriz, haciéndola transparente con el paso de las horas mientras los nutrientes penetran directamente en la dermis.
+                {t('pages.secret.section_p2')}
               </p>
             </motion.div>
 
@@ -113,7 +116,7 @@ export default function ElSecreto() {
             transition={{ duration: 1 }}
             className="text-4xl md:text-5xl font-serif text-ink tracking-tight"
           >
-            De opaco a <span className="italic text-gold">transparente</span>. <br /> (Literalmente).
+            {t('pages.secret.visual_title')} <span className="italic text-gold">{t('pages.secret.visual_titleItalic')}</span>{t('pages.secret.visual_subtitle')}
           </motion.h3>
           <motion.p 
             initial={{ opacity: 0, y: 10 }}
@@ -122,7 +125,7 @@ export default function ElSecreto() {
             transition={{ duration: 1, delay: 0.3 }}
             className="mt-6 text-gray-500 font-light max-w-xl mx-auto"
           >
-            La prueba visual de la absorción. Sabrás que ha terminado su trabajo cuando el espesor se haya reducido y la mascarilla se vuelva transparente como un cristal.
+            {t('pages.secret.visual_desc')}
           </motion.p>
         </div>
       </section>

@@ -6,35 +6,12 @@
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform, useSpring } from 'motion/react';
-
-const ritualSteps = [
-  {
-    title: "Preparar",
-    subtitle: "Paso 01",
-    description: "Limpia profundamente tu piel para asegurar la absorción máxima de los micronutrientes. Un lienzo impecable es el primer requisito de la biotecnología Evocarelab.",
-    image: "/ritual 01.png"
-  },
-  {
-    title: "Aplicar",
-    subtitle: "Paso 02",
-    description: "Extiende la mascarilla sobre el rostro limpio durante 15–20 minutos. Permite que la matriz de ácido hialurónico interactúe con tu temperatura corporal para una entrega precisa.",
-    image: "/ritual 02.png"
-  },
-  {
-    title: "Frecuencia",
-    subtitle: "Paso 03",
-    description: "Usar 2–3 veces por semana o según las necesidades específicas de tu piel. La consistencia es la clave para reprogramar la respuesta celular a largo plazo.",
-    image: "/ritual 03.png"
-  },
-  {
-    title: "Revelar",
-    subtitle: "Paso 04",
-    description: "Retira y masajea el exceso de esencia para un acabado suave, relleno y luminoso. El resultado final de la arquitectura celular hecho visible.",
-    image: "/ritual 04.png"
-  }
-];
+import { useTranslation } from 'react-i18next';
+import { getImageUrl } from '../lib/supabase';
+import { getLocalizedPath } from '../lib/i18n-utils';
 
 export default function Ritual() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -43,6 +20,33 @@ export default function Ritual() {
   });
 
   const smoothProgress = useSpring(scrollYProgress, { stiffness: 50, damping: 20 });
+
+  const ritualSteps = [
+    {
+      title: t('pages.ritual.step1_title'),
+      subtitle: t('pages.ritual.step1_subtitle'),
+      description: t('pages.ritual.step1_desc'),
+      image: getImageUrl("ritual01.png")
+    },
+    {
+      title: t('pages.ritual.step2_title'),
+      subtitle: t('pages.ritual.step2_subtitle'),
+      description: t('pages.ritual.step2_desc'),
+      image: getImageUrl("ritual02.png")
+    },
+    {
+      title: t('pages.ritual.step3_title'),
+      subtitle: t('pages.ritual.step3_subtitle'),
+      description: t('pages.ritual.step3_desc'),
+      image: getImageUrl("ritual03.png")
+    },
+    {
+      title: t('pages.ritual.step4_title'),
+      subtitle: t('pages.ritual.step4_subtitle'),
+      description: t('pages.ritual.step4_desc'),
+      image: getImageUrl("ritual04.png")
+    }
+  ];
 
   return (
     <div className="bg-white min-h-screen">
@@ -56,7 +60,7 @@ export default function Ritual() {
             transition={{ delay: 0.5 }}
             className="text-[10px] uppercase tracking-[0.8em] text-ink/60 font-bold block"
           >
-            La Experiencia Evocarelab
+            {t('pages.ritual.badge')}
           </motion.span>
           <motion.h1 
             initial={{ y: 30, opacity: 0 }}
@@ -64,7 +68,7 @@ export default function Ritual() {
             transition={{ delay: 0.7 }}
             className="text-6xl md:text-9xl font-serif text-ink tracking-tighter"
           >
-            Tu <span className="italic font-light text-gold">Ritual</span> Personal.
+            {t('pages.ritual.title')}<span className="italic font-light text-gold">{t('pages.ritual.titleItalic')}</span>{t('pages.ritual.subtitle')}
           </motion.h1>
           <motion.div 
             initial={{ scaleX: 0 }}
@@ -80,7 +84,7 @@ export default function Ritual() {
           transition={{ delay: 1.5, repeat: Infinity, duration: 2 }}
           className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4"
         >
-          <span className="text-[10px] text-ink/30 uppercase tracking-widest">Desplaza para comenzar</span>
+          <span className="text-[10px] text-ink/30 uppercase tracking-widest">{t('pages.ritual.scrollDown')}</span>
           <div className="w-px h-12 bg-neutral-200"></div>
         </motion.div>
       </section>
@@ -156,6 +160,22 @@ export default function Ritual() {
         </div>
       </section>
 
+      {/* Security Check Section (Patch Test) */}
+      <section className="py-24 bg-neutral-50 border-t border-neutral-100 italic">
+        <div className="container mx-auto px-6 text-center">
+          <div className="max-w-3xl mx-auto space-y-8">
+            <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-ink text-white rounded-full text-[9px] uppercase tracking-[0.3em] font-bold">
+              <span className="w-1.5 h-1.5 bg-gold rounded-full animate-pulse" />
+              {t('pages.ritual.safety_badge')}
+            </div>
+            <h3 className="text-4xl font-serif text-ink tracking-tight">{t('pages.ritual.safety_title')}<span className="text-gold">{t('pages.ritual.safety_titleGold')}</span>.</h3>
+            <p className="text-lg text-gray-500 font-light leading-relaxed">
+              {t('pages.ritual.safety_desc')}
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Completion Section */}
       <section className="py-48 bg-ink text-center">
         <div className="container mx-auto px-6 max-w-4xl space-y-12">
@@ -164,19 +184,19 @@ export default function Ritual() {
             whileInView={{ opacity: 1, y: 0 }}
             className="space-y-6"
           >
-             <span className="text-gold text-[10px] uppercase tracking-[0.5em] font-bold">Resiliencia Celular</span>
-             <h3 className="text-5xl md:text-7xl font-serif text-white tracking-tighter italic">Tu piel, reinventada.</h3>
+             <span className="text-gold text-[10px] uppercase tracking-[0.5em] font-bold">{t('pages.ritual.final_badge')}</span>
+             <h3 className="text-5xl md:text-7xl font-serif text-white tracking-tighter italic">{t('pages.ritual.final_title')}</h3>
              <p className="text-xl text-gray-400 font-light max-w-2xl mx-auto">
-               El ritual de Evocarelab Science no es solo belleza. Es el compromiso diario con tu arquitectura celular.
+               {t('pages.ritual.final_desc')}
              </p>
           </motion.div>
           
           <div className="pt-12">
              <button 
-               onClick={() => navigate('/')}
+               onClick={() => navigate(getLocalizedPath('product'))}
                className="px-16 py-6 bg-gold text-ink text-xs uppercase tracking-[0.4em] font-bold hover:bg-white transition-all rounded-full shadow-2xl"
              >
-                COMPRAR YA
+                {t('pages.ritual.final_cta')}
              </button>
           </div>
         </div>
