@@ -12,6 +12,11 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(express.json());
 
+// Health check
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", environment: process.env.NODE_ENV });
+});
+
 // API Check/Process Payment using Stripe
 app.post("/api/create-checkout-session", async (req: Request, res: Response) => {
   const { items, method, shipping, origin } = req.body;
@@ -289,13 +294,21 @@ async function startServer() {
     });
   } else {
     const distPath = path.resolve(process.cwd(), 'dist');
-    app.use(express.static(distPath, { index: false }));
-    app.get('*', (req: Request, res: Response, next: NextFunction) => {
-      if (req.originalUrl.startsWith('/api') || req.originalUrl.includes('.')) return next();
-      const indexPath = path.resolve(distPath, 'index.html');
-      if (fs.existsSync(indexPath)) res.sendFile(indexPath);
-      else next();
-    });
+    if (fs.existsSync(distPath)) {
+      app.use(express.static(distPath, { index: false }));
+      app.get('*', (req: Request, res: Response, next: NextFunction) => {
+        if (req.originalUrl.startsWith('/api') || req.originalUrl.includes('.')) return next();
+        const indexPath = path.resolve(distPath, 'index.html');
+        if (fs.existsSync(indexPath)) res.sendFile(indexPath);
+        else next();
+      });
+    } else {
+      console.warn("WARNING: 'dist' directory not found. Static files will NOT be served.");
+      app.get('*', (req, res) => {
+        if (req.originalUrl.startsWith('/api')) return res.status(404).json({ error: "API not found" });
+        res.status(404).send("Application not built. Please run 'npm run build'.");
+      });
+    }
   }
 
   if (process.env.NODE_ENV !== 'test') {
@@ -305,10 +318,12 @@ async function startServer() {
   }
 }
 
-// For local running or standard container environments
-const isMainModule = fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
-if (isMainModule || process.env.RUN_SERVER === 'true') {
-  startServer();
+// Start server
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
+  startServer().catch(err => {
+    console.error("Failed to start server:", err);
+    process.exit(1);
+  });
 }
 
 export default app;
