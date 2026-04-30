@@ -16,18 +16,28 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// API Check/Process Payment using Stripe
-app.post("/api/create-checkout-session", async (req, res) => {
-  const { items, method, shipping, origin } = req.body;
+// Create Checkout Session (Alias for both paths used in frontend)
+const handleCheckout = async (req: any, res: any) => {
+  const { items, method = 'delivery', shipping, origin } = req.body;
   
-  if (!items || !shipping) {
-    return res.status(400).json({ success: false, message: "Missing required data (items or shipping)" });
+  if (!items || !Array.isArray(items) || items.length === 0) {
+    return res.status(400).json({ success: false, message: "No hay productos en el carrito." });
   }
+
+  // Si no hay shipping (algunos componentes no lo envían), creamos uno por defecto para evitar el crash
+  const shippingData = shipping || {
+    email: "customer@example.com",
+    fullName: "Cliente App",
+    phone: "",
+    address: "Recogida en tienda",
+    city: "",
+    zipCode: ""
+  };
   
   try {
     const stripeSecret = process.env.STRIPE_SECRET_KEY;
     if (!stripeSecret) {
-      throw new Error("La clave secreta de Stripe no está configurada.");
+      throw new Error("La clave secreta de Stripe no está configurada en el servidor.");
     }
 
     const stripe = new Stripe(stripeSecret, {
@@ -38,18 +48,18 @@ app.post("/api/create-checkout-session", async (req, res) => {
       price_data: {
         currency: 'eur',
         product_data: {
-          name: item.name,
-          images: [item.image],
+          name: item.name || 'Producto Evocarelab',
+          images: item.image ? [item.image] : [],
           metadata: { product_id: item.id }
         },
-        unit_amount: Math.round(item.price * 100),
+        unit_amount: Math.round((item.price || 0) * 100),
       },
-      quantity: item.quantity,
+      quantity: item.quantity || 1,
     }));
 
-    let frontendOrigin = origin || req.headers.origin || `http://localhost:3000`;
-    if (frontendOrigin === "null" || frontendOrigin === "about:") {
-       frontendOrigin = req.headers.referer ? new URL(req.headers.referer).origin : `http://localhost:3000`;
+    let frontendOrigin = origin || req.headers.origin || `https://${req.headers.host}`;
+    if (frontendOrigin.includes("localhost") === false && !frontendOrigin.startsWith("http")) {
+      frontendOrigin = `https://${req.headers.host}`;
     }
 
     const shippingOptions = [];
@@ -58,23 +68,7 @@ app.post("/api/create-checkout-session", async (req, res) => {
         shipping_rate_data: {
           type: 'fixed_amount',
           fixed_amount: { amount: 0, currency: 'eur' },
-          display_name: 'Envío Gratuito',
-          delivery_estimate: {
-            minimum: { unit: 'business_day', value: 2 },
-            maximum: { unit: 'business_day', value: 4 },
-          },
-        },
-      });
-    } else if (method === 'pickup') {
-      shippingOptions.push({
-        shipping_rate_data: {
-          type: 'fixed_amount',
-          fixed_amount: { amount: 0, currency: 'eur' },
-          display_name: 'Recogida en Tienda',
-          delivery_estimate: {
-            minimum: { unit: 'business_day', value: 1 },
-            maximum: { unit: 'business_day', value: 1 },
-          },
+          display_name: 'Envío Estándar',
         },
       });
     }
@@ -89,23 +83,26 @@ app.post("/api/create-checkout-session", async (req, res) => {
       cancel_url: `${frontendOrigin}/checkout`,
       metadata: {
         shippingMethod: method,
-        customerEmail: shipping.email,
-        customerName: shipping.fullName,
-        customerPhone: shipping.phone || "",
+        customerEmail: shippingData.email,
+        customerName: shippingData.fullName,
+        customerPhone: shippingData.phone || "",
         shippingAddress: JSON.stringify({
-          address: shipping.address,
-          city: shipping.city,
-          zipCode: shipping.zipCode
+          address: shippingData.address,
+          city: shippingData.city,
+          zipCode: shippingData.zipCode
         }),
       }
     });
 
     res.json({ id: session.id, url: session.url });
   } catch (error: any) {
-    console.error("Error creating checkout session:", error);
+    console.error("CRITICAL STRIPE ERROR:", error);
     res.status(500).json({ success: false, message: error.message });
   }
-});
+};
+
+app.post("/api/create-checkout-session", handleCheckout);
+app.post("/api/checkout", handleCheckout);
 
 // API to confirm and save the order in Supabase
 app.post("/api/finalize-order", async (req, res) => {
