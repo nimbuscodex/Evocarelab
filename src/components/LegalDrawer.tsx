@@ -8,36 +8,34 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, Sparkles, Beaker, Menu } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-import { useTranslation } from 'react-i18next';
-import { getLocalizedPath } from '../lib/i18n-utils';
-
 export default function LegalDrawer() {
-  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
   const legalLinks = [
     { 
-      title: t('discover_drawer.links.philosophy.title'), 
+      title: "Filosofía del Laboratorio", 
       icon: <Beaker className="w-4 h-4" />,
-      to: getLocalizedPath('philosophy'),
-      content: t('discover_drawer.links.philosophy.content')
+      to: "/filosofia",
+      content: "Creemos en la intersección pura entre la biotecnología avanzada y la estética. Cada fórmula es el resultado de años de investigación sin compromisos, diseñada para redefinir los límites del cuidado de la piel."
     },
     { 
-      title: t('discover_drawer.links.secret.title'), 
+      title: "El Secreto de la Máscara", 
       icon: <Sparkles className="w-4 h-4" />,
-      to: getLocalizedPath('secret'),
-      content: t('discover_drawer.links.secret.content')
+      to: "/el-secreto",
+      content: "Nuestra mascarilla hidrocoloide patentada no es solo un producto, es un sistema de entrega molecular continuo. Desarrollada para reaccionar a la temperatura basal de la piel y liberar activos de forma prolongada."
     }
   ];
 
   return (
     <>
+      {/* Side Toggle Button ... */}
+      {/* (Unchanged part ...) */}
       <button 
         onClick={() => setIsOpen(true)}
         className="fixed right-0 top-1/2 -translate-y-1/2 z-40 bg-ink text-white p-3 rounded-l-xl border-l border-y border-white/10 hover:bg-gold transition-colors duration-500 shadow-2xl group flex flex-col items-center gap-2"
       >
         <Menu className="w-4 h-4" />
-        <span className="[writing-mode:vertical-lr] rotate-180 text-[8px] uppercase tracking-[0.3em] font-bold py-2">{t('hero.ctaLearn')}</span>
+        <span className="[writing-mode:vertical-lr] rotate-180 text-[8px] uppercase tracking-[0.3em] font-bold py-2">Descubre</span>
       </button>
 
       <AnimatePresence>
@@ -61,7 +59,7 @@ export default function LegalDrawer() {
               className="fixed right-0 top-0 bottom-0 w-80 md:w-96 bg-white z-[70] shadow-[-20px_0_50px_rgba(0,0,0,0.1)] p-12 overflow-y-auto"
             >
               <div className="flex justify-between items-center mb-16">
-                <span className="text-[10px] uppercase tracking-[0.5em] text-gold font-bold">{t('discover_drawer.badge')}</span>
+                <span className="text-[10px] uppercase tracking-[0.5em] text-gold font-bold">Contenido</span>
                 <button 
                   onClick={() => setIsOpen(false)}
                   className="p-2 hover:bg-neutral-50 rounded-full transition-colors"
@@ -87,7 +85,7 @@ export default function LegalDrawer() {
                       onClick={() => setIsOpen(false)}
                       className="text-[9px] uppercase tracking-widest text-gold font-bold border-b border-transparent hover:border-gold transition-all inline-block"
                     >
-                      {t('discover_drawer.discover_more')}
+                      Descubrir más
                     </Link>
                   </div>
                 ))}
@@ -95,9 +93,9 @@ export default function LegalDrawer() {
 
               <div className="mt-32 pt-8 border-t border-neutral-100">
                 <p className="text-[9px] text-gray-300 uppercase tracking-widest leading-loose">
-                  {t('discover_drawer.company')}<br />
-                  {t('discover_drawer.version')}<br />
-                  {t('discover_drawer.rights')}
+                  Evocarelab Science S.L.<br />
+                  Sección Descubre v1.1.0<br />
+                  © 2026 Todos los derechos reservados.
                 </p>
               </div>
             </motion.div>

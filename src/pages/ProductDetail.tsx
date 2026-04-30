@@ -2,11 +2,8 @@ import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import { ArrowLeft, Check, Droplets, Sparkles, Wand2, ShieldCheck, Microscope, Thermometer, FlaskConical, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { useCart } from '../context/CartContext';
 import { useProduct } from '../hooks/useProduct';
-import { supabase, getImageUrl } from '../lib/supabase';
-import { getLocalizedPath } from '../lib/i18n-utils';
 
 export default function ProductDetail() {
   const { product, loading } = useProduct();
@@ -29,36 +26,19 @@ export default function ProductDetail() {
 }
 
 function ProductDetailContent({ product }: { product: any }) {
-  const { t, i18n } = useTranslation();
-  const isSpanish = i18n.language.startsWith('es');
   const { addItem } = useCart();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [selectedPack, setSelectedPack] = useState(1);
   const scienceRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: scienceRef,
     offset: ["start end", "end start"]
   });
 
-  const packs = [
-    { id: 1, name: t('pages.product.pack1'), description: t('pages.product.pack1_desc'), discount: 0, count: 1 },
-    { id: 2, name: t('pages.product.pack2'), description: t('pages.product.pack2_desc'), discount: 5, count: 2 },
-    { id: 3, name: t('pages.product.pack3'), description: t('pages.product.pack3_desc'), discount: 10, count: 3 },
-  ];
-
-  const currentPrice = selectedPack === 1 
-    ? product.price 
-    : selectedPack === 2 
-      ? product.price * 0.95 
-      : product.price * 0.9;
-  
-  const totalPrice = currentPrice * selectedPack;
-
   const images = [
-    getImageUrl('sobre.png'),
-    getImageUrl('caja.png'),
-    getImageUrl('fondoblanco.png'),
-    getImageUrl('modelo1.png')
+    '/sobre.png',
+    '/caja.png',
+    '/fondo blanco.png',
+    '/modelo 1.png'
   ];
 
   useEffect(() => {
@@ -74,10 +54,10 @@ function ProductDetailContent({ product }: { product: any }) {
   const handleAddToCart = () => {
     addItem({
       id: product.id,
-      name: isSpanish ? product.name : "Hyaluronic Acid Mask",
-      price: product.price, // Base price, context handles discount
+      name: product.name,
+      price: product.price,
       image: images[currentImageIndex]
-    }, selectedPack);
+    });
   };
 
   return (
@@ -89,11 +69,11 @@ function ProductDetailContent({ product }: { product: any }) {
         {/* Back Button */}
         <div className="container mx-auto px-6 py-4">
           <Link 
-            to={getLocalizedPath('home')} 
+            to="/" 
             className="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest text-gray-400 hover:text-ink transition-colors group"
           >
             <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
-            {t('pages.product.backToHome')}
+            Volver al inicio
           </Link>
         </div>
 
@@ -134,7 +114,7 @@ function ProductDetailContent({ product }: { product: any }) {
                 transition={{ delay: 1 }}
                 className="absolute top-10 right-10 bg-white/80 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/50 shadow-sm pointer-events-none"
               >
-                <p className="text-[10px] uppercase tracking-widest font-bold text-ink mb-1">{t('pages.product.labSeal')}</p>
+                <p className="text-[10px] uppercase tracking-widest font-bold text-ink mb-1">Authentic Lab Seal</p>
                 <Sparkles size={16} className="text-gold" />
               </motion.div>
             </div>
@@ -156,9 +136,9 @@ function ProductDetailContent({ product }: { product: any }) {
           {/* Right: Technical Specs */}
           <div className="lg:col-span-6 space-y-12 lg:max-w-xl lg:mr-auto lg:ml-0">
             <div className="space-y-6">
-              <span className="text-[10px] uppercase tracking-[0.5em] text-gray-400 font-bold block mb-2">{t('pages.product.badge')}</span>
+              <span className="text-[10px] uppercase tracking-[0.5em] text-gray-400 font-bold block mb-2">Biorremodelación Dérmica</span>
               <h1 className="text-4xl lg:text-5xl xl:text-7xl font-serif text-ink leading-[1.1]">
-                {isSpanish ? product.name : "Hyaluronic Acid Mask"}
+                {product.name}
               </h1>
               <div className="flex items-center gap-4 py-4 border-y border-neutral-100">
                 <div className="text-2xl font-serif text-ink">{product.price.toFixed(2)}€</div>
@@ -166,55 +146,11 @@ function ProductDetailContent({ product }: { product: any }) {
                 <div className="flex text-gold">
                   {[...Array(5)].map((_, i) => <Sparkles key={i} size={14} fill="currentColor" />)}
                 </div>
-                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{t('pages.product.reviews')}</span>
+                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">(4.9/5 Reviews)</span>
               </div>
               <p className="text-gray-500 text-lg font-light leading-relaxed">
-                {isSpanish ? product.description : "High-performance hydration treatment with bio-collagen and 200Da hyaluronic acid for structural skin revitalization."}
+                {product.description}
               </p>
-            </div>
-            
-            {/* Pack Selection */}
-            <div className="space-y-4">
-              <span className="text-[9px] uppercase tracking-[0.4em] text-gray-400 font-bold block mb-4">{t('pages.product.selectRitual')}</span>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {packs.map((pack) => {
-                  const packUnitPrice = pack.id === 1 ? product.price : pack.id === 2 ? product.price * 0.95 : product.price * 0.9;
-                  const isSelected = selectedPack === pack.id;
-                  
-                  return (
-                    <button
-                      key={pack.id}
-                      onClick={() => setSelectedPack(pack.id)}
-                      className={`relative p-5 rounded-2xl border-2 text-left transition-all duration-300 ${
-                        isSelected 
-                        ? 'border-ink bg-neutral-50 shadow-md ring-4 ring-neutral-50' 
-                        : 'border-neutral-100 bg-white hover:border-neutral-200 hover:bg-neutral-50/50'
-                      }`}
-                    >
-                      {pack.discount > 0 && (
-                        <div className="absolute -top-3 -right-3 bg-gold text-ink text-[8px] font-bold uppercase tracking-widest px-2 py-1 rounded-full shadow-sm z-10">
-                          -{pack.discount}%
-                        </div>
-                      )}
-                      
-                      <div className="space-y-1">
-                        <p className={`text-[10px] uppercase tracking-widest font-bold ${isSelected ? 'text-ink' : 'text-gray-400'}`}>
-                          {pack.name}
-                        </p>
-                        <p className="text-[13px] font-serif text-ink">
-                          {packUnitPrice.toFixed(2)}€ <span className="text-[10px] text-gray-400 font-sans not-italic">/u</span>
-                        </p>
-                      </div>
-                      
-                      <div className={`mt-3 w-4 h-4 rounded-full border flex items-center justify-center transition-colors ${
-                        isSelected ? 'bg-ink border-ink' : 'bg-white border-neutral-200'
-                      }`}>
-                        {isSelected && <Check size={10} className="text-white" />}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
             </div>
 
             <div className="pt-2 pb-10 border-b border-neutral-100">
@@ -227,7 +163,7 @@ function ProductDetailContent({ product }: { product: any }) {
                 <div className="absolute inset-0 bg-neutral-800 scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]"></div>
                 
                 <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.3em] sm:tracking-[0.4em] font-bold relative z-10 flex items-center gap-4 transition-transform duration-500 group-hover:translate-x-2">
-                  <span>{t('pages.product.addToRitual')}</span>
+                  <span>Añadir al ritual</span>
                   <span className="opacity-0 -translate-x-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-x-0 hidden sm:block">
                     <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M9 1L13 5M13 5L9 9M13 5H1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -235,25 +171,25 @@ function ProductDetailContent({ product }: { product: any }) {
                   </span>
                 </span>
                 <span className="text-[11px] sm:text-[12px] uppercase tracking-widest font-light opacity-90 relative z-10 transition-transform duration-500 group-hover:-translate-x-2">
-                  {totalPrice.toFixed(2)}€
+                  {product.price.toFixed(2)}€
                 </span>
               </motion.button>
               <div className="flex justify-between items-center mt-6 px-2">
-                <span className="text-[8px] sm:text-[9px] text-gray-400 uppercase tracking-[0.2em] sm:tracking-[0.25em] flex items-center gap-2 pointer-events-none"><Sparkles size={11} strokeWidth={1.5} /> {t('pages.product.freeShipping')}</span>
-                <span className="text-[8px] sm:text-[9px] text-gray-400 uppercase tracking-[0.2em] sm:tracking-[0.25em] flex items-center gap-2 pointer-events-none"><ShieldCheck size={11} strokeWidth={1.5} /> {t('pages.product.guarantee')}</span>
+                <span className="text-[8px] sm:text-[9px] text-gray-400 uppercase tracking-[0.2em] sm:tracking-[0.25em] flex items-center gap-2 pointer-events-none"><Sparkles size={11} strokeWidth={1.5} /> Envío Gratis</span>
+                <span className="text-[8px] sm:text-[9px] text-gray-400 uppercase tracking-[0.2em] sm:tracking-[0.25em] flex items-center gap-2 pointer-events-none"><ShieldCheck size={11} strokeWidth={1.5} /> Garantía Evocare</span>
               </div>
             </div>
 
             <div className="pt-8">
               <h3 className="text-[9px] uppercase tracking-[0.5em] font-bold text-gray-400 mb-8 flex items-center gap-4">
                 <span className="w-12 h-[1px] bg-gray-200"></span>
-                {t('pages.product.activeIngredients')}
+                Ingredientes Activos
               </h3>
               <div className="grid grid-cols-1 gap-2">
                 {[
-                  { icon: <Droplets size={16} strokeWidth={1.5} />, title: isSpanish ? "Bio-Colágeno" : "Bio-Collagen", desc: isSpanish ? "Hidratación profunda 200Da." : "Deep 200Da hydration." },
-                  { icon: <FlaskConical size={16} strokeWidth={1.5} />, title: isSpanish ? "Hialurónico" : "Hyaluronic", desc: isSpanish ? "Retiene 1000x su peso en agua." : "Holds 1000x its weight in water." },
-                  { icon: <ShieldCheck size={16} strokeWidth={1.5} />, title: "Ectoína", desc: isSpanish ? "Escudo biológico contra luz azul y estrés ambiental." : "Biological shield against blue light and environmental stress." },
+                  { icon: <Droplets size={16} strokeWidth={1.5} />, title: "Bio-Colágeno", desc: "Hidratación profunda 200Da." },
+                  { icon: <FlaskConical size={16} strokeWidth={1.5} />, title: "Hialurónico", desc: "Retiene 1000x su peso en agua." },
+                  { icon: <ShieldCheck size={16} strokeWidth={1.5} />, title: "Ectoína", desc: "Escudo biológico contra luz azul y estrés ambiental." },
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-5 p-4 rounded-2xl hover:bg-neutral-50/80 border border-transparent hover:border-neutral-100 transition-all group cursor-default">
                     <div className="w-10 h-10 border border-neutral-200 rounded-full bg-white flex items-center justify-center text-ink shrink-0 group-hover:scale-110 transition-transform duration-500 shadow-sm">
@@ -274,7 +210,7 @@ function ProductDetailContent({ product }: { product: any }) {
       {/* Advanced Science Section */}
       <section ref={scienceRef} className="py-40 bg-ink text-white relative overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img src={getImageUrl("fondo-rosa.png")} className="w-full h-full object-cover opacity-5 mix-blend-overlay" alt="" />
+          <img src="/fondo-rosa.png" className="w-full h-full object-cover opacity-5 mix-blend-overlay" alt="" />
         </div>
         
         <div className="container mx-auto px-6 relative z-10">
@@ -284,19 +220,19 @@ function ProductDetailContent({ product }: { product: any }) {
                 style={{ opacity: opacityScroll }}
                 className="inline-block px-4 py-2 bg-white/5 rounded-full text-[10px] uppercase tracking-[0.4em]"
               >
-                {t('pages.product.scienceBadge')}
+                La ciencia de la piel
               </motion.span>
               <h2 className="text-5xl md:text-6xl font-serif leading-tight italic">
-                {t('pages.product.scienceTitle')}
+                Estructura Molecular Avanzada
               </h2>
               <p className="text-gray-400 text-lg font-light leading-relaxed max-w-xl">
-                {t('pages.product.scienceDesc')}
+                Nuestra mascarilla no es una simple aplicación superficial. Es un sistema de entrega de activos patentado que interactúa con la temperatura de tu piel para una permeabilización óptima.
               </p>
               
               <div className="space-y-8 pt-8">
                 {[
-                  { icon: <Microscope size={24} />, title: t('pages.product.tech1_title'), text: t('pages.product.tech1_desc') },
-                  { icon: <Thermometer size={24} />, title: t('pages.product.tech2_title'), text: t('pages.product.tech2_desc') }
+                  { icon: <Microscope size={24} />, title: "Tecnología Polimérica", text: "Hidrogel que se vuelve transparente a medida que los activos son absorbidos por la dermis." },
+                  { icon: <Thermometer size={24} />, title: "Termo-Sensibilidad", text: "Reacciona al calor corporal para una liberación controlada y constante de nutrientes." }
                 ].map((item, i) => (
                   <div key={i} className="flex gap-6 max-w-lg">
                     <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center shrink-0">
@@ -330,7 +266,7 @@ function ProductDetailContent({ product }: { product: any }) {
                 >
                   <div className="relative w-full aspect-[4/5] rounded-[24px] md:rounded-[36px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.4),0_0_0_1px_rgba(255,255,255,0.05)] bg-neutral-800" style={{ transform: "translateZ(30px)" }}>
                     <img 
-                      src={getImageUrl("efectos.png")} 
+                      src="/efectos.png" 
                       className="w-full h-full object-cover" 
                       alt="Clinical Effects" 
                     />
@@ -358,7 +294,7 @@ function ProductDetailContent({ product }: { product: any }) {
                   whileHover={{ scale: 1.05 }}
                   className="rounded-[32px] overflow-hidden shadow-xl aspect-[3/4]"
                 >
-                  <img src={getImageUrl("efectos.png")} className="w-full h-full object-cover" alt="Clinical Effect" />
+                  <img src="/efectos.png" className="w-full h-full object-cover" alt="Clinical Effect" />
                 </motion.div>
                 <motion.div 
                   initial={{ y: 50 }}
@@ -366,24 +302,24 @@ function ProductDetailContent({ product }: { product: any }) {
                   whileHover={{ scale: 1.05 }}
                   className="rounded-[32px] overflow-hidden shadow-xl aspect-[3/4]"
                 >
-                  <img src={getImageUrl("collage.png")} className="w-full h-full object-cover" alt="Collage Ritual" />
+                  <img src="/collage.png" className="w-full h-full object-cover" alt="Collage Ritual" />
                 </motion.div>
               </div>
               <div className="absolute -top-10 -left-10 w-40 h-40 bg-white rounded-full flex flex-col items-center justify-center border border-neutral-100 shadow-2xl p-6 text-center italic font-serif text-ink z-20">
                 <span className="text-3xl font-bold not-italic font-sans mb-1">98%</span>
-                <span className="text-[9px] uppercase tracking-widest leading-tight">{isSpanish ? "Efectividad Probada" : "Proven Effectiveness"}</span>
+                <span className="text-[9px] uppercase tracking-widest leading-tight">Efectividad Probada</span>
               </div>
             </div>
 
             <div className="flex-1 space-y-12 order-1 lg:order-2">
-              <span className="text-[10px] uppercase tracking-[0.5em] text-gray-400 font-bold block">{t('pages.product.clinicalBadge')}</span>
-              <h2 className="text-5xl font-serif text-ink leading-tight">{t('pages.product.clinicalTitle')}</h2>
+              <span className="text-[10px] uppercase tracking-[0.5em] text-gray-400 font-bold block">Estudios Clínicos</span>
+              <h2 className="text-5xl font-serif text-ink leading-tight">Resultados que puedes ver y sentir.</h2>
               
               <div className="space-y-8">
                 {[
-                  { label: t('pages.product.stat1'), val: "94%", color: "bg-ink" },
-                  { label: t('pages.product.stat2'), val: "82%", color: "bg-gold" },
-                  { label: t('pages.product.stat3'), val: "88%", color: "bg-neutral-300" }
+                  { label: "Hidratación Profunda", val: "94%", color: "bg-ink" },
+                  { label: "Reducción de Líneas", val: "82%", color: "bg-gold" },
+                  { label: "Elasticidad Cutánea", val: "88%", color: "bg-neutral-300" }
                 ].map((stat, i) => (
                   <div key={i} className="space-y-2">
                     <div className="flex justify-between items-end">
@@ -404,7 +340,7 @@ function ProductDetailContent({ product }: { product: any }) {
               </div>
               
               <p className="text-gray-400 text-sm font-light leading-relaxed max-w-lg">
-                {t('pages.product.clinicalFooter')}
+                *Resultados basados en pruebas clínicas realizadas a 50 mujeres durante 4 semanas de uso continuado (2 sesiones semanales).
               </p>
             </div>
           </div>
@@ -420,11 +356,11 @@ function ProductDetailContent({ product }: { product: any }) {
           <div className="max-w-2xl mx-auto space-y-6">
             <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-ink text-white rounded-full text-[9px] uppercase tracking-[0.3em] font-bold">
               <Microscope size={12} />
-              {t('pages.product.protocolBadge')}
+              Protocolo de Seguridad
             </div>
-            <h3 className="text-3xl font-serif text-ink italic italic">{t('pages.product.protocolTitle')}</h3>
+            <h3 className="text-3xl font-serif text-ink italic italic">Ensayo de Armonía Dérmica</h3>
             <p className="text-gray-500 font-light leading-relaxed">
-              {t('pages.product.protocolDesc')}
+              La excelencia científica de Evocarelab se basa en la personalización biológica. Antes de tu primera inmersión total, aconsejamos aplicar una mínima dosis de esencia en la zona retroauricular (tras la oreja). Un compás de espera de solo <span className="font-bold text-ink underline decoration-gold/30">dos horas</span> confirmará la compatibilidad perfecta de nuestros activos con tu arquitectura celular.
             </p>
           </div>
         </div>
@@ -433,14 +369,14 @@ function ProductDetailContent({ product }: { product: any }) {
   );
 }
 
-const faqs_es = [
+const faqs = [
   {
     question: "¿Cómo y cuándo debo usar la mascarilla Hialuronic Acid Mask?",
     answer: "Recomendamos usarla de 1 a 2 veces por semana, preferiblemente por la noche después de la limpieza facial. Aplícala sobre la piel seca, déjala actuar durante 15-20 minutos y retírala. Masajea el sérum restante hasta su completa absorción."
   },
   {
     question: "¿Es adecuada para mi tipo de piel?",
-    answer: "Nuestra fórmula es de grado clínico y está diseñada para la máxima tolerancia. Sin embargo, dado que cada piel es un ecosistema biológico único, recomendamos aplicar una pequeña gota detrás del lóbulo de la oreja y esperar entre 24 y 48 horas. Si no hay reactividad, disfruta del ritual con total seguridad."
+    answer: "Nuestra fórmula es de grado clínico y está diseñada para la máxima tolerancia. Sin embargo, dado que cada piel es un ecosistema biológico único, recomendamos aplicar una pequeña gota detrás del lóbulo de la oreja y esperar 2 horas. Si no hay reactividad, disfruta del ritual con total seguridad."
   },
   {
     question: "¿Cuáles son los beneficios a largo plazo?",
@@ -452,29 +388,7 @@ const faqs_es = [
   }
 ];
 
-const faqs_en = [
-  {
-    question: "How and when should I use the Hyaluronic Acid Mask?",
-    answer: "We recommend using it 1 to 2 times a week, preferably at night after facial cleansing. Apply it to dry skin, let it act for 15-20 minutes and remove it. Massage the remaining serum until completely absorbed."
-  },
-  {
-    question: "Is it suitable for my skin type?",
-    answer: "Our clinical-grade formula is designed for maximum tolerance. However, since every skin is a unique biological ecosystem, we recommend applying a small drop behind the earlobe and waiting between 24 and 48 hours. If there is no reactivity, enjoy the ritual with total safety."
-  },
-  {
-    question: "What are the long-term benefits?",
-    answer: "In the short term, you will notice instant hydration and luminosity. After 4 weeks of continuous use, the Bio-Collagen and Triple Hyaluronic Acid stimulate natural collagen production, visibly reducing expression lines and improving skin elasticity."
-  },
-  {
-    question: "Can I use it with my other skincare products?",
-    answer: "Of course! The mask integrates perfectly into any routine. Use it after your toner or essence and before moisturizers or oils to seal in all the active ingredients."
-  }
-];
-
 function FAQAccordion() {
-  const { t, i18n } = useTranslation();
-  const isSpanish = i18n.language.startsWith('es');
-  const faqs = isSpanish ? faqs_es : faqs_en;
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const toggle = (index: number) => {
@@ -485,10 +399,10 @@ function FAQAccordion() {
     <section className="py-32 bg-white relative">
       <div className="container mx-auto px-6 max-w-3xl">
         <div className="text-center mb-16">
-          <span className="text-[10px] uppercase tracking-[0.5em] text-gray-400 font-bold block mb-4">{t('pages.product.faqBadge')}</span>
-          <h2 className="text-4xl md:text-5xl font-serif text-ink mb-6">{t('pages.product.faqTitle')}</h2>
+          <span className="text-[10px] uppercase tracking-[0.5em] text-gray-400 font-bold block mb-4">Resolviendo Dudas</span>
+          <h2 className="text-4xl md:text-5xl font-serif text-ink mb-6">Preguntas Frecuentes</h2>
           <p className="text-gray-500 font-light max-w-xl mx-auto">
-            {t('pages.product.faqDesc')}
+            Todo lo que necesitas saber sobre el uso, beneficios y ciencia detrás de tu nuevo ritual de belleza.
           </p>
         </div>
 

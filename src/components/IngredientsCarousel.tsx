@@ -6,11 +6,56 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import { getImageUrl } from '../lib/supabase';
+
+const mainIngredients = [
+  {
+    name: "Hialuronato de sodio",
+    highlight: "Hidratar",
+    description: "Su estructura de alto peso molecular forma una película viscoelástica no oclusiva en la superficie epidérmica, regulando de forma inteligente la evaporación del agua transepidérmica y proporcionando un alivio higroscópico inmediato.",
+    image: "/molécula quimica.png",
+    level: "Superficie",
+    benefit: "Barrera hídrica"
+  },
+  {
+    name: "Ácido hialurónico hidrolizado",
+    highlight: "Penetrar",
+    description: "Nano-moléculas de bajo peso molecular que atraviesan la barrera lipídica para interactuar con los queratinocitos profundos, estimulando la síntesis biológica de colágeno y elastina.",
+    image: "/acido-hialuronico.png",
+    level: "Profundo",
+    benefit: "Renovación endógena"
+  },
+  {
+    name: "Hialuronato de sodio acetilado",
+    highlight: "Retener",
+    description: "Conocido como 'Súper Ácido Hialurónico', su modificación acetilada incremente la afinidad lipofílica, permitiendo un anclaje molecular que duplica la retención hídrica y repara la cohesión celular.",
+    image: "https://png.pngtree.com/png-vector/20231229/ourlarge/pngtree-molecule-3d-physics-png-image_11244259.png",
+    level: "Prolongado",
+    benefit: "Adhesión cutánea"
+  }
+];
+
+const secondaryIngredients = [
+  { 
+    name: "β-glucano", 
+    role: "Inmunomodulador Celular",
+    description: "Derivado de levaduras biotecnológicas, este polisacárido actúa mediante la activación de receptores Dectin-1 en macrófagos. Estudios clínicos demuestran una aceleración del 30% en la reparación del estrato córneo y una reducción significativa de la pérdida de agua transepidérmica (TEWL).",
+    data: "Refueza la inmunidad cutánea innata"
+  },
+  { 
+    name: "Trehalosa", 
+    role: "Chaperona Osmoprotectora",
+    description: "Una molécula de 'supervivencia' que sustituye el agua en las membranas celulares durante el estrés hídrico extremo. Su estructura química previene la desnaturalización de proteínas estructurales, actuando como un escudo protector contra la agregación celular.",
+    data: "Preservación de la integridad biomolecular"
+  },
+  { 
+    name: "Glicosaminoglicanos", 
+    role: "Soporte de Matriz Extracelular",
+    description: "Componentes fundamentales del andamiaje dérmico. Actúan como precursores biológicos que aumentan la densidad de la matriz extracelular, mejorando la turgencia y la elasticidad mediante la estabilización de las fibras de colágeno y elastina.",
+    data: "Redensificación tisular profunda"
+  }
+];
 
 function IngredientSection({ ingredient, index }: { ingredient: any, index: number, key?: any }) {
-  const { t } = useTranslation();
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -41,7 +86,7 @@ function IngredientSection({ ingredient, index }: { ingredient: any, index: numb
                 src={ingredient.image} 
                 alt={ingredient.name}
                 className={`w-full h-full transition-all duration-[3s] group-hover:scale-110 ${
-                  ingredient.name.toLowerCase().includes("hialurónico") || ingredient.name.toLowerCase().includes("hyaluronate") || ingredient.name.toLowerCase().includes("sodio") 
+                  ingredient.name.includes("hialurónico") || ingredient.name.includes("sodio") 
                     ? "object-contain p-6 md:p-12 lg:p-20" 
                     : "object-cover"
                 }`}
@@ -91,7 +136,7 @@ function IngredientSection({ ingredient, index }: { ingredient: any, index: numb
               
               <div className="pt-4 flex items-center justify-between border-t border-neutral-100/50">
                 <div className="space-y-1">
-                   <p className="text-[9px] uppercase tracking-widest text-gray-400 font-bold">{t('ingredients_page.labels.bioMechanism')}</p>
+                   <p className="text-[9px] uppercase tracking-widest text-gray-400 font-bold">Bio-Mecanismo</p>
                    <p className="text-sm font-serif text-ink">{ingredient.benefit}</p>
                 </div>
                 <div className="w-12 h-12 rounded-full border border-neutral-100 flex items-center justify-center text-gold/20 font-serif italic text-xl">
@@ -107,17 +152,7 @@ function IngredientSection({ ingredient, index }: { ingredient: any, index: numb
 }
 
 export default function IngredientsCarousel() {
-  const { t } = useTranslation();
   const [currentSlide, setCurrentSlide] = useState(0);
-
-  const mainIngredients = (t('ingredients_page.main', { returnObjects: true }) as any[]).map((ing, idx) => ({
-    ...ing,
-    image: idx === 0 ? getImageUrl("hialuronatodesodio.png") : 
-           idx === 1 ? getImageUrl("acido-hialuronico.png") :
-           "https://png.pngtree.com/png-vector/20231229/ourlarge/pngtree-molecule-3d-physics-png-image_11244259.png"
-  }));
-
-  const secondaryIngredients = t('ingredients_page.secondary', { returnObjects: true }) as any[];
 
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % mainIngredients.length);
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + mainIngredients.length) % mainIngredients.length);
@@ -125,7 +160,7 @@ export default function IngredientsCarousel() {
   useEffect(() => {
     const timer = setInterval(nextSlide, 6000);
     return () => clearInterval(timer);
-  }, [mainIngredients.length]);
+  }, []);
 
   return (
     <section className="bg-white overflow-hidden">
@@ -162,12 +197,12 @@ export default function IngredientsCarousel() {
               <div className="flex items-center gap-4">
                 <span className="w-12 h-px bg-gold"></span>
                 <span className="text-gold text-[10px] uppercase tracking-[0.5em] font-bold">
-                  {t('ingredients_page.labels.master')} {currentSlide + 1}/{mainIngredients.length}
+                  Ingrediente Maestro {currentSlide + 1}/{mainIngredients.length}
                 </span>
               </div>
               
               <h2 className="text-5xl md:text-8xl font-serif text-white leading-tight">
-                {mainIngredients[currentSlide].name.split(' ').map((word: string, i: number) => (
+                {mainIngredients[currentSlide].name.split(' ').map((word, i) => (
                   <span key={i} className={i % 2 !== 0 ? "italic font-light opacity-80" : ""}>
                     {word}{' '}
                   </span>
@@ -180,11 +215,11 @@ export default function IngredientsCarousel() {
 
               <div className="flex items-center gap-12 pt-8">
                 <div>
-                  <p className="text-[10px] uppercase text-gray-500 tracking-widest mb-1">{t('ingredients_page.labels.action')}</p>
+                  <p className="text-[10px] uppercase text-gray-500 tracking-widest mb-1">Acción</p>
                   <p className="text-white font-medium italic">{mainIngredients[currentSlide].highlight}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] uppercase text-gray-500 tracking-widest mb-1">{t('ingredients_page.labels.benefit')}</p>
+                  <p className="text-[10px] uppercase text-gray-500 tracking-widest mb-1">Beneficio</p>
                   <p className="text-white font-medium italic">{mainIngredients[currentSlide].benefit}</p>
                 </div>
               </div>
@@ -230,10 +265,10 @@ export default function IngredientsCarousel() {
               whileInView={{ opacity: 1 }}
               className="text-[10px] uppercase tracking-[0.8em] text-gold font-bold mb-6 block"
             >
-              {t('ingredients_page.labels.cellArch')}
+              Arquitectura Celular
             </motion.span>
             <h3 className="text-5xl md:text-8xl font-serif text-ink mb-12 tracking-tighter">
-              {t('ingredients_page.labels.treatment')} <br /> <span className="italic font-light">{t('ingredients_page.labels.multiLevel')}</span>
+              Tratamiento <br /> <span className="italic font-light">Multi-Nivel.</span>
             </h3>
             <div className="w-32 h-px bg-gold/30 mx-auto"></div>
           </div>
@@ -247,8 +282,8 @@ export default function IngredientsCarousel() {
           {/* Technical Data Cards Section */}
           <div className="mt-48 max-w-7xl mx-auto">
             <div className="text-center mb-24">
-              <span className="text-[10px] uppercase tracking-[0.5em] text-gold font-bold mb-4 block">{t('ingredients_page.labels.supportMatrix')}</span>
-              <h3 className="text-4xl md:text-5xl font-serif text-ink tracking-tight">{t('ingredients_page.labels.complex')} <span className="italic font-light">{t('ingredients_page.labels.bioNutrients')}</span></h3>
+              <span className="text-[10px] uppercase tracking-[0.5em] text-gold font-bold mb-4 block">Matriz de Soporte Biológico</span>
+              <h3 className="text-4xl md:text-5xl font-serif text-ink tracking-tight">Complejo de <span className="italic font-light">Bio-Nutrientes.</span></h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -281,7 +316,7 @@ export default function IngredientsCarousel() {
                   </div>
 
                   <div className="mt-12 p-6 bg-neutral-50 rounded-2.5xl border border-neutral-100 group-hover:border-gold/20 transition-colors">
-                    <p className="text-[9px] uppercase tracking-widest text-gray-400 font-bold mb-2">{t('ingredients_page.labels.clinicalEvidence')}</p>
+                    <p className="text-[9px] uppercase tracking-widest text-gray-400 font-bold mb-2">Evidencia Clínica</p>
                     <p className="text-xs text-ink font-medium leading-relaxed italic">
                       "{ing.data}"
                     </p>
@@ -297,7 +332,7 @@ export default function IngredientsCarousel() {
             >
               <div className="inline-block px-10 py-4 border border-neutral-100 rounded-full bg-white shadow-sm">
                 <p className="text-[10px] uppercase tracking-[0.4em] text-gray-400 font-bold">
-                  {t('ingredients_page.labels.synergy')} <span className="text-gold">Evocarelab Research</span>
+                  Sinergia Molecular Validada por <span className="text-gold">Evocarelab Research</span>
                 </p>
               </div>
             </motion.div>

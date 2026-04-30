@@ -9,14 +9,13 @@ export interface CartItem {
   id: string;
   name: string;
   price: number;
-  basePrice: number;
   quantity: number;
   image: string;
 }
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (product: Omit<CartItem, 'quantity' | 'basePrice'>, quantity?: number) => void;
+  addItem: (product: Omit<CartItem, 'quantity'>) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, delta: number) => void;
   isCartOpen: boolean;
@@ -49,21 +48,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('evocarelab_cart', JSON.stringify(items));
   }, [items]);
 
-  const addItem = (product: Omit<CartItem, 'quantity' | 'basePrice'>, quantity: number = 1) => {
+  const addItem = (product: Omit<CartItem, 'quantity'>) => {
     setItems(prev => {
       const existing = prev.find(i => i.id === product.id);
-      
-      const newTotalQuantity = (existing?.quantity || 0) + quantity;
-      
-      const basePrice = product.price;
-      let unitPrice = basePrice;
-      if (newTotalQuantity === 2) unitPrice = basePrice * 0.95;
-      if (newTotalQuantity >= 3) unitPrice = basePrice * 0.90;
-
       if (existing) {
-        return prev.map(i => i.id === product.id ? { ...i, quantity: newTotalQuantity, price: unitPrice } : i);
+        return prev.map(i => i.id === product.id ? { ...i, quantity: i.quantity + 1 } : i);
       }
-      return [...prev, { ...product, basePrice, quantity, price: unitPrice }];
+      return [...prev, { ...product, quantity: 1 }];
     });
     setIsCartOpen(true);
   };
@@ -73,20 +64,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateQuantity = (id: string, delta: number) => {
-    setItems(prev => {
-      return prev.map(i => {
-        if (i.id === id) {
-          const newQty = Math.max(1, i.quantity + delta);
-          
-          let newPrice = i.basePrice;
-          if (newQty === 2) newPrice = i.basePrice * 0.95;
-          if (newQty >= 3) newPrice = i.basePrice * 0.90;
-          
-          return { ...i, quantity: newQty, price: newPrice };
-        }
-        return i;
-      });
-    });
+    setItems(prev => prev.map(i => {
+      if (i.id === id) {
+        const newQty = Math.max(1, i.quantity + delta);
+        return { ...i, quantity: newQty };
+      }
+      return i;
+    }));
   };
 
   const clearCart = React.useCallback(() => setItems([]), []);

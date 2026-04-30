@@ -11,6 +11,7 @@ import Ingredients from '../components/Ingredients';
 import Testimonials from '../components/Testimonials';
 import HowToUse from '../components/HowToUse';
 import Philosophy from '../components/Philosophy';
+import FinalCTA from '../components/FinalCTA';
 import BeforeAfter from '../components/BeforeAfter';
 import Newsletter from '../components/Newsletter';
 

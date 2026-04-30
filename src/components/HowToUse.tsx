@@ -4,46 +4,43 @@
  */
 
 import { motion } from 'motion/react';
-import { useTranslation } from 'react-i18next';
+
+const steps = [
+  {
+    number: "00",
+    title: "Compatibilidad",
+    description: "Tu piel es única. Aplica una pequeña cantidad tras la oreja y espera 2 horas para asegurar la armonía perfecta con tu dermis."
+  },
+  {
+    number: "01",
+    title: "Preparar",
+    description: "Limpia profundamente tu piel para asegurar la absorción máxima de los micronutrientes."
+  },
+  {
+    number: "02",
+    title: "Aplicar",
+    description: "Extiende la mascarilla sobre el rostro limpio durante 15–20 minutos."
+  },
+  {
+    number: "03",
+    title: "Frecuencia",
+    description: "Usar 2–3 veces por semana o según las necesidades específicas de tu piel."
+  },
+  {
+    number: "04",
+    title: "Revelar",
+    description: "Retira y masajea el exceso de esencia para un acabado suave, relleno y luminoso."
+  }
+];
 
 export default function HowToUse() {
-  const { t } = useTranslation();
-
-  const steps = [
-    {
-      number: "00",
-      title: t('howtouse.step0_title'),
-      description: t('howtouse.step0_desc')
-    },
-    {
-      number: "01",
-      title: t('howtouse.step1_title'),
-      description: t('howtouse.step1_desc')
-    },
-    {
-      number: "02",
-      title: t('howtouse.step2_title'),
-      description: t('howtouse.step2_desc')
-    },
-    {
-      number: "03",
-      title: t('howtouse.step3_title'),
-      description: t('howtouse.step3_desc')
-    },
-    {
-      number: "04",
-      title: t('howtouse.step4_title'),
-      description: t('howtouse.step4_desc')
-    }
-  ];
-
   return (
     <section className="py-24 bg-dark text-white overflow-hidden">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <div>
-            <span className="text-[10px] uppercase tracking-[0.4em] text-neutral-500 mb-6 block">{t('howtouse.badge')}</span>
-            <h2 className="text-4xl md:text-6xl font-serif mb-12">{t('howtouse.title')}<br /><span className="italic text-neutral-400">{t('howtouse.titleItalic')}</span></h2>
+            <span className="text-[10px] uppercase tracking-[0.4em] text-neutral-500 mb-6 block">The Ritual</span>
+            <h2 className="text-4xl md:text-6xl font-serif mb-12">El arte de <br /><span className="italic text-neutral-400">cuidarte.</span></h2>
             
             <div className="space-y-12">
               {steps.map((step, index) => (

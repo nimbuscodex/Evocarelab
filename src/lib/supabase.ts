@@ -23,13 +23,3 @@ export const supabase = createClient(
   finalUrl,
   supabaseAnonKey || 'placeholder-anon-key'
 )
-
-export const getImageUrl = (path: string) => {
-  if (!path) return '';
-  if (path.startsWith('http') || path.startsWith('data:')) return path;
-  
-  // Remove leading slash if present
-  const cleanPath = path.startsWith('/') ? path.slice(1) : path;
-  const encodedPath = encodeURI(cleanPath);
-  return supabase.storage.from('product-images').getPublicUrl(encodedPath).data.publicUrl;
-};

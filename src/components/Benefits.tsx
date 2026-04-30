@@ -6,30 +6,27 @@
 import { motion, useScroll, useTransform } from 'motion/react';
 import { Star } from 'lucide-react';
 import { useRef } from 'react';
-import { useTranslation } from 'react-i18next';
+
+const benefits = [
+  {
+    title: "Luminosidad",
+    id: "01",
+    description: "Brillo natural instantáneo."
+  },
+  {
+    title: "Efecto Revitalizante",
+    id: "02",
+    description: "Energía celular profunda."
+  },
+  {
+    title: "Protección Barrera",
+    id: "03",
+    description: "Escudo invisible ambiental."
+  }
+];
 
 export default function Benefits() {
-  const { t } = useTranslation();
   const containerRef = useRef(null);
-  
-  const benefits = [
-    {
-      title: t('benefits.leaf01_title'),
-      id: "01",
-      description: t('benefits.leaf01_desc')
-    },
-    {
-      title: t('benefits.leaf02_title'),
-      id: "02",
-      description: t('benefits.leaf02_desc')
-    },
-    {
-      title: t('benefits.leaf03_title'),
-      id: "03",
-      description: t('benefits.leaf03_desc')
-    }
-  ];
-
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"]
@@ -111,9 +108,9 @@ export default function Benefits() {
             className="space-y-12"
           >
             <div className="space-y-4">
-              <span className="text-[10px] uppercase tracking-[0.5em] text-gold font-bold">{t('benefits.reviews')}</span>
+              <span className="text-[10px] uppercase tracking-[0.5em] text-gold font-bold">Reseñas Reales</span>
               <h3 className="text-4xl md:text-5xl font-serif text-ink italic leading-tight">
-                {t('benefits.quote')}
+                "La transformación de mi piel ha sido absoluta en solo 20 minutos."
               </h3>
             </div>
 
@@ -121,7 +118,7 @@ export default function Benefits() {
               <div className="w-16 h-16 rounded-full bg-neutral-100 flex items-center justify-center text-gold font-serif text-2xl italic">E</div>
               <div>
                 <p className="text-sm font-bold tracking-widest text-ink uppercase">ELENA R.</p>
-                <p className="text-[10px] text-gray-400 uppercase tracking-widest">{t('benefits.verified')} • Barcelona</p>
+                <p className="text-[10px] text-gray-400 uppercase tracking-widest">Clienta Verificada • Barcelona</p>
                 <div className="flex gap-1 mt-2">
                   {[...Array(5)].map((_, i) => <Star key={i} size={10} className="fill-gold text-gold" />)}
                 </div>
@@ -129,7 +126,7 @@ export default function Benefits() {
             </div>
 
             <div className="pt-8 border-t border-neutral-100 italic text-gray-400 font-light text-sm max-w-md">
-              {t('benefits.evaluation')}
+              Evaluación dermatológica basada en la regeneración dermo-epidérmica tras el uso continuado de Evocarelab Science.
             </div>
           </motion.div>
 

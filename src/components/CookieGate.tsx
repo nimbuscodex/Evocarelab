@@ -6,11 +6,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Shield, ChevronRight } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import { getLocalizedPath } from '../lib/i18n-utils';
 
 export default function CookieGate({ children }: { children: React.ReactNode }) {
-  const { t } = useTranslation();
   const [consent, setConsent] = useState<'accepted' | 'rejected' | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -57,12 +54,12 @@ export default function CookieGate({ children }: { children: React.ReactNode }) 
                   <div className="flex-1 space-y-2 text-center md:text-left">
                     <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
                       <Shield className="text-gold" size={14} />
-                      <span className="text-gold text-[9px] uppercase tracking-[0.4em] font-bold">{t('cookies.badge')}</span>
+                      <span className="text-gold text-[9px] uppercase tracking-[0.4em] font-bold">Privacidad</span>
                     </div>
-                    <h2 className="text-xl md:text-2xl font-serif text-white tracking-tight">{t('cookies.title')}</h2>
+                    <h2 className="text-xl md:text-2xl font-serif text-white tracking-tight">Su experiencia biotecnológica.</h2>
                     <p className="text-sm text-gray-400 font-light leading-relaxed max-w-2xl">
-                      {t('cookies.description')}
-                      <a href={getLocalizedPath('privacy')} className="ml-1 text-gold hover:underline underline-offset-4 decoration-gold/30">{t('footer.cookies')}</a>.
+                      Utilizamos cookies para personalizar su navegación y analizar nuestra arquitectura celular. 
+                      Al continuar, acepta nuestra <a href="/privacidad" className="text-gold hover:underline underline-offset-4 decoration-gold/30">Política de Cookies</a>.
                     </p>
                   </div>
 
@@ -71,7 +68,7 @@ export default function CookieGate({ children }: { children: React.ReactNode }) 
                       onClick={handleAccept}
                       className="group px-8 py-3 bg-gold text-ink text-[10px] uppercase tracking-[0.3em] font-bold rounded-full hover:scale-105 transition-all flex items-center justify-center gap-2"
                     >
-                      {t('cookies.accept')}
+                      Aceptar
                       <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
                     </button>
                     
@@ -79,7 +76,7 @@ export default function CookieGate({ children }: { children: React.ReactNode }) 
                       onClick={handleReject}
                       className="px-8 py-3 border border-white/10 text-white/60 text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-white/5 hover:text-white transition-all rounded-full"
                     >
-                      {t('cookies.reject')}
+                      Rechazar
                     </button>
                   </div>
                 </div>
@@ -94,7 +91,7 @@ export default function CookieGate({ children }: { children: React.ReactNode }) 
             animate={{ opacity: 1, scale: 1 }}
             onClick={() => setConsent(null)}
             className="fixed bottom-6 right-6 z-[100] w-12 h-12 bg-ink border border-white/10 rounded-full flex items-center justify-center text-gold shadow-lg hover:bg-white/5 transition-all"
-            title={t('cookies.config')}
+            title="Configuración de cookies"
           >
             <Shield size={20} />
           </motion.button>

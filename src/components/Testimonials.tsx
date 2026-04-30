@@ -5,37 +5,34 @@
 
 import { motion } from 'motion/react';
 import { Star } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+
+const testimonials = [
+  {
+    name: "Elena Rodriguez",
+    role: "Beauty Editor",
+    quote: "Es la primera mascarilla que realmente cambia la textura de mi piel en solo 15 minutos. Imprescindible.",
+    stars: 5
+  },
+  {
+    name: "Marco V.",
+    role: "Skin Enthusiast",
+    quote: "Minimalismo llevado a la cosmética. Los resultados son tan limpios como su diseño.",
+    stars: 5
+  },
+  {
+    name: "Sophia Chen",
+    role: "Model",
+    quote: "Mi secreto antes de cada sesión de fotos. Un boost de luz que no he encontrado en ninguna otra marca.",
+    stars: 5
+  }
+];
 
 export default function Testimonials() {
-  const { t } = useTranslation();
-
-  const testimonials = [
-    {
-      name: t('testimonials.t1_name'),
-      role: t('testimonials.t1_role'),
-      quote: t('testimonials.t1_quote'),
-      stars: 5
-    },
-    {
-      name: t('testimonials.t2_name'),
-      role: t('testimonials.t2_role'),
-      quote: t('testimonials.t2_quote'),
-      stars: 5
-    },
-    {
-      name: t('testimonials.t3_name'),
-      role: t('testimonials.t3_role'),
-      quote: t('testimonials.t3_quote'),
-      stars: 5
-    }
-  ];
-
   return (
     <section className="py-24 bg-white">
       <div className="container mx-auto px-6">
         <div className="text-center mb-20">
-          <h2 className="text-3xl md:text-5xl font-serif">{t('testimonials.title')}<span className="italic text-accent">{t('testimonials.titleItalic')}</span></h2>
+          <h2 className="text-3xl md:text-5xl font-serif">Voces de la <span className="italic text-accent">comunidad</span></h2>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
