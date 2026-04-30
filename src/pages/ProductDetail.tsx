@@ -436,11 +436,11 @@ function ProductDetailContent({ product }: { product: any }) {
 const faqs_es = [
   {
     question: "¿Cómo y cuándo debo usar la mascarilla Hialuronic Acid Mask?",
-    answer: "Recomendamos usarla de 1 a 2 veces por semana, preferiblemente por la noche después de la limpieza facial. Aplícala sobre la piel seca, déjala actuar durante 15-20 minutos y retírala. Masajea el sérum restante hasta su completa absorción."
+    answer: "Recomendamos usarla de 1 a 2 veces por semana, preferiblemente por la noche después de la limpieza facial. Aplícala sobre la piel seca, déjala actuar durante 15-20 minutos, retírala y aclara suavemente el rostro con agua tibia."
   },
   {
     question: "¿Es adecuada para mi tipo de piel?",
-    answer: "Nuestra fórmula es de grado clínico y está diseñada para la máxima tolerancia. Sin embargo, dado que cada piel es un ecosistema biológico único, recomendamos aplicar una pequeña gota detrás del lóbulo de la oreja y esperar entre 24 y 48 horas. Si no hay reactividad, disfruta del ritual con total seguridad."
+    answer: "Nuestra fórmula es de grado clínico y está diseñada para la máxima tolerancia. Sin embargo, dado que cada piel es un ecosistema biológico único, recomendamos aplicar una pequeña gota detrás del lóbulo de la oreja y esperar 2 horas. Si no hay reactividad, disfruta del ritual con total seguridad."
   },
   {
     question: "¿Cuáles son los beneficios a largo plazo?",
@@ -455,11 +455,11 @@ const faqs_es = [
 const faqs_en = [
   {
     question: "How and when should I use the Hyaluronic Acid Mask?",
-    answer: "We recommend using it 1 to 2 times a week, preferably at night after facial cleansing. Apply it to dry skin, let it act for 15-20 minutes and remove it. Massage the remaining serum until completely absorbed."
+    answer: "We recommend using it 1 to 2 times a week, preferably at night after facial cleansing. Apply it to dry skin, let it act for 15-20 minutes, remove it, and gently rinse your face with lukewarm water."
   },
   {
     question: "Is it suitable for my skin type?",
-    answer: "Our clinical-grade formula is designed for maximum tolerance. However, since every skin is a unique biological ecosystem, we recommend applying a small drop behind the earlobe and waiting between 24 and 48 hours. If there is no reactivity, enjoy the ritual with total safety."
+    answer: "Our clinical-grade formula is designed for maximum tolerance. However, since every skin is a unique biological ecosystem, we recommend applying a small drop behind the earlobe and waiting 2 hours. If there is no reactivity, enjoy the ritual with total safety."
   },
   {
     question: "What are the long-term benefits?",

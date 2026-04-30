@@ -38,12 +38,18 @@ export default function Ritual() {
       title: t('pages.ritual.step3_title'),
       subtitle: t('pages.ritual.step3_subtitle'),
       description: t('pages.ritual.step3_desc'),
-      image: getImageUrl("ritual03.png")
+      image: "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&q=80&w=800"
     },
     {
       title: t('pages.ritual.step4_title'),
       subtitle: t('pages.ritual.step4_subtitle'),
       description: t('pages.ritual.step4_desc'),
+      image: getImageUrl("ritual03.png")
+    },
+    {
+      title: t('pages.ritual.step5_title'),
+      subtitle: t('pages.ritual.step5_subtitle'),
+      description: t('pages.ritual.step5_desc'),
       image: getImageUrl("ritual04.png")
     }
   ];

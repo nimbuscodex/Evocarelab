@@ -347,13 +347,13 @@ export default function CheckoutPage() {
 
           <div className="lg:w-2/5">
             <div className="sticky top-40 space-y-10">
-              <div className="bg-pearl p-12 rounded-[60px] border border-neutral-100 shadow-xl space-y-10">
+              <div className="bg-pearl p-10 md:p-12 rounded-[60px] border border-neutral-100 shadow-xl space-y-10">
                 <div className="flex items-center gap-3">
                   <ShoppingBag size={20} className="text-ink" />
                   <h3 className="text-[11px] uppercase tracking-[0.3em] font-bold">{t('checkout.summary')}</h3>
                 </div>
 
-                <div className="space-y-8 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="space-y-8 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
                   {items.map((item) => (
                     <div key={item.id} className="flex gap-6">
                       <div className="w-20 h-24 bg-shimmer rounded-xl overflow-hidden border border-neutral-100 flex-shrink-0">
@@ -370,11 +370,12 @@ export default function CheckoutPage() {
                   ))}
                 </div>
 
-                <div className="pt-8 border-t border-neutral-100/50">
+                {/* Integrated Discount Section */}
+                <div className="pt-8 border-t border-neutral-100/30">
                   {!discountCode ? (
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       <div className="relative">
-                        <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                        <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
                         <input 
                           type="text" 
                           placeholder={t('checkout.promoPlaceholder') || 'Código de descuento'}
@@ -383,7 +384,7 @@ export default function CheckoutPage() {
                             setPromoInput(e.target.value);
                             setPromoError(null);
                           }}
-                          className="w-full bg-neutral-50/50 border border-neutral-100 rounded-2xl py-4 pl-12 pr-4 text-xs uppercase tracking-widest focus:ring-1 focus:ring-gold outline-none transition-all"
+                          className="w-full bg-white/50 border border-neutral-100 rounded-xl py-3.5 pl-10 pr-4 text-[10px] uppercase tracking-widest focus:ring-1 focus:ring-gold outline-none transition-all placeholder:text-[9px]"
                         />
                         <button 
                           type="button"
@@ -392,19 +393,19 @@ export default function CheckoutPage() {
                             if (!success) setPromoError(t('checkout.invalidCode') || 'Código inválido');
                             else setPromoInput('');
                           }}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 bg-ink text-white text-[8px] font-bold uppercase tracking-widest px-4 py-2 rounded-xl transition-all hover:bg-gold"
+                          className="absolute right-2 top-1/2 -translate-y-1/2 bg-ink text-white text-[8px] font-bold uppercase tracking-widest px-3 py-2 rounded-lg transition-all hover:bg-gold"
                         >
                           {t('checkout.apply') || 'Aplicar'}
                         </button>
                       </div>
-                      {promoError && <p className="text-[9px] text-red-500 uppercase tracking-widest px-4">{promoError}</p>}
+                      {promoError && <p className="text-[9px] text-red-500 uppercase tracking-widest px-2">{promoError}</p>}
                     </div>
                   ) : (
-                    <div className="flex items-center justify-between bg-gold/5 border border-gold/20 p-4 rounded-2xl">
+                    <div className="flex items-center justify-between bg-gold/10 border border-gold/20 p-4 rounded-2xl">
                       <div className="flex items-center gap-3">
                         <Tag className="text-gold" size={16} />
                         <div>
-                          <p className="text-[9px] uppercase tracking-[0.2em] font-bold text-gold">{t('checkout.applied') || 'Descuento Aplicado'}</p>
+                          <p className="text-[8px] uppercase tracking-[0.2em] font-bold text-gold">{t('checkout.applied') || 'Descuento Aplicado'}</p>
                           <p className="text-xs font-serif text-ink">{discountCode} (-{Math.round(discount * 100)}%)</p>
                         </div>
                       </div>
@@ -413,7 +414,7 @@ export default function CheckoutPage() {
                         onClick={removeDiscount}
                         className="text-gray-400 hover:text-red-500 transition-colors"
                       >
-                        <X size={16} />
+                        <X size={14} />
                       </button>
                     </div>
                   )}

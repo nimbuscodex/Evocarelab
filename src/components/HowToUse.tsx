@@ -34,6 +34,11 @@ export default function HowToUse() {
       number: "04",
       title: t('howtouse.step4_title'),
       description: t('howtouse.step4_desc')
+    },
+    {
+      number: "05",
+      title: t('howtouse.step5_title'),
+      description: t('howtouse.step5_desc')
     }
   ];
 
