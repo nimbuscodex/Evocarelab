@@ -327,18 +327,16 @@ async function startServer() {
     // Serve static files from dist first
     app.use(express.static(distPath, { index: false }));
     
-    // Fallback for production: send index.html for all non-API routes
-    app.get('*', (req, res, next) => {
-      if (req.originalUrl.startsWith('/api') || req.originalUrl.includes('.')) {
-        return next();
+    // Fallback for production: send index.html for all non-API and non-file routes
+    app.get('*', (req, res) => {
+      // If it's an API call, return 404
+      if (req.originalUrl.startsWith('/api')) {
+        return res.status(404).json({ error: "API route not found" });
       }
       
+      // For any other route, serve index.html (SPA Fallback)
       const indexPath = path.resolve(distPath, 'index.html');
-      if (fs.existsSync(indexPath)) {
-        res.sendFile(indexPath);
-      } else {
-        next();
-      }
+      res.sendFile(indexPath);
     });
   }
 
