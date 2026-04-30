@@ -193,7 +193,7 @@ export default function Ritual() {
           
           <div className="pt-12">
              <button 
-               onClick={() => navigate(getLocalizedPath('product'))}
+               onClick={() => navigate(getLocalizedPath('store'))}
                className="px-16 py-6 bg-gold text-ink text-xs uppercase tracking-[0.4em] font-bold hover:bg-white transition-all rounded-full shadow-2xl"
              >
                 {t('pages.ritual.final_cta')}

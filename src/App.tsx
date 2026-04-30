@@ -18,6 +18,7 @@ import PoliticaEnvios from './pages/PoliticaEnvios';
 import Filosofia from './pages/Filosofia';
 import ElSecreto from './pages/ElSecreto';
 import CheckoutPage from './pages/CheckoutPage';
+import Store from './pages/Store';
 import SuccessPage from './pages/SuccessPage';
 import AdminPage from './pages/AdminPage';
 import { CartProvider } from './context/CartContext';
@@ -37,6 +38,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route index element={<Home />} />
+      <Route path={t('routes.store')} element={<Store />} />
       <Route path={t('routes.ingredients')} element={<IngredientsPage />} />
       <Route path={t('routes.ritual')} element={<Ritual />} />
       <Route path={t('routes.contact')} element={<Contact />} />

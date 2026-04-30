@@ -441,16 +441,6 @@
       "mapTitle": "Ubicación Evocarelab"
     }
   },
-  "discount_popup": {
-    "title": "Bienvenido a",
-    "subtitle": "EVOCARELAB",
-    "description": "Forma parte de nuestro círculo exclusivo y recibe un 10% de descuento en tu primer ritual biotecnológico.",
-    "copy": "Copiar",
-    "copied": "Copiado",
-    "continue": "Obtener mi descuento",
-    "noThanks": "No, gracias",
-    "codeLabel": "TU CÓDIGO EXCLUSIVO"
-  },
   "discover_drawer": {
     "badge": "Contenido",
     "discover_more": "Descubrir más",
