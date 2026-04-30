@@ -513,6 +513,11 @@
     "val_shipping": "Por favor, completa todos los datos de envío correctamente",
     "val_address": "La dirección debe tener al menos 10 caracteres",
     "val_city": "La ciudad es obligatoria",
-    "val_zip": "Código postal inválido (5 dígitos)"
+    "val_zip": "Código postal inválido (5 dígitos)",
+    "promoPlaceholder": "Código de descuento",
+    "apply": "Aplicar",
+    "invalidCode": "Código inválido",
+    "applied": "Descuento Aplicado",
+    "discount": "Descuento"
   }
 }

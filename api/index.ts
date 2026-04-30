@@ -30,7 +30,7 @@ app.get("/api/health", (req, res) => {
 // Checkout logic
 const handleCheckout = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { items, method = 'delivery', shipping, origin } = req.body;
+    const { items, method = 'delivery', shipping, origin, discountCode } = req.body;
     
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ success: false, message: "No hay productos en el carrito." });
@@ -50,6 +50,9 @@ const handleCheckout = async (req: Request, res: Response, next: NextFunction) =
 
     const stripe = new Stripe(stripeSecret);
 
+    // Apply manual discount if code matches
+    const promoDiscount = (discountCode && discountCode.toUpperCase() === 'EVO10') ? 0.10 : 0;
+
     const lineItems = items.map((item: any) => ({
       price_data: {
         currency: 'eur',
@@ -58,7 +61,7 @@ const handleCheckout = async (req: Request, res: Response, next: NextFunction) =
           images: (item.image && item.image.startsWith('http')) ? [item.image] : [],
           metadata: { product_id: item.id }
         },
-        unit_amount: Math.round((item.price || 0) * 100),
+        unit_amount: Math.round((item.price || 0) * (1 - promoDiscount) * 100),
       },
       quantity: item.quantity || 1,
     }));
@@ -83,6 +86,7 @@ const handleCheckout = async (req: Request, res: Response, next: NextFunction) =
           city: shippingData.city,
           zipCode: shippingData.zipCode
         }),
+        discountCode: discountCode || 'none'
       }
     });
 

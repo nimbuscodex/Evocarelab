@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { motion, AnimatePresence } from 'motion/react';
-import { CreditCard, Truck, Check, Loader2, ArrowLeft, ShieldCheck, Lock, ShoppingBag, ArrowRight, Globe } from 'lucide-react';
+import { CreditCard, Truck, Check, Loader2, ArrowLeft, ShieldCheck, Lock, ShoppingBag, ArrowRight, Globe, Tag, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useCart } from '../context/CartContext';
 import { Link, useNavigate } from 'react-router-dom';
@@ -23,11 +23,15 @@ const stripePromise = stripePubKey ? loadStripe(stripePubKey) : Promise.resolve(
 export default function CheckoutPage() {
   const { t, i18n } = useTranslation();
   const isSpanish = i18n.language.startsWith('es');
-  const { totalSubtotal, items } = useCart();
+  const { totalSubtotal, items, discount, discountCode, applyDiscount, removeDiscount } = useCart();
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
+  const [promoInput, setPromoInput] = useState('');
+  const [promoError, setPromoError] = useState<string | null>(null);
+
+  const finalTotal = totalSubtotal * (1 - discount);
 
   const checkoutSchema = z.object({
     email: z.string().email(t('checkout.val_email')),
@@ -88,7 +92,8 @@ export default function CheckoutPage() {
             address: data.shippingMethod === 'delivery' ? data.address : t('checkout.pickup'),
             city: data.shippingMethod === 'delivery' ? data.city : 'Madrid',
             zipCode: data.shippingMethod === 'delivery' ? data.zipCode : '28340'
-          }
+          },
+          discountCode: discountCode
         })
       });
 
@@ -333,7 +338,7 @@ export default function CheckoutPage() {
                 {isProcessing ? (
                   <>{t('checkout.processing')} <Loader2 size={24} className="animate-spin" /></>
                 ) : (
-                  <>{t('checkout.checkoutButton')} • {totalSubtotal}€ <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" /></>
+                  <>{t('checkout.checkoutButton')} • {finalTotal.toFixed(2)}€ <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform" /></>
                 )}
               </button>
             </form>
@@ -359,24 +364,79 @@ export default function CheckoutPage() {
                           <h4 className="text-sm font-serif">{item.name}</h4>
                           <p className="text-[10px] text-gray-400 tracking-widest uppercase mt-1">{t('checkout.qty')}: {item.quantity}</p>
                         </div>
-                        <p className="font-medium text-ink">{item.price * item.quantity}€</p>
+                        <p className="font-medium text-ink">{(item.price * item.quantity).toFixed(2)}€</p>
                       </div>
                     </div>
                   ))}
                 </div>
 
+                <div className="pt-8 border-t border-neutral-100/50">
+                  {!discountCode ? (
+                    <div className="space-y-3">
+                      <div className="relative">
+                        <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                        <input 
+                          type="text" 
+                          placeholder={t('checkout.promoPlaceholder') || 'Código de descuento'}
+                          value={promoInput}
+                          onChange={(e) => {
+                            setPromoInput(e.target.value);
+                            setPromoError(null);
+                          }}
+                          className="w-full bg-neutral-50/50 border border-neutral-100 rounded-2xl py-4 pl-12 pr-4 text-xs uppercase tracking-widest focus:ring-1 focus:ring-gold outline-none transition-all"
+                        />
+                        <button 
+                          type="button"
+                          onClick={() => {
+                            const success = applyDiscount(promoInput);
+                            if (!success) setPromoError(t('checkout.invalidCode') || 'Código inválido');
+                            else setPromoInput('');
+                          }}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 bg-ink text-white text-[8px] font-bold uppercase tracking-widest px-4 py-2 rounded-xl transition-all hover:bg-gold"
+                        >
+                          {t('checkout.apply') || 'Aplicar'}
+                        </button>
+                      </div>
+                      {promoError && <p className="text-[9px] text-red-500 uppercase tracking-widest px-4">{promoError}</p>}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between bg-gold/5 border border-gold/20 p-4 rounded-2xl">
+                      <div className="flex items-center gap-3">
+                        <Tag className="text-gold" size={16} />
+                        <div>
+                          <p className="text-[9px] uppercase tracking-[0.2em] font-bold text-gold">{t('checkout.applied') || 'Descuento Aplicado'}</p>
+                          <p className="text-xs font-serif text-ink">{discountCode} (-{Math.round(discount * 100)}%)</p>
+                        </div>
+                      </div>
+                      <button 
+                        type="button"
+                        onClick={removeDiscount}
+                        className="text-gray-400 hover:text-red-500 transition-colors"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  )}
+                </div>
+
                 <div className="pt-8 border-t border-neutral-100/50 space-y-6">
                   <div className="flex justify-between text-xs text-gray-400">
                     <span className="uppercase tracking-widest">{t('checkout.subtotal')}</span>
-                    <span>{totalSubtotal}€</span>
+                    <span>{totalSubtotal.toFixed(2)}€</span>
                   </div>
+                  {discount > 0 && (
+                    <div className="flex justify-between text-xs text-gold">
+                      <span className="uppercase tracking-widest">{t('checkout.discount')}</span>
+                      <span>-{(totalSubtotal * discount).toFixed(2)}€</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-xs text-gray-400">
                     <span className="uppercase tracking-widest">{t('checkout.shipping')}</span>
                     <span className="text-gold font-bold italic">{t('checkout.free')}</span>
                   </div>
                   <div className="flex justify-between items-end pt-4">
                     <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-ink">{t('checkout.total')}</span>
-                    <span className="text-3xl font-serif">{totalSubtotal}€</span>
+                    <span className="text-3xl font-serif">{finalTotal.toFixed(2)}€</span>
                   </div>
                 </div>
               </div>

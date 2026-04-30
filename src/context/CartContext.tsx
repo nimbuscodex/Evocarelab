@@ -22,6 +22,10 @@ interface CartContextType {
   isCartOpen: boolean;
   setIsCartOpen: (open: boolean) => void;
   totalSubtotal: number;
+  discount: number;
+  discountCode: string | null;
+  applyDiscount: (code: string) => boolean;
+  removeDiscount: () => void;
   itemCount: number;
   clearCart: () => void;
 }
@@ -31,6 +35,8 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [discountCode, setDiscountCode] = useState<string | null>(null);
+  const [discount, setDiscount] = useState(0);
 
   // Load from local storage
   useEffect(() => {
@@ -42,12 +48,28 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         console.error("Failed to parse cart", e);
       }
     }
+    const savedCode = localStorage.getItem('evocarelab_discount_code');
+    const savedDiscount = localStorage.getItem('evocarelab_discount_value');
+    if (savedCode && savedDiscount) {
+      setDiscountCode(savedCode);
+      setDiscount(parseFloat(savedDiscount));
+    }
   }, []);
 
   // Sync to local storage
   useEffect(() => {
     localStorage.setItem('evocarelab_cart', JSON.stringify(items));
   }, [items]);
+
+  useEffect(() => {
+    if (discountCode) {
+      localStorage.setItem('evocarelab_discount_code', discountCode);
+      localStorage.setItem('evocarelab_discount_value', discount.toString());
+    } else {
+      localStorage.removeItem('evocarelab_discount_code');
+      localStorage.removeItem('evocarelab_discount_value');
+    }
+  }, [discountCode, discount]);
 
   const addItem = (product: Omit<CartItem, 'quantity' | 'basePrice'>, quantity: number = 1) => {
     setItems(prev => {
@@ -91,13 +113,29 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const clearCart = React.useCallback(() => setItems([]), []);
 
+  const applyDiscount = (code: string) => {
+    if (code.toUpperCase() === 'EVO10') {
+      setDiscountCode('EVO10');
+      setDiscount(0.10);
+      return true;
+    }
+    return false;
+  };
+
+  const removeDiscount = () => {
+    setDiscountCode(null);
+    setDiscount(0);
+  };
+
   const totalSubtotal = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
     <CartContext.Provider value={{ 
       items, addItem, removeItem, updateQuantity, 
-      isCartOpen, setIsCartOpen, totalSubtotal, itemCount, clearCart 
+      isCartOpen, setIsCartOpen, totalSubtotal, itemCount, 
+      discount, discountCode, applyDiscount, removeDiscount,
+      clearCart 
     }}>
       {children}
     </CartContext.Provider>

@@ -512,6 +512,11 @@
     "val_shipping": "Please complete all shipping information correctly",
     "val_address": "Address must be at least 10 characters",
     "val_city": "City is mandatory",
-    "val_zip": "Invalid zip code (5 digits)"
+    "val_zip": "Invalid zip code (5 digits)",
+    "promoPlaceholder": "Discount code",
+    "apply": "Apply",
+    "invalidCode": "Invalid code",
+    "applied": "Discount Applied",
+    "discount": "Discount"
   }
 }
