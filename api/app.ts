@@ -62,9 +62,10 @@ const handleCheckout = async (req: Request, res: Response, next: NextFunction) =
       quantity: item.quantity || 1,
     }));
 
-    let frontendOrigin = origin || req.headers.origin || (req.headers.host ? `https://${req.headers.host}` : '');
+    let frontendOrigin = origin || req.headers.origin || process.env.APP_URL || (req.headers.host ? `https://${req.headers.host}` : '');
     if (!frontendOrigin || !frontendOrigin.startsWith("http")) {
-      frontendOrigin = ""; 
+       // Last resort fallback for local dev
+       frontendOrigin = "http://localhost:3000"; 
     }
 
     const session = await stripe.checkout.sessions.create({

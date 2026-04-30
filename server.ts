@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import express from "express";
-import app from "./api/app.ts";
+import app from "./api/app";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -52,14 +52,14 @@ async function startServer() {
     }
   }
 
-  if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
+  if (process.env.NODE_ENV !== 'test') {
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`Server running on http://localhost:${PORT}`);
     });
   }
 }
 
-if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
+if (process.env.NODE_ENV !== 'test') {
   startServer().catch(err => {
     console.error("Startup error:", err);
     process.exit(1);
