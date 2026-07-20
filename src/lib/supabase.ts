@@ -30,6 +30,42 @@ export const getImageUrl = (path: string) => {
   
   // Remove leading slash if present
   const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+  const normalizedPath = cleanPath.toLowerCase().replace(/[\s_-]/g, '');
+
+  // Local assets mapping to ensure they are loaded instantly without needing Supabase storage setup
+  const localImagesMap: Record<string, string> = {
+    'sobre.png': '/sobre.png',
+    'caja.png': '/caja.png',
+    'fondoblanco.png': '/fondo blanco.png',
+    'fondoblanco': '/fondo blanco.png',
+    'fondo-rosa.png': '/fondo-rosa.png',
+    'fondorosa.png': '/fondo-rosa.png',
+    'fondorosa': '/fondo-rosa.png',
+    'modelo1.png': '/modelo 1.png',
+    'modelo1': '/modelo 1.png',
+    'moleculaquimica.png': '/molécula quimica.png',
+    'moleculaquimica': '/molécula quimica.png',
+    'hialuronatodesodio.png': '/molécula quimica.png',
+    'hialuronatodesodio': '/molécula quimica.png',
+    'acido-hialuronico.png': '/acido-hialuronico.png',
+    'acidohialuronico.png': '/acido-hialuronico.png',
+    'collage.png': '/collage.png',
+    'efectos.png': '/efectos.png',
+    'ritual01.png': '/ritual 01.png',
+    'ritual02.png': '/ritual 02.png',
+    'ritual03.png': '/ritual 03.png',
+    'ritual04.png': '/ritual 04.png',
+    'ritual01': '/ritual 01.png',
+    'ritual02': '/ritual 02.png',
+    'ritual03': '/ritual 03.png',
+    'ritual04': '/ritual 04.png'
+  };
+
+  const matchedLocalPath = localImagesMap[normalizedPath] || localImagesMap[cleanPath];
+  if (matchedLocalPath) {
+    return matchedLocalPath;
+  }
+  
   const encodedPath = encodeURI(cleanPath);
   return supabase.storage.from('product-images').getPublicUrl(encodedPath).data.publicUrl;
 };

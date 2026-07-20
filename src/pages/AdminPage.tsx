@@ -34,7 +34,7 @@ export default function AdminPage() {
   const [trackingInput, setTrackingInput] = useState<Record<string, { number: string, provider: string }>>({});
 
   // Allowed admin emails (Configurable)
-  const ALLOWED_EMAILS = ['nimbuscodex@gmail.com'];
+  const ALLOWED_EMAILS = ['nimbuscodex@gmail.com', 'evocarelab2024@gmail.com'];
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
