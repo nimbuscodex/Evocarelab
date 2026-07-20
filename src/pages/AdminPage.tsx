@@ -301,8 +301,8 @@ export default function AdminPage() {
     const days: Record<string, number> = {};
     const validOrders = orders.filter(o => o.status !== 'cancelled');
     
-    // Create an array of the last 7 days
-    for (let i = 6; i >= 0; i--) {
+    // Create an array of the last 30 days
+    for (let i = 29; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
       const dateString = d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
@@ -516,7 +516,7 @@ export default function AdminPage() {
 
             {/* Revenue Chart */}
             <div className="bg-white p-6 md:p-8 rounded-[32px] shadow-sm border border-neutral-100">
-              <h3 className="text-lg font-serif text-ink mb-6">Ingresos de los últimos 7 días</h3>
+              <h3 className="text-lg font-serif text-ink mb-6">Ingresos de los últimos 30 días</h3>
               <div className="h-72 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
