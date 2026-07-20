@@ -24,7 +24,7 @@ interface CartContextType {
   totalSubtotal: number;
   discount: number;
   discountCode: string | null;
-  applyDiscount: (code: string) => boolean;
+  applyDiscount: (code: string) => Promise<boolean>;
   removeDiscount: () => void;
   itemCount: number;
   clearCart: () => void;
@@ -113,11 +113,26 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const clearCart = React.useCallback(() => setItems([]), []);
 
-  const applyDiscount = (code: string) => {
-    if (code.toUpperCase() === 'EVO10') {
+  const applyDiscount = async (code: string) => {
+    const upperCode = code.toUpperCase();
+    if (upperCode === 'EVO10') {
       setDiscountCode('EVO10');
       setDiscount(0.10);
       return true;
+    }
+
+    try {
+      const response = await fetch(`/api/validate-coupon?code=${encodeURIComponent(code)}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setDiscountCode(data.code);
+          setDiscount(data.discount);
+          return true;
+        }
+      }
+    } catch (e) {
+      console.error("Error validating coupon on server:", e);
     }
     return false;
   };

@@ -30,6 +30,7 @@ export default function CheckoutPage() {
   const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
   const [promoInput, setPromoInput] = useState('');
   const [promoError, setPromoError] = useState<string | null>(null);
+  const [isCheckingPromo, setIsCheckingPromo] = useState(false);
 
   const finalTotal = totalSubtotal * (1 - discount);
 
@@ -388,14 +389,26 @@ export default function CheckoutPage() {
                         />
                         <button 
                           type="button"
-                          onClick={() => {
-                            const success = applyDiscount(promoInput);
-                            if (!success) setPromoError(t('checkout.invalidCode') || 'Código inválido');
-                            else setPromoInput('');
+                          disabled={isCheckingPromo}
+                          onClick={async () => {
+                            setIsCheckingPromo(true);
+                            setPromoError(null);
+                            try {
+                              const success = await applyDiscount(promoInput);
+                              if (!success) {
+                                setPromoError(t('checkout.invalidCode') || 'Código inválido');
+                              } else {
+                                setPromoInput('');
+                              }
+                            } catch (err) {
+                              setPromoError(t('checkout.invalidCode') || 'Código inválido');
+                            } finally {
+                              setIsCheckingPromo(false);
+                            }
                           }}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 bg-ink text-white text-[8px] font-bold uppercase tracking-widest px-3 py-2 rounded-lg transition-all hover:bg-gold"
+                          className="absolute right-2 top-1/2 -translate-y-1/2 bg-ink text-white text-[8px] font-bold uppercase tracking-widest px-3 py-2 rounded-lg transition-all hover:bg-gold disabled:opacity-50"
                         >
-                          {t('checkout.apply') || 'Aplicar'}
+                          {isCheckingPromo ? '...' : (t('checkout.apply') || 'Aplicar')}
                         </button>
                       </div>
                       {promoError && <p className="text-[9px] text-red-500 uppercase tracking-widest px-2">{promoError}</p>}
