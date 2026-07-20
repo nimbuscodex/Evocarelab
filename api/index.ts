@@ -475,7 +475,7 @@ app.post("/api/finalize-order", async (req: Request, res: Response, next: NextFu
 
           await transporter.sendMail({
             from: `"EVOCARELAB Backoffice" <${smtpUser}>`,
-            to: smtpUser,
+            to: `${smtpUser}, salumaz319@gmail.com`,
             subject: `[NUEVA VENTA] Pedido Recibido de ${customerName} (${totalAmountStr} €)`,
             html: adminEmailHtml
           });
