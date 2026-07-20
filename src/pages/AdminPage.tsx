@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { getLocalizedPath } from '../lib/i18n-utils';
-import { Package, Truck, CheckCircle, Clock, LogOut, Printer, Search, RefreshCw, XCircle, TrendingUp, DollarSign, ShoppingBag, Activity } from 'lucide-react';
+import { Package, Truck, CheckCircle, Clock, LogOut, Printer, Search, RefreshCw, XCircle, TrendingUp, DollarSign, ShoppingBag, Activity, Trash2 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { jsPDF } from 'jspdf';
 
@@ -32,6 +32,9 @@ export default function AdminPage() {
   const [searchTerm, setSearchTerm] = useState('');
   
   const [trackingInput, setTrackingInput] = useState<Record<string, { number: string, provider: string }>>({});
+
+  // Selection and deletion states
+  const [selectedOrderIds, setSelectedOrderIds] = useState<string[]>([]);
 
   // Allowed admin emails (Configurable)
   const ALLOWED_EMAILS = ['nimbuscodex@gmail.com', 'evocarelab2024@gmail.com'];
@@ -89,6 +92,65 @@ export default function AdminPage() {
       setOrders(data || []);
     }
     setLoadingOrders(false);
+  };
+
+  const toggleSelectOrder = (orderId: string) => {
+    setSelectedOrderIds((prev) =>
+      prev.includes(orderId) ? prev.filter((id) => id !== orderId) : [...prev, orderId]
+    );
+  };
+
+  const toggleSelectAllFiltered = (filteredList: Order[]) => {
+    const filteredIds = filteredList.map(o => o.id);
+    const allAreSelected = filteredIds.every(id => selectedOrderIds.includes(id));
+    if (allAreSelected) {
+      setSelectedOrderIds(prev => prev.filter(id => !filteredIds.includes(id)));
+    } else {
+      setSelectedOrderIds(prev => {
+        const union = new Set([...prev, ...filteredIds]);
+        return Array.from(union);
+      });
+    }
+  };
+
+  const deleteOrder = async (orderId: string) => {
+    if (!window.confirm('¿Estás seguro de que deseas eliminar este registro de venta de forma permanente? Esta acción no se puede deshacer.')) {
+      return;
+    }
+
+    const { error } = await supabase
+      .from('orders')
+      .delete()
+      .eq('id', orderId);
+
+    if (error) {
+      alert(`Error al eliminar el pedido: ${error.message}. Asegúrate de tener los permisos necesarios de eliminación.`);
+    } else {
+      setOrders(prev => prev.filter(o => o.id !== orderId));
+      setSelectedOrderIds(prev => prev.filter(id => id !== orderId));
+      alert('Registro de venta eliminado correctamente.');
+    }
+  };
+
+  const deleteSelectedOrders = async () => {
+    if (selectedOrderIds.length === 0) return;
+
+    if (!window.confirm(`¿Estás seguro de que deseas eliminar permanentemente los ${selectedOrderIds.length} registros de venta seleccionados? Esta acción no se puede deshacer.`)) {
+      return;
+    }
+
+    const { error } = await supabase
+      .from('orders')
+      .delete()
+      .in('id', selectedOrderIds);
+
+    if (error) {
+      alert(`Error al eliminar los pedidos seleccionados: ${error.message}. Asegúrate de tener los permisos de eliminación.`);
+    } else {
+      setOrders(prev => prev.filter(o => !selectedOrderIds.includes(o.id)));
+      setSelectedOrderIds([]);
+      alert('Registros de venta seleccionados eliminados correctamente.');
+    }
   };
 
   const updateOrderStatus = async (orderId: string, newStatus: string) => {
@@ -525,6 +587,39 @@ export default function AdminPage() {
           </div>
         </div>
 
+        {/* Control bar for multi-selection */}
+        {!loadingOrders && filteredOrders.length > 0 && (
+          <div className="mb-6 bg-white px-6 py-4 rounded-[24px] shadow-sm border border-neutral-100 flex flex-wrap items-center justify-between gap-4 print:hidden">
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="selectAll"
+                checked={filteredOrders.every(o => selectedOrderIds.includes(o.id))}
+                onChange={() => toggleSelectAllFiltered(filteredOrders)}
+                className="w-5 h-5 rounded border-neutral-300 text-ink focus:ring-ink cursor-pointer"
+              />
+              <label htmlFor="selectAll" className="text-sm font-medium text-neutral-700 cursor-pointer select-none">
+                {filteredOrders.every(o => selectedOrderIds.includes(o.id)) ? 'Deseleccionar todos' : 'Seleccionar todos los visibles'} ({filteredOrders.length})
+              </label>
+            </div>
+
+            {selectedOrderIds.length > 0 && (
+              <div className="flex items-center gap-4 animate-fade-in">
+                <span className="text-sm text-neutral-500 font-medium">
+                  {selectedOrderIds.length} {selectedOrderIds.length === 1 ? 'seleccionado' : 'seleccionados'}
+                </span>
+                <button
+                  onClick={deleteSelectedOrders}
+                  className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-full text-xs font-semibold uppercase tracking-wider transition-all"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  Eliminar seleccionados
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Orders List */}
         <div className="space-y-6">
           {loadingOrders ? (
@@ -541,8 +636,19 @@ export default function AdminPage() {
             filteredOrders.map((order) => (
               <div
                 key={order.id}
-                className="bg-white p-6 md:p-8 rounded-[32px] shadow-sm border border-neutral-100 flex flex-col xl:flex-row gap-8 xl:items-center print:break-inside-avoid print:shadow-none print:border-neutral-300"
+                className={`bg-white p-6 md:p-8 rounded-[32px] shadow-sm border transition-all flex flex-col xl:flex-row gap-8 xl:items-center print:break-inside-avoid print:shadow-none print:border-neutral-300 ${
+                  selectedOrderIds.includes(order.id) ? 'border-neutral-900 bg-neutral-50/40' : 'border-neutral-100'
+                }`}
               >
+                {/* Selection Checkbox */}
+                <div className="flex items-center justify-start print:hidden">
+                  <input
+                    type="checkbox"
+                    checked={selectedOrderIds.includes(order.id)}
+                    onChange={() => toggleSelectOrder(order.id)}
+                    className="w-5 h-5 rounded border-neutral-300 text-ink focus:ring-ink cursor-pointer"
+                  />
+                </div>
                 {/* Order Status & ID */}
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
@@ -646,9 +752,15 @@ export default function AdminPage() {
                   )}
                   <button
                     onClick={() => printReceipt(order)}
-                    className="w-full flex justify-center items-center gap-2 py-3 px-4 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-sm font-medium hover:bg-neutral-50 transition-colors"
+                    className="w-full flex justify-center items-center gap-2 py-3 px-4 bg-white border border-neutral-200 text-neutral-700 rounded-xl text-sm font-medium hover:bg-neutral-50 transition-colors animate-all"
                   >
                     <Printer className="w-4 h-4" /> Imprimir Recibo
+                  </button>
+                  <button
+                    onClick={() => deleteOrder(order.id)}
+                    className="w-full flex justify-center items-center gap-2 py-3 px-4 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl text-sm font-medium transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" /> Eliminar Registro
                   </button>
                 </div>
               </div>
